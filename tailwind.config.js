@@ -5,8 +5,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#fea928",
+        primary: "#FF8A00",
         secondary: "#ed8900",
+      },
+      fontFamily: {
+        "dancing-script": [
+          "Dancing Script",
+          "cursive",
+          "Lora",
+          "serif",
+          "Fascinate Inline",
+          "system-ui",
+        ],
       },
       container: {
         center: true,
