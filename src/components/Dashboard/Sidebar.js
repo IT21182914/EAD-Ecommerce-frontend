@@ -9,49 +9,69 @@ import {
   FaWarehouse,
   FaChartLine,
   FaTruck,
+  FaBell,
+  FaMapMarkerAlt,
+  FaAtom,
 } from "react-icons/fa";
 
 const Sidebar = () => {
   return (
     <div
-      className="d-flex flex-column p-3 bg-dark text-white"
-      style={{ width: "240px", height: "100vh", position: "fixed" }}
+      className="d-flex flex-column p-3 text-white sidebar"
+      style={{
+        width: "240px",
+        height: "100vh",
+        position: "fixed",
+        background:
+          "linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.8)), url('/path/to/your/image.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
     >
-      <h4 className="text-center mb-4">Admin Panel</h4>
+      <div className="text-center mb-4">
+        <h4 className="text-white">Admin Panel</h4>
+      </div>
       <Nav className="flex-column">
         <LinkContainer to="/admin-dashboard">
-          <Nav.Link className="text-white mb-2 d-flex align-items-center">
-            <FaChartLine className="me-2" /> Dashboard
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaChartLine className="me-3" />
+            Dashboard
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/manage-users">
-          <Nav.Link className="text-white mb-2 d-flex align-items-center">
-            <FaUser className="me-2" /> User Management
+        <LinkContainer to="/user-profile">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaUser className="me-3" />
+            User Profile
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/manage-products">
-          <Nav.Link className="text-white mb-2 d-flex align-items-center">
-            <FaBoxOpen className="me-2" /> Product Management
+        <LinkContainer to="/table-list">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaBoxOpen className="me-3" />
+            Table List
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/manage-orders">
-          <Nav.Link className="text-white mb-2 d-flex align-items-center">
-            <FaClipboardList className="me-2" /> Order Management
+        <LinkContainer to="/typography">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaAtom className="me-3" />
+            Typography
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/manage-inventory">
-          <Nav.Link className="text-white mb-2 d-flex align-items-center">
-            <FaWarehouse className="me-2" /> Inventory Management
+        <LinkContainer to="/icons">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaClipboardList className="me-3" />
+            Icons
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/manage-vendors">
-          <Nav.Link className="text-white mb-2 d-flex align-items-center">
-            <FaTruck className="me-2" /> Vendor Management
+        <LinkContainer to="/maps">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaMapMarkerAlt className="me-3" />
+            Maps
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/reports">
-          <Nav.Link className="text-white mb-2 d-flex align-items-center">
-            <FaChartLine className="me-2" /> Reports
+        <LinkContainer to="/notifications">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaBell className="me-3" />
+            Notifications
           </Nav.Link>
         </LinkContainer>
       </Nav>
