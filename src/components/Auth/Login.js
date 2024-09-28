@@ -1,4 +1,3 @@
-// src/components/Auth/Login.js
 import React from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
