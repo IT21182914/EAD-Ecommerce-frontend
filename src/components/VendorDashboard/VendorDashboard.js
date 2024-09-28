@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import Sidebar from "./VendorSidebar"; // Ensure this is the correct import path
+import Sidebar from "./VendorSidebar";
 import {
   FaBoxOpen,
   FaWarehouse,
@@ -32,7 +32,6 @@ ChartJS.register(
 );
 
 const VendorDashboard = () => {
-  // Data for Line Chart (Orders Processed)
   const lineData = {
     labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
     datasets: [
@@ -45,7 +44,6 @@ const VendorDashboard = () => {
     ],
   };
 
-  // Data for Pie Chart (Inventory Overview)
   const pieData = {
     labels: ["In Stock", "Out of Stock", "Low Stock"],
     datasets: [
@@ -68,7 +66,6 @@ const VendorDashboard = () => {
 
   return (
     <div className="d-flex">
-      {/* Ensure role="vendor" is passed to the Sidebar */}
       <Sidebar role="vendor" />
       <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
         <h2
@@ -99,7 +96,6 @@ const VendorDashboard = () => {
           ></div>
         </h2>
 
-        {/* Stat Cards */}
         <Row className="mb-4">
           <Col md={3} sm={6}>
             <Card className="shadow-sm h-100">
@@ -151,7 +147,6 @@ const VendorDashboard = () => {
           </Col>
         </Row>
 
-        {/* Chart Section */}
         <Row>
           <Col lg={8}>
             <Card className="shadow-sm">
