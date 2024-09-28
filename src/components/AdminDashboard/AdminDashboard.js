@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import Sidebar from "./Sidebar";
+import Sidebar from "./AdminSidebar";
 import { FaChartLine, FaDollarSign, FaBell, FaHeart } from "react-icons/fa";
 import { Line, Pie } from "react-chartjs-2";
 import {
@@ -86,7 +86,33 @@ const AdminDashboard = () => {
     <div className="d-flex">
       <Sidebar />
       <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
-        <h2 className="mb-4 text-center">Admin Dashboard</h2>
+        <h2
+          className="mb-4 text-center"
+          style={{
+            fontSize: "2.5rem",
+            fontWeight: "700",
+            background:
+              "linear-gradient(90deg, rgba(29, 78, 216, 1) 0%, rgba(91, 33, 182, 1) 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            position: "relative",
+          }}
+        >
+          Admin Dashboard
+          <div
+            style={{
+              content: '""',
+              position: "absolute",
+              bottom: "-8px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "100px",
+              height: "4px",
+              backgroundColor: "#1D4ED8",
+              borderRadius: "2px",
+            }}
+          ></div>
+        </h2>
 
         {/* Stat Cards */}
         <Row className="mb-4">
