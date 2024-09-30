@@ -28,7 +28,7 @@ const CreateProduct = () => {
       .post("https://localhost:44321/api/v1/vendor/products/create", formData)
       .then(() => {
         alert("Product created successfully!");
-        navigate("/vendor-dashboard");
+        navigate("/vendor/products");
       })
       .catch((error) => console.error("Error creating product:", error));
   };
