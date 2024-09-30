@@ -1,5 +1,6 @@
 import React from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "./VendorSidebar";
 import {
   FaBoxOpen,
@@ -32,6 +33,12 @@ ChartJS.register(
 );
 
 const VendorDashboard = () => {
+  const navigate = useNavigate(); // Initialize useNavigate hook
+
+  const handleAddProductClick = () => {
+    navigate("/vendor/create"); // Navigate to the "vendor/create" route
+  };
+
   const lineData = {
     labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
     datasets: [
@@ -68,19 +75,21 @@ const VendorDashboard = () => {
     <div className="d-flex">
       <Sidebar role="vendor" />
       <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
-        <h2
-          className="mb-4 text-center"
-          style={{
-            fontSize: "2.5rem",
-            fontWeight: "700",
-            background:
-              "linear-gradient(90deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            position: "relative",
-          }}
-        >
-          Vendor Dashboard
+        <div className="text-center mb-4">
+          <h2
+            className="mb-0"
+            style={{
+              fontSize: "2.5rem",
+              fontWeight: "700",
+              background:
+                "linear-gradient(90deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              position: "relative",
+            }}
+          >
+            Vendor Dashboard
+          </h2>
           <div
             style={{
               content: '""',
@@ -94,7 +103,34 @@ const VendorDashboard = () => {
               borderRadius: "2px",
             }}
           ></div>
-        </h2>
+        </div>
+        <div className="d-flex justify-content-end mb-4">
+          <Button
+            className="btn btn-lg"
+            style={{
+              backgroundColor: "#000",
+              border: "none",
+              color: "#fff",
+              fontFamily:
+                "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+              fontWeight: "500",
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+              transition: "transform 0.3s ease, background-color 0.3s ease", // Animation properties
+              transform: "translateY(0)", // Initial position
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = "#333";
+              e.target.style.transform = "translateY(-5px)"; // Move up slightly on hover
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = "#000";
+              e.target.style.transform = "translateY(0)"; // Return to original position
+            }}
+            onClick={handleAddProductClick} // Navigate on click
+          >
+            Add Product
+          </Button>
+        </div>
 
         <Row className="mb-4">
           <Col md={3} sm={6}>

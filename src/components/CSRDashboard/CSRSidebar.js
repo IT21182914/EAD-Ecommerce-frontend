@@ -21,7 +21,7 @@ const Sidebar = () => {
         <h4 className="text-white">CSR Panel</h4>
       </div>
       <Nav className="flex-column">
-        <LinkContainer to="/csr-dashboard">
+        <LinkContainer to="/csr/dashboard">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaUser className="me-3" />
             Manage Accounts

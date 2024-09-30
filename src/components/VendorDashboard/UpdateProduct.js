@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import VendorSidebar from "./VendorSidebar"; // Import Sidebar
+import VendorSidebar from "./VendorSidebar";
 
 const UpdateProduct = () => {
   const { productId } = useParams();
@@ -13,13 +13,24 @@ const UpdateProduct = () => {
     price: 0,
     stockQuantity: 0,
     category: "",
-    imageUrl: "",
+    imageUrl: "", // This holds the image URL
   });
 
   useEffect(() => {
+    // Fetch existing product details
     axios
       .get(`https://localhost:44321/api/v1/vendor/products/${productId}`)
-      .then((response) => setFormData(response.data))
+      .then((response) => {
+        const product = response.data;
+        setFormData({
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          stockQuantity: product.stockQuantity,
+          category: product.category,
+          imageUrl: product.imageUrl, // Set the image URL if it exists
+        });
+      })
       .catch((error) => console.error("Error fetching product:", error));
   }, [productId]);
 
@@ -30,34 +41,26 @@ const UpdateProduct = () => {
     });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-
-    axios
-      .post("/upload-image-url", formData)
-      .then((response) => {
-        setFormData((prev) => ({
-          ...prev,
-          imageUrl: response.data.url,
-        }));
-      })
-      .catch((error) => console.error("Error uploading image:", error));
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios
-      .put(
+
+    try {
+      // Prepare the product data to be updated
+      const updatedProductData = {
+        ...formData,
+      };
+
+      // Update the product on the backend
+      await axios.put(
         `https://localhost:44321/api/v1/vendor/products/update/${productId}`,
-        formData
-      )
-      .then(() => {
-        alert("Product updated successfully!");
-        navigate("/vendor-dashboard");
-      })
-      .catch((error) => console.error("Error updating product:", error));
+        updatedProductData
+      );
+
+      alert("Product updated successfully!");
+      navigate("/vendor/products");
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
   };
 
   return (
@@ -135,12 +138,18 @@ const UpdateProduct = () => {
           </Form.Group>
 
           <Form.Group controlId="imageUrl" className="mb-3">
-            <Form.Label>Image Upload</Form.Label>
-            <Form.Control type="file" onChange={handleImageChange} />
+            <Form.Label>Image URL</Form.Label>
+            <Form.Control
+              type="text"
+              name="imageUrl"
+              value={formData.imageUrl}
+              onChange={handleChange}
+              required
+            />
             {formData.imageUrl && (
               <img
                 src={formData.imageUrl}
-                alt="Uploaded"
+                alt="Product"
                 style={{ width: "150px", marginTop: "10px" }}
               />
             )}

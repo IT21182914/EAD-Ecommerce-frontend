@@ -5,9 +5,7 @@ import {
   FaUser,
   FaBoxOpen,
   FaClipboardList,
-  FaWarehouse,
   FaChartLine,
-  FaTruck,
   FaBell,
   FaMapMarkerAlt,
   FaAtom,
@@ -31,7 +29,7 @@ const Sidebar = () => {
         <h4 className="text-white">Admin Panel</h4>
       </div>
       <Nav className="flex-column">
-        <LinkContainer to="/admin-dashboard">
+        <LinkContainer to="/admin/dashboard">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaChartLine className="me-3" />
             Dashboard
