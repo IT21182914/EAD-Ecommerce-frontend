@@ -18,15 +18,15 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/vendor-dashboard" element={<VendorDashboard />} />
-            <Route path="/vendor-products" element={<ProductList />} />
-            <Route path="/vendor/create-product" element={<CreateProduct />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/vendor/dashboard" element={<VendorDashboard />} />
+            <Route path="/vendor/products" element={<ProductList />} />
+            <Route path="/vendor/create" element={<CreateProduct />} />
             <Route
-              path="/vendor/update-product/:productId"
+              path="/vendor/update/:productId"
               element={<UpdateProduct />}
             />
-            <Route path="/vendor-inventory" element={<ManageInventory />} />
+            <Route path="/vendor/inventory" element={<ManageInventory />} />
           </Routes>
         </div>
       </div>
