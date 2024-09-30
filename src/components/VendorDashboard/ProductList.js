@@ -10,10 +10,10 @@ const ProductList = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const vendorId = "vendor003";
+    // const vendorId = "vendor003";
     // Fetch vendor products from the backend
     axios
-      .get(`https://localhost:44321/api/v1/vendor/products/${vendorId}`)
+      .get(`https://localhost:44321/api/v1/vendor/products/all`)
       .then((response) => setProducts(response.data))
       .catch((error) => console.error(error));
   }, [vendorId]);

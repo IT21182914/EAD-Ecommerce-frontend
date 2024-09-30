@@ -28,22 +28,22 @@ const Sidebar = ({ role }) => {
       <Nav className="flex-column">
         {role === "vendor" && (
           <>
-            <LinkContainer to="/vendor-dashboard">
+            <LinkContainer to="/vendor/dashboard">
               <Nav.Link className="text-white mb-3 d-flex align-items-center">
                 <FaBoxOpen className="me-3" /> Manage Products
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/vendor-inventory">
+            <LinkContainer to="/vendor/inventory">
               <Nav.Link className="text-white mb-3 d-flex align-items-center">
                 <FaWarehouse className="me-3" /> Manage Inventory
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/vendor-orders">
+            <LinkContainer to="/vendor/products">
               <Nav.Link className="text-white mb-3 d-flex align-items-center">
                 <FaClipboardList className="me-3" /> Track Orders
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/vendor-feedback">
+            <LinkContainer to="/vendor/feedback">
               <Nav.Link className="text-white mb-3 d-flex align-items-center">
                 <FaStar className="me-3" /> View Feedback
               </Nav.Link>
