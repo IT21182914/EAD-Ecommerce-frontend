@@ -3,6 +3,8 @@ import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import VendorSidebar from "./VendorSidebar";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const UpdateProduct = () => {
   const { productId } = useParams();
@@ -33,7 +35,7 @@ const UpdateProduct = () => {
           imageUrl: product.imageUrl, // Set the image URL if it exists
         });
       })
-      .catch((error) => console.error("Error fetching product:", error));
+      .catch((error) => toast.error("Error fetching product"));
   }, [productId]);
 
   const handleChange = (e) => {
@@ -58,10 +60,10 @@ const UpdateProduct = () => {
         updatedProductData
       );
 
-      alert("Product updated successfully!");
-      navigate("/vendor/products"); // Navigate back to the products list after successful update
+      toast.success("Product updated successfully!");
+      setTimeout(() => navigate("/vendor/products"), 1500); // Navigate back to the products list after a short delay
     } catch (error) {
-      console.error("Error updating product:", error);
+      toast.error("Error updating product");
     }
   };
 
@@ -161,6 +163,19 @@ const UpdateProduct = () => {
             Update Product
           </Button>
         </Form>
+
+        {/* Toast Notification Container */}
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </Container>
     </div>
   );
