@@ -2,17 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Ensure useNavigate is imported
 import VendorSidebar from "./VendorSidebar";
 
 const ProductList = () => {
   const { vendorId } = useParams(); // Assuming vendorId is part of the route
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate(); // Hook to programmatically navigate
 
   useEffect(() => {
     // Fetch vendor products from the backend
     axios
-      .get(`https://localhost:44321/api/v1/vendor/products/all`)
+      .get(`https://localhost:44321/api/v1/vendor/products/all`) // Ensure the correct URL
       .then((response) => setProducts(response.data))
       .catch((error) => console.error(error));
   }, [vendorId]);
@@ -24,11 +25,15 @@ const ProductList = () => {
       )
       .then(() => {
         // Update state after deletion
-        setProducts(
-          products.filter((product) => product.productId !== productId)
+        setProducts((prevProducts) =>
+          prevProducts.filter((product) => product.productId !== productId)
         );
       })
       .catch((error) => console.error(error));
+  };
+
+  const handleEdit = (productId) => {
+    navigate(`/vendor/update/${productId}`); // Navigate to the update route
   };
 
   return (
@@ -89,7 +94,7 @@ const ProductList = () => {
                   <div className="d-flex justify-content-between">
                     <Button
                       variant="primary"
-                      href={`/vendor/update/${product.productId}`}
+                      onClick={() => handleEdit(product.productId)} // Use the new handler for edit
                       style={{
                         backgroundColor: "#007bff",
                         border: "none",
@@ -110,7 +115,7 @@ const ProductList = () => {
                     <Button
                       variant="danger"
                       className="ms-2"
-                      onClick={() => deleteProduct(product.productId)}
+                      onClick={() => deleteProduct(product.productId)} // Delete the product
                       style={{
                         backgroundColor: "#dc3545",
                         border: "none",

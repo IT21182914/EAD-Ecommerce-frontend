@@ -19,7 +19,9 @@ const UpdateProduct = () => {
   useEffect(() => {
     // Fetch existing product details
     axios
-      .get(`https://localhost:44321/api/v1/vendor/products/${productId}`)
+      .get(
+        `https://localhost:44321/api/v1/vendor/products/product/${productId}`
+      ) // Ensure the correct endpoint
       .then((response) => {
         const product = response.data;
         setFormData({
@@ -57,7 +59,7 @@ const UpdateProduct = () => {
       );
 
       alert("Product updated successfully!");
-      navigate("/vendor/products");
+      navigate("/vendor/products"); // Navigate back to the products list after successful update
     } catch (error) {
       console.error("Error updating product:", error);
     }
