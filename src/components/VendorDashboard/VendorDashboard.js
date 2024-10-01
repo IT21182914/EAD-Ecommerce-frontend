@@ -260,7 +260,7 @@ const VendorDashboard = () => {
             show={showModal}
             onHide={handleCloseModal}
             centered
-            dialogClassName="custom-modal-size custom-modal-position" // Custom classes for sizing and positioning
+            dialogClassName="custom-modal-size custom-modal-position"
           >
             <Modal.Header closeButton>
               <Modal.Title>{selectedProduct.name}</Modal.Title>
