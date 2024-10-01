@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Container,
   Row,
@@ -6,7 +6,6 @@ import {
   Card,
   Button,
   Badge,
-  Modal,
   ListGroup,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +31,7 @@ import {
 } from "chart.js";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 ChartJS.register(
   LineElement,
@@ -47,7 +47,8 @@ ChartJS.register(
 const VendorDashboard = () => {
   const navigate = useNavigate(); // Initialize useNavigate hook
   const [lowStockProducts, setLowStockProducts] = useState([]);
-  const [showModal, setShowModal] = useState(false); // Modal to show low stock details
+  const [showNotifications, setShowNotifications] = useState(false); // Toggle the dropdown
+  const dropdownRef = useRef(null); // Ref to track the dropdown
 
   useEffect(() => {
     // Fetch products and check for low stock items
@@ -69,50 +70,33 @@ const VendorDashboard = () => {
     navigate("/vendor/create"); // Navigate to the "vendor/create" route
   };
 
-  const lineData = {
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-    datasets: [
-      {
-        label: "Orders Processed",
-        data: [150, 200, 170, 250],
-        borderColor: "rgba(75,192,192,1)",
-        fill: false,
-      },
-    ],
-  };
-
-  const pieData = {
-    labels: ["In Stock", "Out of Stock", "Low Stock"],
-    datasets: [
-      {
-        label: "Inventory Status",
-        data: [60, 25, 15],
-        backgroundColor: [
-          "rgba(75,192,192,1)",
-          "rgba(255,99,132,1)",
-          "rgba(255,206,86,1)",
-        ],
-        hoverBackgroundColor: [
-          "rgba(75,192,192,0.8)",
-          "rgba(255,99,132,0.8)",
-          "rgba(255,206,86,0.8)",
-        ],
-      },
-    ],
-  };
-
   const handleBellClick = () => {
-    setShowModal(true); // Show modal with low stock products
+    setShowNotifications((prev) => !prev); // Toggle notifications dropdown
   };
 
-  const handleModalClose = () => {
-    setShowModal(false);
-  };
+  // Close notifications dropdown if clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        showNotifications &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showNotifications]);
 
   return (
     <div className="d-flex">
       <Sidebar role="vendor" />
       <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
+        {/* Dashboard Header */}
         <div className="text-center mb-4">
           <h2
             className="mb-0"
@@ -132,7 +116,7 @@ const VendorDashboard = () => {
 
         <div className="d-flex justify-content-between mb-4">
           <Button
-            className="btn btn-lg"
+            className="btn"
             style={{
               backgroundColor: "#000",
               border: "none",
@@ -140,7 +124,6 @@ const VendorDashboard = () => {
               fontWeight: "500",
               boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
               transition: "transform 0.3s ease, background-color 0.3s ease",
-              transform: "translateY(0)",
             }}
             onMouseOver={(e) => {
               e.target.style.backgroundColor = "#333";
@@ -173,6 +156,52 @@ const VendorDashboard = () => {
               >
                 {lowStockProducts.length}
               </Badge>
+            )}
+
+            {/* Notifications Dropdown */}
+            {showNotifications && (
+              <div
+                ref={dropdownRef}
+                className="notification-dropdown"
+                style={{
+                  position: "absolute",
+                  backgroundColor: "white",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "10px",
+                  padding: "1rem",
+                  width: "300px",
+                  maxHeight: "400px",
+                  overflowY: "auto",
+                  right: "0",
+                  top: "40px",
+                  zIndex: 1000,
+                }}
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <h5 className="mb-3">Notifications</h5>
+                </div>
+                <ListGroup variant="flush">
+                  {lowStockProducts.length === 0 ? (
+                    <ListGroup.Item>No new notifications</ListGroup.Item>
+                  ) : (
+                    lowStockProducts.map((product) => (
+                      <ListGroup.Item key={product.productId}>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <div>
+                            <strong>{product.name}</strong>
+                            <p className="mb-0">
+                              Low stock: {product.stockQuantity} left
+                            </p>
+                          </div>
+                          <Badge pill bg="warning" className="ml-2">
+                            Low Stock
+                          </Badge>
+                        </div>
+                      </ListGroup.Item>
+                    ))
+                  )}
+                </ListGroup>
+              </div>
             )}
           </div>
         </div>
@@ -235,7 +264,17 @@ const VendorDashboard = () => {
                 <Card.Title>Orders Processed</Card.Title>
                 <p>Monthly Overview</p>
                 <Line
-                  data={lineData}
+                  data={{
+                    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+                    datasets: [
+                      {
+                        label: "Orders Processed",
+                        data: [150, 200, 170, 250],
+                        borderColor: "rgba(75,192,192,1)",
+                        fill: false,
+                      },
+                    ],
+                  }}
                   options={{ responsive: true, animation: { duration: 1000 } }}
                 />
               </Card.Body>
@@ -247,34 +286,31 @@ const VendorDashboard = () => {
                 <Card.Title>Inventory Status</Card.Title>
                 <p>Current Stock Levels</p>
                 <Pie
-                  data={pieData}
+                  data={{
+                    labels: ["In Stock", "Out of Stock", "Low Stock"],
+                    datasets: [
+                      {
+                        label: "Inventory Status",
+                        data: [60, 25, 15],
+                        backgroundColor: [
+                          "rgba(75,192,192,1)",
+                          "rgba(255,99,132,1)",
+                          "rgba(255,206,86,1)",
+                        ],
+                        hoverBackgroundColor: [
+                          "rgba(75,192,192,0.8)",
+                          "rgba(255,99,132,0.8)",
+                          "rgba(255,206,86,0.8)",
+                        ],
+                      },
+                    ],
+                  }}
                   options={{ responsive: true, animation: { duration: 1000 } }}
                 />
               </Card.Body>
             </Card>
           </Col>
         </Row>
-
-        {/* Modal for low stock products */}
-        <Modal show={showModal} onHide={handleModalClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Low Stock Products</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <ListGroup>
-              {lowStockProducts.map((product) => (
-                <ListGroup.Item key={product.productId}>
-                  {product.name} - Only {product.stockQuantity} left!
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleModalClose}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
 
         <ToastContainer
           autoClose={3000}
