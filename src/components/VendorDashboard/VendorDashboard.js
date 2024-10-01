@@ -1,5 +1,14 @@
-import React from "react";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Badge,
+  Modal,
+  ListGroup,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./VendorSidebar";
 import {
@@ -7,6 +16,7 @@ import {
   FaWarehouse,
   FaClipboardList,
   FaStar,
+  FaBell,
 } from "react-icons/fa";
 import { Line, Pie } from "react-chartjs-2";
 import {
@@ -20,6 +30,8 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+import axios from "axios";
+import { ToastContainer } from "react-toastify";
 
 ChartJS.register(
   LineElement,
@@ -34,6 +46,24 @@ ChartJS.register(
 
 const VendorDashboard = () => {
   const navigate = useNavigate(); // Initialize useNavigate hook
+  const [lowStockProducts, setLowStockProducts] = useState([]);
+  const [showModal, setShowModal] = useState(false); // Modal to show low stock details
+
+  useEffect(() => {
+    // Fetch products and check for low stock items
+    axios
+      .get(`https://localhost:44321/api/v1/vendor/products/all`)
+      .then((response) => {
+        const products = response.data;
+        const lowStock = products.filter(
+          (product) => product.stockQuantity < 5
+        );
+        setLowStockProducts(lowStock);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch products", error);
+      });
+  }, []);
 
   const handleAddProductClick = () => {
     navigate("/vendor/create"); // Navigate to the "vendor/create" route
@@ -71,6 +101,14 @@ const VendorDashboard = () => {
     ],
   };
 
+  const handleBellClick = () => {
+    setShowModal(true); // Show modal with low stock products
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
+
   return (
     <div className="d-flex">
       <Sidebar role="vendor" />
@@ -90,46 +128,53 @@ const VendorDashboard = () => {
           >
             Vendor Dashboard
           </h2>
-          <div
-            style={{
-              content: '""',
-              position: "absolute",
-              bottom: "-8px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "80px",
-              height: "4px",
-              backgroundColor: "#22C1C3",
-              borderRadius: "2px",
-            }}
-          ></div>
         </div>
-        <div className="d-flex justify-content-end mb-4">
+
+        <div className="d-flex justify-content-between mb-4">
           <Button
             className="btn btn-lg"
             style={{
               backgroundColor: "#000",
               border: "none",
               color: "#fff",
-              fontFamily:
-                "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
               fontWeight: "500",
               boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-              transition: "transform 0.3s ease, background-color 0.3s ease", // Animation properties
-              transform: "translateY(0)", // Initial position
+              transition: "transform 0.3s ease, background-color 0.3s ease",
+              transform: "translateY(0)",
             }}
             onMouseOver={(e) => {
               e.target.style.backgroundColor = "#333";
-              e.target.style.transform = "translateY(-5px)"; // Move up slightly on hover
+              e.target.style.transform = "translateY(-5px)";
             }}
             onMouseOut={(e) => {
               e.target.style.backgroundColor = "#000";
-              e.target.style.transform = "translateY(0)"; // Return to original position
+              e.target.style.transform = "translateY(0)";
             }}
-            onClick={handleAddProductClick} // Navigate on click
+            onClick={handleAddProductClick}
           >
             Add Product
           </Button>
+
+          {/* Notification Bell Icon */}
+          <div
+            style={{ position: "relative", cursor: "pointer" }}
+            onClick={handleBellClick}
+          >
+            <FaBell size={32} color="#ffc107" />
+            {lowStockProducts.length > 0 && (
+              <Badge
+                pill
+                bg="danger"
+                style={{
+                  position: "absolute",
+                  top: "-5px",
+                  right: "-10px",
+                }}
+              >
+                {lowStockProducts.length}
+              </Badge>
+            )}
+          </div>
         </div>
 
         <Row className="mb-4">
@@ -209,6 +254,38 @@ const VendorDashboard = () => {
             </Card>
           </Col>
         </Row>
+
+        {/* Modal for low stock products */}
+        <Modal show={showModal} onHide={handleModalClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Low Stock Products</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <ListGroup>
+              {lowStockProducts.map((product) => (
+                <ListGroup.Item key={product.productId}>
+                  {product.name} - Only {product.stockQuantity} left!
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleModalClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <ToastContainer
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </Container>
     </div>
   );
