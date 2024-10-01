@@ -7,6 +7,7 @@ import {
   Button,
   Badge,
   ListGroup,
+  Modal,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./VendorSidebar";
@@ -48,7 +49,41 @@ const VendorDashboard = () => {
   const navigate = useNavigate(); // Initialize useNavigate hook
   const [lowStockProducts, setLowStockProducts] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false); // Toggle the dropdown
+  const [selectedProduct, setSelectedProduct] = useState(null); // Track selected product for modal
+  const [showModal, setShowModal] = useState(false); // Control modal visibility
   const dropdownRef = useRef(null); // Ref to track the dropdown
+
+  const lineData = {
+    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+    datasets: [
+      {
+        label: "Orders Processed",
+        data: [150, 200, 170, 250],
+        borderColor: "rgba(75,192,192,1)",
+        fill: false,
+      },
+    ],
+  };
+
+  const pieData = {
+    labels: ["In Stock", "Out of Stock", "Low Stock"],
+    datasets: [
+      {
+        label: "Inventory Status",
+        data: [60, 25, 15],
+        backgroundColor: [
+          "rgba(75,192,192,1)",
+          "rgba(255,99,132,1)",
+          "rgba(255,206,86,1)",
+        ],
+        hoverBackgroundColor: [
+          "rgba(75,192,192,0.8)",
+          "rgba(255,99,132,0.8)",
+          "rgba(255,206,86,0.8)",
+        ],
+      },
+    ],
+  };
 
   useEffect(() => {
     // Fetch products and check for low stock items
@@ -72,6 +107,15 @@ const VendorDashboard = () => {
 
   const handleBellClick = () => {
     setShowNotifications((prev) => !prev); // Toggle notifications dropdown
+  };
+
+  const handleProductClick = (product) => {
+    setSelectedProduct(product); // Set the selected product for modal
+    setShowModal(true); // Show the modal
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false); // Close the modal
   };
 
   // Close notifications dropdown if clicking outside of it
@@ -185,7 +229,11 @@ const VendorDashboard = () => {
                     <ListGroup.Item>No new notifications</ListGroup.Item>
                   ) : (
                     lowStockProducts.map((product) => (
-                      <ListGroup.Item key={product.productId}>
+                      <ListGroup.Item
+                        key={product.productId}
+                        onClick={() => handleProductClick(product)}
+                        style={{ cursor: "pointer" }}
+                      >
                         <div className="d-flex justify-content-between align-items-center">
                           <div>
                             <strong>{product.name}</strong>
@@ -205,6 +253,48 @@ const VendorDashboard = () => {
             )}
           </div>
         </div>
+
+        {/* Product Detail Modal */}
+        {selectedProduct && (
+          <Modal
+            show={showModal}
+            onHide={handleCloseModal}
+            centered
+            dialogClassName="custom-modal-size custom-modal-position" // Custom classes for sizing and positioning
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedProduct.name}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Card className="product-card" style={{ width: "100%" }}>
+                <Card.Img
+                  variant="top"
+                  src={selectedProduct.imageUrl || "default-image.jpg"}
+                  style={{
+                    objectFit: "cover",
+                    height: "300px",
+                    width: "100%",
+                    borderRadius: "10px",
+                  }}
+                />
+                <Card.Body>
+                  <Card.Title>{selectedProduct.name}</Card.Title>
+                  <Card.Text>{selectedProduct.description}</Card.Text>
+                  <p>
+                    <strong>Price:</strong> ${selectedProduct.price}
+                  </p>
+                  <p>
+                    <strong>Stock Quantity:</strong>{" "}
+                    {selectedProduct.stockQuantity}
+                  </p>
+                  <p>
+                    <strong>Stock Status:</strong> {selectedProduct.stockStatus}
+                  </p>
+                </Card.Body>
+              </Card>
+            </Modal.Body>
+          </Modal>
+        )}
 
         <Row className="mb-4">
           <Col md={3} sm={6}>
@@ -264,17 +354,7 @@ const VendorDashboard = () => {
                 <Card.Title>Orders Processed</Card.Title>
                 <p>Monthly Overview</p>
                 <Line
-                  data={{
-                    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-                    datasets: [
-                      {
-                        label: "Orders Processed",
-                        data: [150, 200, 170, 250],
-                        borderColor: "rgba(75,192,192,1)",
-                        fill: false,
-                      },
-                    ],
-                  }}
+                  data={lineData}
                   options={{ responsive: true, animation: { duration: 1000 } }}
                 />
               </Card.Body>
@@ -286,25 +366,7 @@ const VendorDashboard = () => {
                 <Card.Title>Inventory Status</Card.Title>
                 <p>Current Stock Levels</p>
                 <Pie
-                  data={{
-                    labels: ["In Stock", "Out of Stock", "Low Stock"],
-                    datasets: [
-                      {
-                        label: "Inventory Status",
-                        data: [60, 25, 15],
-                        backgroundColor: [
-                          "rgba(75,192,192,1)",
-                          "rgba(255,99,132,1)",
-                          "rgba(255,206,86,1)",
-                        ],
-                        hoverBackgroundColor: [
-                          "rgba(75,192,192,0.8)",
-                          "rgba(255,99,132,0.8)",
-                          "rgba(255,206,86,0.8)",
-                        ],
-                      },
-                    ],
-                  }}
+                  data={pieData}
                   options={{ responsive: true, animation: { duration: 1000 } }}
                 />
               </Card.Body>
