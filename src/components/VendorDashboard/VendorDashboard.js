@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Row,
@@ -6,7 +6,6 @@ import {
   Card,
   Button,
   Badge,
-  ListGroup,
   Modal,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +32,7 @@ import {
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NotificationDropdown from "./NotificationDropdown";
 
 ChartJS.register(
   LineElement,
@@ -51,7 +51,6 @@ const VendorDashboard = () => {
   const [showNotifications, setShowNotifications] = useState(false); // Toggle the dropdown
   const [selectedProduct, setSelectedProduct] = useState(null); // Track selected product for modal
   const [showModal, setShowModal] = useState(false); // Control modal visibility
-  const dropdownRef = useRef(null); // Ref to track the dropdown
 
   const lineData = {
     labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
@@ -117,24 +116,6 @@ const VendorDashboard = () => {
   const handleCloseModal = () => {
     setShowModal(false); // Close the modal
   };
-
-  // Close notifications dropdown if clicking outside of it
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        showNotifications &&
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
-        setShowNotifications(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showNotifications]);
 
   return (
     <div className="d-flex">
@@ -203,54 +184,12 @@ const VendorDashboard = () => {
             )}
 
             {/* Notifications Dropdown */}
-            {showNotifications && (
-              <div
-                ref={dropdownRef}
-                className="notification-dropdown"
-                style={{
-                  position: "absolute",
-                  backgroundColor: "white",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  borderRadius: "10px",
-                  padding: "1rem",
-                  width: "300px",
-                  maxHeight: "400px",
-                  overflowY: "auto",
-                  right: "0",
-                  top: "40px",
-                  zIndex: 1000,
-                }}
-              >
-                <div className="d-flex justify-content-between align-items-center">
-                  <h5 className="mb-3">Notifications</h5>
-                </div>
-                <ListGroup variant="flush">
-                  {lowStockProducts.length === 0 ? (
-                    <ListGroup.Item>No new notifications</ListGroup.Item>
-                  ) : (
-                    lowStockProducts.map((product) => (
-                      <ListGroup.Item
-                        key={product.productId}
-                        onClick={() => handleProductClick(product)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <div className="d-flex justify-content-between align-items-center">
-                          <div>
-                            <strong>{product.name}</strong>
-                            <p className="mb-0">
-                              Low stock: {product.stockQuantity} left
-                            </p>
-                          </div>
-                          <Badge pill bg="warning" className="ml-2">
-                            Low Stock
-                          </Badge>
-                        </div>
-                      </ListGroup.Item>
-                    ))
-                  )}
-                </ListGroup>
-              </div>
-            )}
+            <NotificationDropdown
+              lowStockProducts={lowStockProducts}
+              showNotifications={showNotifications}
+              handleProductClick={handleProductClick}
+              setShowNotifications={setShowNotifications}
+            />
           </div>
         </div>
 
