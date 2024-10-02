@@ -3,19 +3,18 @@ import {
   Container,
   Row,
   Col,
-  Card,
-  Button,
   InputGroup,
   FormControl,
   Spinner,
   Dropdown,
 } from "react-bootstrap";
-import { FaEdit, FaTrashAlt, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VendorSidebar from "./VendorSidebar";
 import { useParams, useNavigate } from "react-router-dom";
+import ProductCard from "./ProductCard"; // Import the new ProductCard component
 
 const ProductList = () => {
   const { vendorId } = useParams();
@@ -77,7 +76,7 @@ const ProductList = () => {
           style={{
             fontWeight: "bold",
             fontSize: "2.5rem",
-            color: "#333", // Simple color for product title
+            color: "#333",
             textShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
           }}
         >
@@ -99,7 +98,7 @@ const ProductList = () => {
               placeholder="Search"
               value={searchTerm}
               onFocus={() => setShowDropdown(true)}
-              onBlur={() => setTimeout(() => setShowDropdown(false), 200)} // Delay to allow selection
+              onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
                 borderRadius: "30px 0 0 30px",
@@ -109,9 +108,8 @@ const ProductList = () => {
                 color: "#333",
               }}
             />
-            <Button
-              variant="primary"
-              id="search-button"
+            <div
+              className="btn btn-primary"
               style={{
                 borderRadius: "0 30px 30px 0",
                 backgroundColor: "black",
@@ -122,10 +120,9 @@ const ProductList = () => {
               }}
             >
               <FaSearch />
-            </Button>
+            </div>
           </InputGroup>
 
-          {/* Dropdown for product names */}
           {showDropdown && filteredProducts.length > 0 && (
             <Dropdown.Menu
               show
@@ -142,8 +139,8 @@ const ProductList = () => {
                 borderRadius: "15px",
                 boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.15)",
                 zIndex: 1000,
-                padding: "10px 0", // Add padding for smoother look
-                transition: "all 0.3s ease", // Smooth transition for animation
+                padding: "10px 0",
+                transition: "all 0.3s ease",
               }}
             >
               {filteredProducts.map((product) => (
@@ -182,7 +179,6 @@ const ProductList = () => {
           )}
         </div>
 
-        {/* Loading Spinner */}
         {loading ? (
           <div className="text-center my-5">
             <Spinner
@@ -203,118 +199,16 @@ const ProductList = () => {
                 xs={12}
                 className="mb-4"
               >
-                <Card
-                  className="product-card"
-                  style={{
-                    width: "100%",
-                    maxWidth: "300px",
-                    margin: "0 auto",
-                    height: "450px",
-                    borderRadius: "15px",
-                    overflow: "hidden",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                    boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
-                    position: "relative",
-                    backgroundColor: "#fff",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = "scale(1.05)";
-                    e.currentTarget.style.boxShadow =
-                      "0px 10px 25px rgba(0, 0, 0, 0.2)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                    e.currentTarget.style.boxShadow =
-                      "0px 5px 15px rgba(0, 0, 0, 0.1)";
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "200px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <Card.Img
-                      variant="top"
-                      src={product.imageUrl || "default-image.jpg"}
-                      style={{
-                        objectFit: "cover",
-                        height: "100%",
-                        width: "100%",
-                      }}
-                    />
-                  </div>
-                  <Card.Body>
-                    <Card.Title
-                      style={{
-                        fontSize: "1.1rem",
-                        fontWeight: "bold",
-                        color: "#333",
-                      }}
-                    >
-                      {product.name}
-                    </Card.Title>
-                    <Card.Text style={{ fontSize: "0.9rem", color: "#555" }}>
-                      {product.description.length > 50
-                        ? product.description.substring(0, 47) + "..."
-                        : product.description}
-                      <br />
-                      <strong>Price:</strong> ${product.price}
-                      <br />
-                      <strong>Stock Status:</strong> {product.stockStatus}
-                    </Card.Text>
-                  </Card.Body>
-                  <div className="d-flex justify-content-between p-3">
-                    <Button
-                      variant="primary"
-                      onClick={() => handleEdit(product.productId)}
-                      style={{
-                        backgroundColor: "#007bff",
-                        border: "none",
-                        fontWeight: "bold",
-                        borderRadius: "20px",
-                        padding: "6px 15px",
-                        transition: "background-color 0.3s ease",
-                        fontSize: "0.9rem",
-                      }}
-                      onMouseOver={(e) => {
-                        e.target.style.backgroundColor = "#0056b3";
-                      }}
-                      onMouseOut={(e) => {
-                        e.target.style.backgroundColor = "#007bff";
-                      }}
-                    >
-                      <FaEdit className="me-1" /> Edit
-                    </Button>
-                    <Button
-                      variant="danger"
-                      onClick={() => deleteProduct(product.productId)}
-                      style={{
-                        backgroundColor: "#dc3545",
-                        border: "none",
-                        fontWeight: "bold",
-                        borderRadius: "20px",
-                        padding: "6px 15px",
-                        transition: "background-color 0.3s ease",
-                        fontSize: "0.9rem",
-                      }}
-                      onMouseOver={(e) => {
-                        e.target.style.backgroundColor = "#c82333";
-                      }}
-                      onMouseOut={(e) => {
-                        e.target.style.backgroundColor = "#dc3545";
-                      }}
-                    >
-                      <FaTrashAlt className="me-1" /> Delete
-                    </Button>
-                  </div>
-                </Card>
+                <ProductCard
+                  product={product}
+                  handleEdit={handleEdit}
+                  deleteProduct={deleteProduct}
+                />
               </Col>
             ))}
           </Row>
         )}
 
-        {/* Toast Notification Container */}
         <ToastContainer
           autoClose={3000}
           hideProgressBar={false}
