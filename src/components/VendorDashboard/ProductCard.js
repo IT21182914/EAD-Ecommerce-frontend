@@ -70,9 +70,6 @@ const ProductCard = ({ product, handleEdit, deleteProduct }) => {
         <div style={{ fontSize: "0.9rem", color: "#666" }}>
           <strong>Stock Status:</strong> {product.stockStatus}
         </div>
-        <div style={{ fontSize: "1rem", fontWeight: "bold", color: "#333" }}>
-          Buy It Now
-        </div>
       </Card.Body>
       <div className="d-flex justify-content-between p-3">
         <Button
