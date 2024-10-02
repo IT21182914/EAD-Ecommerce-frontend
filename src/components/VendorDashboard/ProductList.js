@@ -72,7 +72,6 @@ const ProductList = () => {
     <div className="d-flex">
       <VendorSidebar role="vendor" />
       <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
-        {/* Stylish "Products" text */}
         <h2
           className="text-center my-4"
           style={{

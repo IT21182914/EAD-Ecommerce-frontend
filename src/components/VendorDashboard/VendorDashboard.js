@@ -122,22 +122,39 @@ const VendorDashboard = () => {
       <Sidebar role="vendor" />
       <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
         {/* Dashboard Header */}
-        <div className="text-center mb-4">
-          <h2
-            className="mb-0"
-            style={{
-              fontSize: "2.5rem",
-              fontWeight: "700",
-              background:
-                "linear-gradient(90deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              position: "relative",
-            }}
-          >
-            Vendor Dashboard
-          </h2>
+        <div className="heading-container">
+          <h2 className="heading-style">Vendor Dashboard</h2>
         </div>
+
+        <style jsx>{`
+          .heading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 20px 0;
+          }
+
+          .heading-style {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 800;
+            padding: 20px 40px;
+            border-radius: 12px;
+            display: inline-block;
+            text-align: center;
+            font-size: 2rem;
+            font-family: "Poppins", sans-serif;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: transform 0.3s ease;
+          }
+
+          .heading-style:hover {
+            transform: scale(1.05);
+          }
+        `}</style>
 
         <div className="d-flex justify-content-between mb-4">
           <Button
