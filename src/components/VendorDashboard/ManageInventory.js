@@ -96,7 +96,7 @@ const ManageInventory = () => {
           role="status"
           style={{ width: "3rem", height: "3rem" }}
         >
-          <span className="sr-only">Loading...</span>
+          <span className="sr-only"></span>
         </Spinner>
       </div>
     );
