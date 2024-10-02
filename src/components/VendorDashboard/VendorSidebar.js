@@ -3,7 +3,7 @@ import { Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import {
   FaBoxOpen,
-  FaWarehouse,
+  // FaWarehouse,
   FaClipboardList,
   FaStar,
 } from "react-icons/fa";
