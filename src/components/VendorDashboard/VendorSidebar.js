@@ -3,7 +3,7 @@ import { Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import {
   FaBoxOpen,
-  // FaWarehouse,
+  FaWarehouse,
   FaClipboardList,
   FaStar,
 } from "react-icons/fa";
@@ -33,11 +33,11 @@ const Sidebar = ({ role }) => {
                 <FaBoxOpen className="me-3" /> Manage Products
               </Nav.Link>
             </LinkContainer>
-            {/* <LinkContainer to="/vendor/inventory">
+            <LinkContainer to="/vendor/inventory">
               <Nav.Link className="text-white mb-3 d-flex align-items-center">
                 <FaWarehouse className="me-3" /> Manage Inventory
               </Nav.Link>
-            </LinkContainer> */}
+            </LinkContainer>
             <LinkContainer to="/vendor/products">
               <Nav.Link className="text-white mb-3 d-flex align-items-center">
                 <FaClipboardList className="me-3" /> Track Orders
