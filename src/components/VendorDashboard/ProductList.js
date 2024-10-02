@@ -48,7 +48,7 @@ const ProductList = () => {
         setProducts((prevProducts) =>
           prevProducts.filter((product) => product.productId !== productId)
         );
-        toast.success("Product deleted successfully");
+        toast.warning("Product deleted successfully");
         setLoading(false); // Stop loading spinner after deletion
       })
       .catch((error) => {
