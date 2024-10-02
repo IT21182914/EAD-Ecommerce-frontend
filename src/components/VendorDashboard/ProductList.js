@@ -14,14 +14,14 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VendorSidebar from "./VendorSidebar";
 import { useParams, useNavigate } from "react-router-dom";
-import ProductCard from "./ProductCard"; // Import the new ProductCard component
+import ProductCard from "./ProductCard";
 
 const ProductList = () => {
   const { vendorId } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true); // State for loading spinner
   const [searchTerm, setSearchTerm] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false); // To show/hide product names
+  const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,9 +61,11 @@ const ProductList = () => {
     navigate(`/vendor/update/${productId}`);
   };
 
-  // Filter products based on search term
+  // Filter products based on search term with null/undefined checks
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    product.name
+      ? product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      : false
   );
 
   return (
