@@ -16,6 +16,7 @@ const UpdateProduct = () => {
     stockQuantity: 0,
     category: "",
     imageUrl: "",
+    vendorId: "",
     type: "Anyone", // Default value
     size: "Default", // Default value
   });
@@ -35,6 +36,7 @@ const UpdateProduct = () => {
           stockQuantity: product.stockQuantity,
           category: product.category,
           imageUrl: product.imageUrl,
+          vendorId: product.vendorId, // Ensure vendorId is set
           type: product.type || "Anyone", // Set the type, or default to "Anyone"
           size: product.size || "Default", // Set the size, or default to "Default"
         });
