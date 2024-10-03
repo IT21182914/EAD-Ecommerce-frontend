@@ -15,7 +15,9 @@ const UpdateProduct = () => {
     price: 0,
     stockQuantity: 0,
     category: "",
-    imageUrl: "", // This holds the image URL
+    imageUrl: "",
+    type: "Anyone", // Default value
+    size: "Default", // Default value
   });
 
   useEffect(() => {
@@ -32,7 +34,9 @@ const UpdateProduct = () => {
           price: product.price,
           stockQuantity: product.stockQuantity,
           category: product.category,
-          imageUrl: product.imageUrl, // Set the image URL if it exists
+          imageUrl: product.imageUrl,
+          type: product.type || "Anyone", // Set the type, or default to "Anyone"
+          size: product.size || "Default", // Set the size, or default to "Default"
         });
       })
       .catch((error) => toast.error("Error fetching product"));
@@ -50,9 +54,7 @@ const UpdateProduct = () => {
 
     try {
       // Prepare the product data to be updated
-      const updatedProductData = {
-        ...formData,
-      };
+      const updatedProductData = { ...formData };
 
       // Update the product on the backend
       await axios.put(
@@ -170,6 +172,40 @@ const UpdateProduct = () => {
                   }}
                 />
               )}
+            </Form.Group>
+
+            {/* Dropdown for Type */}
+            <Form.Group controlId="type" className="mb-3">
+              <Form.Label>Type</Form.Label>
+              <Form.Control
+                as="select"
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+              >
+                <option value="Anyone">Anyone</option>
+                <option value="Mens">Mens</option>
+                <option value="Womens">Womens</option>
+                <option value="Kids">Kids</option>
+              </Form.Control>
+            </Form.Group>
+
+            {/* Dropdown for Size */}
+            <Form.Group controlId="size" className="mb-3">
+              <Form.Label>Size</Form.Label>
+              <Form.Control
+                as="select"
+                name="size"
+                value={formData.size}
+                onChange={handleChange}
+              >
+                <option value="Default">Default</option>
+                <option value="Small">Small</option>
+                <option value="Medium">Medium</option>
+                <option value="Large">Large</option>
+                <option value="XL">XL</option>
+                <option value="Double XL">Double XL</option>
+              </Form.Control>
             </Form.Group>
 
             <Button

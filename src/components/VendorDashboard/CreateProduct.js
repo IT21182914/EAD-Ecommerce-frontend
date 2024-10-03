@@ -15,6 +15,8 @@ const CreateProduct = () => {
     stockQuantity: 0,
     category: "",
     imageUrl: "",
+    type: "Anyone", // Default value
+    size: "Default", // Default value
   });
   const [loading, setLoading] = useState(false);
 
@@ -168,6 +170,40 @@ const CreateProduct = () => {
                     }}
                   />
                 )}
+              </Form.Group>
+
+              {/* Dropdown for Type */}
+              <Form.Group controlId="type" className="mb-3">
+                <Form.Label>Type</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                >
+                  <option value="Anyone">Anyone</option>
+                  <option value="Mens">Mens</option>
+                  <option value="Womens">Womens</option>
+                  <option value="Kids">Kids</option>
+                </Form.Control>
+              </Form.Group>
+
+              {/* Dropdown for Size */}
+              <Form.Group controlId="size" className="mb-3">
+                <Form.Label>Size</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="size"
+                  value={formData.size}
+                  onChange={handleChange}
+                >
+                  <option value="Default">Default</option>
+                  <option value="Small">Small</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Large">Large</option>
+                  <option value="XL">XL</option>
+                  <option value="Double XL">Double XL</option>
+                </Form.Control>
               </Form.Group>
 
               <Button
