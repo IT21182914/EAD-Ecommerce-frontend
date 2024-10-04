@@ -9,6 +9,7 @@ import CreateProduct from "./components/VendorDashboard/CreateProduct";
 import UpdateProduct from "./components/VendorDashboard/UpdateProduct";
 import ManageInventory from "./components/VendorDashboard/ManageInventory";
 import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import Orders from "./components/VendorDashboard/Orders";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
               element={<UpdateProduct />}
             />
             <Route path="/vendor/inventory" element={<ManageInventory />} />
+            <Route path="/orders" element={<Orders />} />
           </Routes>
         </div>
       </div>
