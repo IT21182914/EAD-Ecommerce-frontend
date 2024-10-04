@@ -41,7 +41,7 @@ const Sidebar = () => {
             User Profile
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/table-list">
+        <LinkContainer to="/cancel/orders">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaBoxOpen className="me-3" />
             Table List

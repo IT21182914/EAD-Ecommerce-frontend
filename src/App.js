@@ -10,6 +10,8 @@ import UpdateProduct from "./components/VendorDashboard/UpdateProduct";
 import ManageInventory from "./components/VendorDashboard/ManageInventory";
 import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Orders from "./components/VendorDashboard/Orders";
+import CSRDashboard from "./components/CSRDashboard/CSRDashboard";
+import CancelOrders from "./components/AdminDashboard/CancelOrders";
 
 function App() {
   return (
@@ -20,6 +22,7 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/csr/dashboard" element={<CSRDashboard />} />
             <Route path="/vendor/dashboard" element={<VendorDashboard />} />
             <Route path="/vendor/products" element={<ProductList />} />
             <Route path="/vendor/create" element={<CreateProduct />} />
@@ -29,6 +32,7 @@ function App() {
             />
             <Route path="/vendor/inventory" element={<ManageInventory />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/cancel/orders" element={<CancelOrders />} />
           </Routes>
         </div>
       </div>
