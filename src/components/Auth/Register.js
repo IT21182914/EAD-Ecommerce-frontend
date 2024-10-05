@@ -42,7 +42,7 @@ function Register() {
       };
 
       const response = await axios.post(
-        "https://localhost:44321/api/v1/signup",
+        "https://localhost:44321/api/v1/create-by-admin",
         formattedData
       );
       console.log("Registration successful: ", response.data);
