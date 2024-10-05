@@ -1,8 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "https://localhost:44321/api/v1/login",
+        formData
+      );
+      toast.success("Login successful!", { position: "top-right" });
+
+      //Machan man meka kare assuming the login is successful, navigate to the vendor dashboard.change this to the correct path machan according to the user roles
+      setTimeout(() => navigate("/vendor/dashboard"), 1500);
+    } catch (error) {
+      toast.error("Login failed. Please check your credentials.", {
+        position: "top-right",
+      });
+      console.error("Login failed: ", error);
+    }
+  };
+
   return (
     <Container
       fluid
@@ -14,7 +51,7 @@ function Login() {
           <h1 className="display-4 fw-bold">Welcome Back!</h1>
           <h3 className="text-light">Login to Your Account</h3>
           <p className="lead">
-            Please login to continue using our services and manage your
+            Please log in to continue using our services and manage your
             experience.
           </p>
         </Col>
@@ -22,21 +59,29 @@ function Login() {
           <Card className="shadow-lg bg-dark text-white">
             <Card.Body>
               <h3 className="card-title text-center mb-4">Login</h3>
-              <Form>
+              <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     placeholder="Enter email"
                     className="bg-dark text-white"
+                    required
                   />
                 </Form.Group>
                 <Form.Group className="mb-4">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
                     placeholder="Password"
                     className="bg-dark text-white"
+                    required
                   />
                 </Form.Group>
                 <Button
@@ -57,6 +102,7 @@ function Login() {
           </Card>
         </Col>
       </Row>
+      <ToastContainer />
     </Container>
   );
 }
