@@ -17,6 +17,7 @@ import AdminSidebar from "./AdminSidebar";
 import NotificationBell from "./NotificationBell";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const CancelOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -25,57 +26,29 @@ const CancelOrders = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [cancelNote, setCancelNote] = useState("");
+  const [error, setError] = useState("");
+  const [refresh, setRefresh] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     // Simulating an API call with dummy data for orders
-    const dummyOrders = [
-      {
-        orderID: "1",
-        vendorID: "V001",
-        item: "Laptop",
-        customerID: "C001",
-        status: "Pending",
-        address: "123 Main St, Cityville",
-        tel: "+123456789",
-        createdAt: "2024-10-01",
-      },
-      {
-        orderID: "2",
-        vendorID: "V002",
-        item: "Smartphone",
-        customerID: "C002",
-        status: "Shipped",
-        address: "456 Elm St, Townsville",
-        tel: "+987654321",
-        createdAt: "2024-09-29",
-      },
-    ];
+    axios
+      .get(`https://localhost:44321/api/v1/Order/all`)
+      .then((response) => {
+        console.log(response.data);
+        setOrders(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
-    const dummyNotifications = [
-      {
-        id: 1,
-        name: "Order",
-        message: "Order 1 has been shipped",
-        time: "Just now",
-        isNew: true,
-      },
-      {
-        id: 2,
-        name: "Order",
-        message: "Order 2 is out for delivery",
-        time: "1 hour ago",
-        isNew: true,
-      },
-    ];
-
-    // Simulate loading delay
-    setTimeout(() => {
-      setOrders(dummyOrders);
-      setNotifications(dummyNotifications);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    // Simulating an API call to get notifications
+    axios.get("https://localhost:44321/api/v1/Notification/my/notifications").then((response) => {
+      console.log(response.data);
+      setNotifications(response.data);
+    });
+  }, [refresh]);
 
   const handleAction = (order, action) => {
     if (action === "Cancel") {
@@ -92,20 +65,40 @@ const CancelOrders = () => {
   };
 
   const confirmCancel = () => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.orderID === selectedOrder.orderID
-          ? { ...order, status: "Cancelled" }
-          : order
-      )
-    );
-    setShowCancelModal(false);
-    toast.success("Order cancelled successfully");
+    // Perform API call to cancel order
+
+    console.log("Cancelling order", selectedOrder.orderID);
+    if (cancelNote === "") {
+      setError("Please provide a reason for cancellation");
+      toast.error("Please provide a reason for cancellation");
+      return;
+    } else {
+      setError("");
+
+      axios
+        .patch(
+          `https://localhost:44321/api/v1/Order/cancel?orderId=${selectedOrder.orderId}`,
+          {
+            note: cancelNote,
+            canceledBy: "super admin",
+          }
+        )
+        .then((response) => {
+          setRefresh(!refresh);
+          console.log(response.data);
+          toast.success("Order cancelled successfully");
+          setShowCancelModal(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("Failed to cancel order");
+        });
+    }
   };
 
   const filteredOrders = orders.filter((order) =>
-    order.customerID
-      ? order.customerID.toLowerCase().includes(searchTerm.toLowerCase())
+    order.customerId
+      ? order.customerId.toLowerCase().includes(searchTerm.toLowerCase())
       : false
   );
 
@@ -177,19 +170,23 @@ const CancelOrders = () => {
             </thead>
             <tbody>
               {filteredOrders.map((order) => (
-                <tr key={order.orderID}>
-                  <td>{order.orderID}</td>
+                <tr key={order.orderId}>
+                  <td>{order.orderId}</td>
                   <td>{order.vendorID}</td>
                   <td>{order.item}</td>
-                  <td>{order.customerID}</td>
+                  <td>{order.customerId}</td>
                   <td>
                     <Badge
                       pill
                       bg={
-                        order.status === "Cancelled"
+                        order.status === "CANCELED"
                           ? "danger"
-                          : order.status === "Delivered"
+                          : order.status === "DELIVERED"
                           ? "success"
+                          : order.status === "PENDING"
+                          ? "primary"
+                          : order.status === "PARTIALY-DELIVERED"
+                          ? "secondary"
                           : "warning"
                       }
                     >
@@ -229,7 +226,10 @@ const CancelOrders = () => {
         {/* Cancel Confirmation Modal */}
         <Modal
           show={showCancelModal}
-          onHide={() => setShowCancelModal(false)}
+          onHide={() => {
+            setShowCancelModal(false);
+            setError("");
+          }}
           centered
         >
           <Modal.Header closeButton>
@@ -237,7 +237,11 @@ const CancelOrders = () => {
           </Modal.Header>
           <Modal.Body>
             <Form.Group controlId="cancelNote">
-              <Form.Label>Add a Note (Optional)</Form.Label>
+              {error ? (
+                <Form.Label style={{ color: "red" }}>{error}</Form.Label>
+              ) : (
+                <Form.Label>Add a note for cancellation </Form.Label>
+              )}
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -250,7 +254,9 @@ const CancelOrders = () => {
           <Modal.Footer>
             <Button
               variant="secondary"
-              onClick={() => setShowCancelModal(false)}
+              onClick={() => {
+                setShowCancelModal(false);
+              }}
             >
               Close
             </Button>
