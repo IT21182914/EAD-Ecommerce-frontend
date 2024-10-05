@@ -112,27 +112,29 @@ const AdminDashboard = () => {
       <Sidebar />
       <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
         <div className="d-flex justify-content-between align-items-center">
-          <h2
-            className="mb-4"
-            style={{
-              fontSize: "2.5rem",
-              fontWeight: "700",
-              background:
-                "linear-gradient(90deg, rgba(29, 78, 216, 1) 0%, rgba(91, 33, 182, 1) 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Admin Dashboard
-          </h2>
+          <div className="w-100 d-flex justify-content-center">
+            <h2
+              className="mb-4"
+              style={{
+                fontSize: "2.5rem",
+                fontWeight: "700",
+                background:
+                  "linear-gradient(90deg, rgba(29, 78, 216, 1) 0%, rgba(91, 33, 182, 1) 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Admin Dashboard
+            </h2>
+          </div>
 
           {/* Notification Bell */}
           <NotificationBell notifications={notifications} />
         </div>
 
-        {/* Stat Cards */}
+        {/* Stat Cards with explicit margin */}
         <Row className="mb-4">
-          <Col md={3} sm={6}>
+          <Col md={3} sm={6} className="mb-4">
             <Card className="shadow-sm h-100">
               <Card.Body className="text-center">
                 <FaChartLine size={30} className="text-warning" />
@@ -144,7 +146,7 @@ const AdminDashboard = () => {
               </Card.Footer>
             </Card>
           </Col>
-          <Col md={3} sm={6}>
+          <Col md={3} sm={6} className="mb-4">
             <Card className="shadow-sm h-100">
               <Card.Body className="text-center">
                 <FaDollarSign size={30} className="text-success" />
@@ -156,7 +158,7 @@ const AdminDashboard = () => {
               </Card.Footer>
             </Card>
           </Col>
-          <Col md={3} sm={6}>
+          <Col md={3} sm={6} className="mb-4">
             <Card className="shadow-sm h-100">
               <Card.Body className="text-center">
                 <FaHeart size={30} className="text-primary" />
