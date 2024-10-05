@@ -35,10 +35,10 @@ const Sidebar = () => {
             Dashboard
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/user-profile">
+        <LinkContainer to="/create/vendor">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaUser className="me-3" />
-            User Profile
+            Create Vendor
           </Nav.Link>
         </LinkContainer>
         <LinkContainer to="/cancel/orders">

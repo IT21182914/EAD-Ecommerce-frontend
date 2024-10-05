@@ -12,6 +12,7 @@ import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Orders from "./components/VendorDashboard/Orders";
 import CSRDashboard from "./components/CSRDashboard/CSRDashboard";
 import CancelOrders from "./components/AdminDashboard/CancelOrders";
+import VendorCreation from "./components/AdminDashboard/VendorCreation";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path="/vendor/inventory" element={<ManageInventory />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/cancel/orders" element={<CancelOrders />} />
+            <Route path="/create/vendor" element={<VendorCreation />} />
           </Routes>
         </div>
       </div>

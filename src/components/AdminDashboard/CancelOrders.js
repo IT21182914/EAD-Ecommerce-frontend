@@ -7,9 +7,14 @@ import {
   FormControl,
   InputGroup,
   Spinner,
+  Badge,
+  Dropdown,
+  DropdownButton,
+  Form,
 } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import AdminSidebar from "./AdminSidebar";
+import NotificationBell from "./NotificationBell";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -19,12 +24,16 @@ const CancelOrders = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [cancelNote, setCancelNote] = useState("");
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    // Simulating an API call with dummy data
+    // Simulating an API call with dummy data for orders
     const dummyOrders = [
       {
         orderID: "1",
+        vendorID: "V001",
+        item: "Laptop",
         customerID: "C001",
         status: "Pending",
         address: "123 Main St, Cityville",
@@ -33,40 +42,53 @@ const CancelOrders = () => {
       },
       {
         orderID: "2",
+        vendorID: "V002",
+        item: "Smartphone",
         customerID: "C002",
         status: "Shipped",
         address: "456 Elm St, Townsville",
         tel: "+987654321",
         createdAt: "2024-09-29",
       },
+    ];
+
+    const dummyNotifications = [
       {
-        orderID: "3",
-        customerID: "C003",
-        status: "Delivered",
-        address: "789 Oak St, Villageburg",
-        tel: "+192837465",
-        createdAt: "2024-09-28",
+        id: 1,
+        name: "Order",
+        message: "Order 1 has been shipped",
+        time: "Just now",
+        isNew: true,
       },
       {
-        orderID: "4",
-        customerID: "C004",
-        status: "Cancelled",
-        address: "321 Pine St, Hamletton",
-        tel: "+564738291",
-        createdAt: "2024-09-27",
+        id: 2,
+        name: "Order",
+        message: "Order 2 is out for delivery",
+        time: "1 hour ago",
+        isNew: true,
       },
     ];
 
     // Simulate loading delay
     setTimeout(() => {
       setOrders(dummyOrders);
+      setNotifications(dummyNotifications);
       setLoading(false);
     }, 1000);
   }, []);
 
-  const handleCancel = (order) => {
-    setSelectedOrder(order);
-    setShowCancelModal(true);
+  const handleAction = (order, action) => {
+    if (action === "Cancel") {
+      setSelectedOrder(order);
+      setShowCancelModal(true);
+    } else if (action === "Deliver") {
+      setOrders((prevOrders) =>
+        prevOrders.map((o) =>
+          o.orderID === order.orderID ? { ...o, status: "Delivered" } : o
+        )
+      );
+      toast.success("Order marked as Delivered");
+    }
   };
 
   const confirmCancel = () => {
@@ -77,8 +99,8 @@ const CancelOrders = () => {
           : order
       )
     );
-    toast.success("Order cancelled successfully");
     setShowCancelModal(false);
+    toast.success("Order cancelled successfully");
   };
 
   const filteredOrders = orders.filter((order) =>
@@ -90,38 +112,18 @@ const CancelOrders = () => {
   return (
     <div className="d-flex">
       <AdminSidebar />
-      <Container
-        fluid
-        className="p-4"
-        style={{
-          marginLeft: "240px",
-          opacity: 0,
-          transform: "translateY(20px)",
-          animation: "fadeIn 0.8s forwards",
-        }}
-      >
-        <h2
-          className="text-center my-4"
-          style={{
-            opacity: 0,
-            transform: "translateY(-20px)",
-            animation: "slideDown 0.8s forwards",
-          }}
-        >
-          Manage Orders
-        </h2>
+      <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
+        <div className="d-flex justify-content-between align-items-center">
+          <h2 className="text-center my-4">Manage Orders</h2>
+          {/* Notification Bell */}
+          <NotificationBell notifications={notifications} />
+        </div>
 
         {/* Search Bar */}
         <div className="text-center mb-4">
           <InputGroup
             className="search-bar-wrapper"
-            style={{
-              maxWidth: "400px",
-              margin: "0 auto",
-              opacity: 0,
-              transform: "scale(0.9)",
-              animation: "zoomIn 0.8s forwards",
-            }}
+            style={{ maxWidth: "400px", margin: "0 auto" }}
           >
             <FormControl
               type="search"
@@ -132,21 +134,11 @@ const CancelOrders = () => {
                 borderRadius: "30px 0 0 30px",
                 padding: "10px 20px",
                 border: "2px solid #ddd",
-                transition: "all 0.4s ease",
               }}
             />
             <Button
               variant="dark"
-              style={{
-                borderRadius: "0 30px 30px 0",
-                transition: "transform 0.4s ease",
-              }}
-              onMouseOver={(e) => {
-                e.target.style.transform = "scale(1.05)";
-              }}
-              onMouseOut={(e) => {
-                e.target.style.transform = "scale(1)";
-              }}
+              style={{ borderRadius: "0 30px 30px 0", padding: "10px 15px" }}
             >
               <FaSearch />
             </Button>
@@ -160,9 +152,7 @@ const CancelOrders = () => {
               animation="border"
               role="status"
               style={{ width: "3rem", height: "3rem" }}
-            >
-              <span className="sr-only"></span>
-            </Spinner>
+            ></Spinner>
           </div>
         ) : (
           <Table
@@ -170,15 +160,13 @@ const CancelOrders = () => {
             bordered
             hover
             className="shadow-sm"
-            style={{
-              opacity: 0,
-              transform: "translateY(20px)",
-              animation: "fadeInTable 0.8s forwards",
-            }}
+            style={{ fontSize: "0.9rem" }}
           >
             <thead>
               <tr>
                 <th>Order ID</th>
+                <th>Vendor ID</th>
+                <th>Item</th>
                 <th>Customer ID</th>
                 <th>Status</th>
                 <th>Address</th>
@@ -189,46 +177,48 @@ const CancelOrders = () => {
             </thead>
             <tbody>
               {filteredOrders.map((order) => (
-                <tr
-                  key={order.orderID}
-                  style={{
-                    transition:
-                      "background-color 0.3s ease, transform 0.3s ease",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor = "#f8f9fa";
-                    e.currentTarget.style.transform = "scale(1.01)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.backgroundColor = "white";
-                    e.currentTarget.style.transform = "scale(1)";
-                  }}
-                >
+                <tr key={order.orderID}>
                   <td>{order.orderID}</td>
+                  <td>{order.vendorID}</td>
+                  <td>{order.item}</td>
                   <td>{order.customerID}</td>
-                  <td>{order.status}</td>
+                  <td>
+                    <Badge
+                      pill
+                      bg={
+                        order.status === "Cancelled"
+                          ? "danger"
+                          : order.status === "Delivered"
+                          ? "success"
+                          : "warning"
+                      }
+                    >
+                      {order.status}
+                    </Badge>
+                  </td>
                   <td>{order.address}</td>
                   <td>{order.tel}</td>
                   <td>{order.createdAt}</td>
                   <td>
-                    <Button
+                    <DropdownButton
+                      id="dropdown-basic-button"
+                      title="Action"
+                      variant="outline-secondary"
                       size="sm"
-                      variant="danger"
-                      onClick={() => handleCancel(order)}
-                      disabled={order.status === "Cancelled"}
-                      style={{
-                        transition:
-                          "background-color 0.3s ease, transform 0.3s ease",
-                      }}
-                      onMouseOver={(e) => {
-                        e.target.style.transform = "scale(1.05)";
-                      }}
-                      onMouseOut={(e) => {
-                        e.target.style.transform = "scale(1)";
-                      }}
                     >
-                      Cancel
-                    </Button>
+                      <Dropdown.Item
+                        onClick={() => handleAction(order, "Cancel")}
+                        disabled={order.status === "Cancelled"}
+                      >
+                        Cancel
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => handleAction(order, "Deliver")}
+                        disabled={order.status === "Delivered"}
+                      >
+                        Deliver
+                      </Dropdown.Item>
+                    </DropdownButton>
                   </td>
                 </tr>
               ))}
@@ -246,8 +236,16 @@ const CancelOrders = () => {
             <Modal.Title>Confirm Cancellation</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Are you sure you want to cancel this order? This action cannot be
-            undone.
+            <Form.Group controlId="cancelNote">
+              <Form.Label>Add a Note (Optional)</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={cancelNote}
+                onChange={(e) => setCancelNote(e.target.value)}
+                placeholder="Add any relevant notes about the cancellation..."
+              />
+            </Form.Group>
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -257,44 +255,13 @@ const CancelOrders = () => {
               Close
             </Button>
             <Button variant="danger" onClick={confirmCancel}>
-              Yes, Cancel Order
+              Confirm Cancel
             </Button>
           </Modal.Footer>
         </Modal>
 
         <ToastContainer autoClose={3000} hideProgressBar={false} />
       </Container>
-
-      {/* Inline Styles for Animations */}
-      <style jsx="true">{`
-        @keyframes fadeIn {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideDown {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes zoomIn {
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-
-        @keyframes fadeInTable {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 };
