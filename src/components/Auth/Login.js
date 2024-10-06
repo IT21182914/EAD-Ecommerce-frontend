@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import API_BASE_URL from "../../config";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -25,10 +26,13 @@ function Login() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://localhost:44321/api/v1/login",
+        // "https://localhost:44321/api/v1/login",
+        `${API_BASE_URL}login`,
+
         formData
       );
-      toast.success("Login successful!", { position: "top-right" });
+      console.log(response.data.token)
+      toast.success("Login successful!", { position: "top-fire" });
 
       //Machan man meka kare assuming the login is successful, navigate to the vendor dashboard.change this to the correct path machan according to the user roles
       setTimeout(() => navigate("/vendor/dashboard"), 1500);
