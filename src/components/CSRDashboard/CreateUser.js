@@ -11,10 +11,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AdminSidebar from "./AdminSidebar"; // Assuming you have AdminSidebar component
+import AdminSidebar from "./CSRSidebar.js"; // Assuming you have AdminSidebar component
 import axios from "axios";
-import AdminNavBar from "./AdminNavBar";
-import Sidebar from "./AdminSidebar";
+import AdminNavBar from "../AdminDashboard/AdminNavBar.js";
+import Sidebar from "./CSRSidebar.js";
 import API_BASE_URL from "../../config.js";
 import firebase from "firebase/compat/app";
 import { storage } from "../../firebase.js";
@@ -25,7 +25,7 @@ const UserRoleEnum = {
   VENDOR: 4,
 };
 
-const VendorCreation = () => {
+const CreateUser = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
@@ -129,7 +129,7 @@ const VendorCreation = () => {
         requestBody,
         {
           headers:{
-            Authorization : `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJuYXZlZW5AZ21haWwuY29tIiwianRpIjoiNjM5Nzk1ODQtMTI2NC00NDFmLWFiZTgtMmFlMjE4N2Y3MmQ0IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6Im5hdmVlbiBzdHJpbmciLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTcyODIzNjE3OSwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMjEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0NDMyMSJ9.3_MInJ65JbA9ycrjkyezsAZf1e-o_aT-3zUkXj-mEqM`,
+            Authorization : `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJuYXZlZW5AZ21haWwuY29tIiwianRpIjoiNzYyMDc2ZjktZjRjZC00ZTdlLThjZDktNDlhYTRiOWRkY2UxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6Im5hdmVlbiBzdHJpbmciLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTcyODI0MDc0NywiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMjEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0NDMyMSJ9.rcSOwpjMTnvbsUgHzBTpvmj1wrlpOKjrmQn4e5OcF84`,
             'Content-Type' : 'application/json'
           },
         }
@@ -392,4 +392,4 @@ const VendorCreation = () => {
   );
 };
 
-export default VendorCreation;
+export default CreateUser;

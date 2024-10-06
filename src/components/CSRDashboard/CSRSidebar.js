@@ -39,6 +39,12 @@ const Sidebar = () => {
             Change Password
           </Nav.Link>
         </LinkContainer>
+        <LinkContainer to="/csr/create/users">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaUser className="me-3" />
+            Create User
+          </Nav.Link>
+        </LinkContainer>
         <LinkContainer to="/csr-cancellations">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaBan className="me-3" />
