@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VendorSidebar from "./VendorSidebar";
+import API_BASE_URL from "../../config.js";
 
 const CreateProduct = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const CreateProduct = () => {
     e.preventDefault();
     setLoading(true);
     axios
-      .post("https://localhost:44321/api/v1/vendor/products/create", formData)
+      .post(`${API_BASE_URL}vendor/products/create`, formData)
       .then(() => {
         toast.success("Product created successfully!");
         setLoading(false);

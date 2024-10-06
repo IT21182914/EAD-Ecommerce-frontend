@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import VendorSidebar from "./VendorSidebar";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import API_BASE_URL from "../../config";
 
 const UpdateProduct = () => {
   const { productId } = useParams();
@@ -25,7 +26,7 @@ const UpdateProduct = () => {
     // Fetch existing product details
     axios
       .get(
-        `https://localhost:44321/api/v1/vendor/products/product/${productId}`
+        `${API_BASE_URL}vendor/products/product/${productId}`
       )
       .then((response) => {
         const product = response.data;
@@ -60,7 +61,7 @@ const UpdateProduct = () => {
 
       // Update the product on the backend
       await axios.put(
-        `https://localhost:44321/api/v1/vendor/products/update/${productId}`,
+        `${API_BASE_URL}vendor/products/update/${productId}`,
         updatedProductData
       );
 

@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaSort, FaSortUp, FaSortDown, FaSearch } from "react-icons/fa";
 import VendorSidebar from "./VendorSidebar";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../../config.js";
 
 const ManageInventory = () => {
   const [products, setProducts] = useState([]);
@@ -26,7 +27,7 @@ const ManageInventory = () => {
   useEffect(() => {
     // Fetch product data from the API
     axios
-      .get("https://localhost:44321/api/v1/vendor/products/all")
+      .get(`${API_BASE_URL}vendor/products/all`)
       .then((response) => {
         setProducts(response.data);
         setLoading(false);

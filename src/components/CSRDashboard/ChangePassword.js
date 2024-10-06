@@ -28,7 +28,7 @@ const ChangePassword = () => {
 
     // Password change logic goes here
     axios
-      .post("https://localhost:44321/api/v1/change-password", formData)
+      .post(`${API_BASE_URL}change-password", formData)
       .then(() => {
         toast.success("Password changed successfully!");
         setLoading(false);
