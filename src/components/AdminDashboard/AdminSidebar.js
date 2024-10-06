@@ -9,6 +9,7 @@ import {
   FaBell,
   FaMapMarkerAlt,
   FaAtom,
+  FaFistRaised,
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -35,37 +36,37 @@ const Sidebar = () => {
             Dashboard
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/create/vendor">
+        <LinkContainer to="/admin/create/vendor">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaUser className="me-3" />
             Create Vendor
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/cancel/orders">
+        <LinkContainer to="/admin/manage/orders">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaBoxOpen className="me-3" />
-            Table List
+            Manage Orders
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/typography">
+        <LinkContainer to="/admin/manage/products">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaAtom className="me-3" />
-            Typography
+            Manage Products
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/icons">
+        <LinkContainer to="/admin/account/activation">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaClipboardList className="me-3" />
-            Icons
+            Activate Accounts
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/maps">
+        <LinkContainer to="/admin/cancelations">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
-            <FaMapMarkerAlt className="me-3" />
-            Maps
+            <FaFistRaised className="me-3" />
+            Cancel Requests
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/notifications">
+        <LinkContainer to="/admin/notifications">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaBell className="me-3" />
             Notifications

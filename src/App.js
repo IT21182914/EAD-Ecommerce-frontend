@@ -13,31 +13,166 @@ import Orders from "./components/VendorDashboard/Orders";
 import CSRDashboard from "./components/CSRDashboard/CSRDashboard";
 import CancelOrders from "./components/AdminDashboard/CancelOrders";
 import VendorCreation from "./components/AdminDashboard/VendorCreation";
+import { AuthProvider } from "./Context/AuthContext";
+import RoleBasedRoute from "./Routes/RoleBasedRoute";
+import UnauthorizedPage from "./components/Unauthorized/Unauthorized";
+import ActivateAccounts from "./components/AdminDashboard/ActivateAccounts";
+import Notifications from "./components/AdminDashboard/Notifications";
+import ManageProducts from "./components/AdminDashboard/ManageProducts";
+import OrderCancellationRequest from "./components/AdminDashboard/OrderCancellationRequest";
 
 function App() {
   return (
     <Router>
-      <div>
-        <div className="content">
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/csr/dashboard" element={<CSRDashboard />} />
-            <Route path="/vendor/dashboard" element={<VendorDashboard />} />
-            <Route path="/vendor/products" element={<ProductList />} />
-            <Route path="/vendor/create" element={<CreateProduct />} />
-            <Route
-              path="/vendor/update/:productId"
-              element={<UpdateProduct />}
-            />
-            <Route path="/vendor/inventory" element={<ManageInventory />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/cancel/orders" element={<CancelOrders />} />
-            <Route path="/create/vendor" element={<VendorCreation />} />
-          </Routes>
+      <AuthProvider>
+        <div>
+          <div className="content">
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/unauthorized" element={<UnauthorizedPage />} />
+
+              {/* Admin Routes */}
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <RoleBasedRoute
+                    element={<AdminDashboard />}
+                    allowedRoles={[1]}
+                  />
+                }
+              />
+              <Route
+                path="/admin/create/vendor"
+                element={
+                  <RoleBasedRoute
+                    element={<VendorCreation />}
+                    allowedRoles={[1]}
+                  />
+                }
+              />
+              <Route
+                path="/admin/manage/orders"
+                element={
+                  <RoleBasedRoute
+                    element={<CancelOrders />}
+                    allowedRoles={[1]}
+                  />
+                }
+              />
+              <Route
+                path="/admin/manage/products"
+                element={
+                  <RoleBasedRoute
+                    element={<ManageProducts />}
+                    allowedRoles={[1]}
+                  />
+                }
+              />
+              <Route
+                path="/admin/account/activation"
+                element={
+                  <RoleBasedRoute
+                    element={<ActivateAccounts />}
+                    allowedRoles={[1]}
+                  />
+                }
+              />
+              <Route
+                path="/admin/notifications"
+                element={
+                  <RoleBasedRoute
+                    element={<Notifications />}
+                    allowedRoles={[1]}
+                  />
+                }
+              />
+              <Route
+                path="/admin/cancelations"
+                element={
+                  <RoleBasedRoute
+                    element={<OrderCancellationRequest />}
+                    allowedRoles={[1]}
+                  />
+                }
+              />
+
+              {/* CSR Routes */}
+              <Route
+                path="/csr/dashboard"
+                element={
+                  <RoleBasedRoute
+                    element={<CSRDashboard />}
+                    allowedRoles={[3]}
+                  />
+                }
+              />
+
+              {/* Vendor Routes */}
+              <Route
+                path="/vendor/dashboard"
+                element={
+                  <RoleBasedRoute
+                    element={<VendorDashboard />}
+                    allowedRoles={[4]}
+                  />
+                }
+              />
+              <Route
+                path="/vendor/products"
+                element={
+                  <RoleBasedRoute
+                    element={<ProductList />}
+                    allowedRoles={[4]}
+                  />
+                }
+              />
+              <Route
+                path="/vendor/create"
+                element={
+                  <RoleBasedRoute
+                    element={<CreateProduct />}
+                    allowedRoles={[4]}
+                  />
+                }
+              />
+              <Route
+                path="/vendor/update/:productId"
+                element={
+                  <RoleBasedRoute
+                    element={<UpdateProduct />}
+                    allowedRoles={[4]}
+                  />
+                }
+              />
+              <Route
+                path="/vendor/inventory"
+                element={
+                  <RoleBasedRoute
+                    element={<ManageInventory />}
+                    allowedRoles={[4]}
+                  />
+                }
+              />
+              <Route
+                path="orders"
+                element={
+                  <RoleBasedRoute element={<Orders />} allowedRoles={[4]} />
+                }
+              />
+              <Route
+                path="/cancel/orders"
+                element={
+                  <RoleBasedRoute
+                    element={<CancelOrders />}
+                    allowedRoles={[4]}
+                  />
+                }
+              />
+            </Routes>
+          </div>
         </div>
-      </div>
+      </AuthProvider>
     </Router>
   );
 }
