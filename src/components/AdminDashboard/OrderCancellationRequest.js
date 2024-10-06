@@ -19,6 +19,7 @@ import axios from "axios";
 import AdminNavBar from "./AdminNavBar";
 import Sidebar from "./AdminSidebar";
 import { AuthContext } from "../../Context/AuthContext";
+import API_BASE_URL from "../../config";
 
 export default function OrderCancellationRequest() {
   const [orders, setOrders] = useState([]);
@@ -37,7 +38,7 @@ export default function OrderCancellationRequest() {
   useEffect(() => {
     // Simulating an API call with dummy data for orders
     axios
-      .get(`https://localhost:44321/api/v1/Order/cancel/request/all`)
+      .get(`${API_BASE_URL}Order/cancel/request/all`)
       .then((response) => {
         console.log(response.data);
         setOrders(response.data);
@@ -79,7 +80,7 @@ export default function OrderCancellationRequest() {
         setError("");
 
         const cancelResponse = await axios.patch(
-          `https://localhost:44321/api/v1/Order/cancel/response`,
+          `${API_BASE_URL}Order/cancel/response`,
           {
             requestId: selectedOrder.requestId,
             responseNote: cancelNote,
@@ -101,7 +102,7 @@ export default function OrderCancellationRequest() {
         // Perform API call to cancel order
 
         const canceOrder = axios.patch(
-          `https://localhost:44321/api/v1/Order/cancel?orderId=${selectedOrder.orderId}`,
+          `${API_BASE_URL}Order/cancel?orderId=${selectedOrder.orderId}`,
           {
             note: cancelNote,
             canceledBy: user.email,
