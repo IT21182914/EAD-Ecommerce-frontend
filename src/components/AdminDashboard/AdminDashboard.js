@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import Sidebar from "./AdminSidebar";
 import { FaChartLine, FaDollarSign, FaHeart } from "react-icons/fa";
 import { Line, Pie } from "react-chartjs-2";
 import NotificationBell from "./NotificationBell"; // Import NotificationBell
+import { AuthContext } from "../../Context/AuthContext";
+
 import {
   Chart as ChartJS,
   LineElement,
@@ -15,6 +17,8 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+import axios from "axios";
+import AdminNavBar from "./AdminNavBar";
 
 ChartJS.register(
   LineElement,
@@ -28,6 +32,12 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
+  const { user, loading, logout } = useContext(AuthContext);
+  const [refresh, setRefresh] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+
+  console.log(user);
+  console.log(loading);
   // Data for Line Chart (Users Behavior)
   const lineData = {
     labels: [
@@ -83,123 +93,134 @@ const AdminDashboard = () => {
     ],
   };
 
-  const [notifications] = useState([
-    {
-      id: 1,
-      name: "System",
-      message: "New order received",
-      time: "Just now",
-      isNew: true,
-    },
-    {
-      id: 2,
-      name: "System",
-      message: "Order shipped",
-      time: "2 hours ago",
-      isNew: true,
-    },
-    {
-      id: 3,
-      name: "Admin",
-      message: "Server restarted",
-      time: "Yesterday",
-      isNew: false,
-    },
-  ]);
+  useEffect(() => {
+    // Simulating an API call with dummy data for orders
+    // axios
+    //   .get(`https://localhost:44321/api/v1/Order/all`)
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     setOrders(response.data);
+    //     setLoading(false);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+
+    // Simulating an API call to get notifications
+    axios
+      .get("https://localhost:44321/api/v1/Notification/my/notifications")
+      .then((response) => {
+        console.log(response.data);
+        setNotifications(response.data);
+      });
+  }, [refresh]);
 
   return (
-    <div className="d-flex">
+    <div className="d-flex flex-row" style={{ width: "100%", height: "100vh" }}>
       <Sidebar />
-      <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
-        <div className="d-flex justify-content-between align-items-center">
-          <div className="w-100 d-flex justify-content-center">
-            <h2
-              className="mb-4"
-              style={{
-                fontSize: "2.5rem",
-                fontWeight: "700",
-                background:
-                  "linear-gradient(90deg, rgba(29, 78, 216, 1) 0%, rgba(91, 33, 182, 1) 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Admin Dashboard
-            </h2>
+      <div
+        className="bg-body-secondary d-flex flex-column flex-grow-1"
+        style={{ marginLeft: "240px" }}
+      >
+        <AdminNavBar notification={[]} />
+        <Container
+          fluid
+          className="p-4 overflow-scroll"
+          style={{ height: "100%" }}
+        >
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="w-100 d-flex justify-content-center">
+              <h2
+                className="mb-4"
+                style={{
+                  fontSize: "2.5rem",
+                  fontWeight: "700",
+                  background:
+                    "linear-gradient(90deg, rgba(29, 78, 216, 1) 0%, rgba(91, 33, 182, 1) 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Admin Dashboard
+              </h2>
+            </div>
           </div>
 
-          {/* Notification Bell */}
-          <NotificationBell notifications={notifications} />
-        </div>
+          {/* Stat Cards with explicit margin */}
+          <Row className="mb-4">
+            <Col md={3} sm={6} className="mb-4">
+              <Card className="shadow-sm h-100">
+                <Card.Body className="text-center">
+                  <FaChartLine size={30} className="text-warning" />
+                  <h3 className="my-2">150GB</h3>
+                  <p>Number</p>
+                </Card.Body>
+                <Card.Footer className="text-center">
+                  <small>Update Now</small>
+                </Card.Footer>
+              </Card>
+            </Col>
+            <Col md={3} sm={6} className="mb-4">
+              <Card className="shadow-sm h-100">
+                <Card.Body className="text-center">
+                  <FaDollarSign size={30} className="text-success" />
+                  <h3 className="my-2">$1,345</h3>
+                  <p>Revenue</p>
+                </Card.Body>
+                <Card.Footer className="text-center">
+                  <small>Last Day</small>
+                </Card.Footer>
+              </Card>
+            </Col>
+            <Col md={3} sm={6} className="mb-4">
+              <Card className="shadow-sm h-100">
+                <Card.Body className="text-center">
+                  <FaHeart size={30} className="text-primary" />
+                  <h3 className="my-2">+45K</h3>
+                  <p>Followers</p>
+                </Card.Body>
+                <Card.Footer className="text-center">
+                  <small>Update Now</small>
+                </Card.Footer>
+              </Card>
+            </Col>
+          </Row>
 
-        {/* Stat Cards with explicit margin */}
-        <Row className="mb-4">
-          <Col md={3} sm={6} className="mb-4">
-            <Card className="shadow-sm h-100">
-              <Card.Body className="text-center">
-                <FaChartLine size={30} className="text-warning" />
-                <h3 className="my-2">150GB</h3>
-                <p>Number</p>
-              </Card.Body>
-              <Card.Footer className="text-center">
-                <small>Update Now</small>
-              </Card.Footer>
-            </Card>
-          </Col>
-          <Col md={3} sm={6} className="mb-4">
-            <Card className="shadow-sm h-100">
-              <Card.Body className="text-center">
-                <FaDollarSign size={30} className="text-success" />
-                <h3 className="my-2">$1,345</h3>
-                <p>Revenue</p>
-              </Card.Body>
-              <Card.Footer className="text-center">
-                <small>Last Day</small>
-              </Card.Footer>
-            </Card>
-          </Col>
-          <Col md={3} sm={6} className="mb-4">
-            <Card className="shadow-sm h-100">
-              <Card.Body className="text-center">
-                <FaHeart size={30} className="text-primary" />
-                <h3 className="my-2">+45K</h3>
-                <p>Followers</p>
-              </Card.Body>
-              <Card.Footer className="text-center">
-                <small>Update Now</small>
-              </Card.Footer>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Chart Section */}
-        <Row>
-          <Col lg={8}>
-            <Card className="shadow-sm">
-              <Card.Body>
-                <Card.Title>Users Behavior</Card.Title>
-                <p>24 Hours Performance</p>
-                <Line
-                  data={lineData}
-                  options={{ responsive: true, animation: { duration: 1000 } }}
-                />
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col lg={4}>
-            <Card className="shadow-sm">
-              <Card.Body>
-                <Card.Title>Email Statistics</Card.Title>
-                <p>Last Campaign Performance</p>
-                <Pie
-                  data={pieData}
-                  options={{ responsive: true, animation: { duration: 1000 } }}
-                />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+          {/* Chart Section */}
+          <Row>
+            <Col lg={8}>
+              <Card className="shadow-sm">
+                <Card.Body>
+                  <Card.Title>Users Behavior</Card.Title>
+                  <p>24 Hours Performance</p>
+                  <Line
+                    data={lineData}
+                    options={{
+                      responsive: true,
+                      animation: { duration: 1000 },
+                    }}
+                  />
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col lg={4}>
+              <Card className="shadow-sm">
+                <Card.Body>
+                  <Card.Title>Email Statistics</Card.Title>
+                  <p>Last Campaign Performance</p>
+                  <Pie
+                    data={pieData}
+                    options={{
+                      responsive: true,
+                      animation: { duration: 1000 },
+                    }}
+                  />
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </div>
     </div>
   );
 };

@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { AuthContext } from "../../Context/AuthContext";
 function Login() {
+  const { login, loading } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
-  const navigate = useNavigate();
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -20,18 +18,13 @@ function Login() {
       [name]: value,
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "https://localhost:44321/api/v1/login",
-        formData
-      );
-      toast.success("Login successful!", { position: "top-right" });
-
+      const response = await login(formData).th
       //Machan man meka kare assuming the login is successful, navigate to the vendor dashboard.change this to the correct path machan according to the user roles
-      setTimeout(() => navigate("/vendor/dashboard"), 1500);
+      // setTimeout(() => navigate("/vendor/dashboard"), 1500);
+      console.log(response);
     } catch (error) {
       toast.error("Login failed. Please check your credentials.", {
         position: "top-right",
@@ -39,12 +32,11 @@ function Login() {
       console.error("Login failed: ", error);
     }
   };
-
   return (
     <Container
       fluid
       className="vh-100 d-flex align-items-center justify-content-center"
-      style={{ backgroundColor: "#1a1a1d" }}
+      style={{ backgroundColor: "#1A1A1D" }}
     >
       <Row className="w-100">
         <Col md={6} className="text-center text-white my-auto">
@@ -87,7 +79,7 @@ function Login() {
                 <Button
                   type="submit"
                   className="w-100 mb-3"
-                  style={{ backgroundColor: "#6a11cb", border: "none" }}
+                  style={{ backgroundColor: "#6A11CB", border: "none" }}
                 >
                   Log in
                 </Button>
@@ -106,5 +98,4 @@ function Login() {
     </Container>
   );
 }
-
 export default Login;
