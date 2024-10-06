@@ -21,6 +21,8 @@ import ActivateAccounts from "./components/AdminDashboard/ActivateAccounts";
 import Notifications from "./components/AdminDashboard/Notifications";
 import ManageProducts from "./components/AdminDashboard/ManageProducts";
 import OrderCancellationRequest from "./components/AdminDashboard/OrderCancellationRequest";
+import CreateUser from "./components/CSRDashboard/CreateUser";
+import AccountActivation from "./components/AdminDashboard/AccountActivation";
 
 function App() {
   return (
@@ -71,15 +73,6 @@ function App() {
                 }
               />
               <Route
-                path="/admin/account/activation"
-                element={
-                  <RoleBasedRoute
-                    element={<ActivateAccounts />}
-                    allowedRoles={[1]}
-                  />
-                }
-              />
-              <Route
                 path="/admin/notifications"
                 element={
                   <RoleBasedRoute
@@ -93,6 +86,16 @@ function App() {
                 element={
                   <RoleBasedRoute
                     element={<OrderCancellationRequest />}
+                    allowedRoles={[1]}
+                  />
+                }
+              />
+
+              <Route
+                path="/admin/account/activation"
+                element={
+                  <RoleBasedRoute
+                    element={<AccountActivation />}
                     allowedRoles={[1]}
                   />
                 }
@@ -119,8 +122,16 @@ function App() {
                   />
                 }
               />
+              <Route
+                path="/csr/create/users"
+                element={
+                  <RoleBasedRoute
+                    element={<CreateUser />}
+                    allowedRoles={[3]}
+                  />
+                }
+              />
               
-
               {/* Vendor Routes */}
               <Route
                 path="/vendor/dashboard"

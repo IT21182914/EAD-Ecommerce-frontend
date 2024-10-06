@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem(
           "accessToken",
-          JSON.stringify(response.data.token)
+          response.data.token
         );
 
         // Redirect based on role
