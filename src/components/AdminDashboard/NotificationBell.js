@@ -60,6 +60,8 @@ const NotificationBell = ({ notifications }) => {
             top: "40px",
             right: "0",
             width: "350px",
+            height: "500px",
+            overflowY: "auto",
             backgroundColor: "#fff",
             borderRadius: "10px",
             boxShadow: "0 12px 28px rgba(0, 0, 0, 0.2)",
@@ -73,6 +75,9 @@ const NotificationBell = ({ notifications }) => {
               color: "white",
               borderRadius: "10px 10px 0 0",
               padding: "12px 15px",
+              position: "sticky",
+              top: "0",
+              zIndex: 10,
               fontWeight: "bold",
               fontSize: "1.1rem",
               display: "flex",
@@ -91,18 +96,19 @@ const NotificationBell = ({ notifications }) => {
             ) : (
               notifications.map((notification) => (
                 <ListGroup.Item
-                  key={notification.id}
+                  key={notification.notifyId}
                   style={{
                     display: "flex",
                     alignItems: "center",
                     padding: "15px",
                     fontSize: "0.9rem",
+                    paddingBottom: "10px",
                     color: "#333",
                     borderBottom: "1px solid #f0f0f0",
                     transition: "background-color 0.3s ease",
                   }}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor = "#f9f9f9";
+                    e.currentTarget.style.backgroundColor = "#c8cdff";
                   }}
                   onMouseOut={(e) => {
                     e.currentTarget.style.backgroundColor = "white";
@@ -110,7 +116,7 @@ const NotificationBell = ({ notifications }) => {
                 >
                   <div style={{ flex: 1 }}>
                     <strong style={{ fontWeight: 600 }}>
-                      {notification.name}
+                      {notification.reason}
                     </strong>{" "}
                     {notification.message}
                     <div
@@ -120,7 +126,7 @@ const NotificationBell = ({ notifications }) => {
                         marginTop: "5px",
                       }}
                     >
-                      {notification.time}
+                      {notification.sentDate}
                     </div>
                   </div>
                   {notification.isNew && (
@@ -148,6 +154,8 @@ const NotificationBell = ({ notifications }) => {
               borderRadius: "0 0 10px 10px",
               padding: "12px",
               cursor: "pointer",
+              position: "sticky",
+              bottom: "0",
               transition: "background-color 0.3s ease",
             }}
             onMouseOver={(e) => {
