@@ -116,7 +116,7 @@ const NotificationBell = ({ notifications }) => {
                 >
                   <div style={{ flex: 1 }}>
                     <strong style={{ fontWeight: 600 }}>
-                      {notification.reason}
+                      {notification && notification.reason =="Customer request cancelation." ?<a href="/admin/cancelations">Customer request cancelation</a>:notification.reason}
                     </strong>{" "}
                     {notification.message}
                     <div

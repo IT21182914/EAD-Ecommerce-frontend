@@ -20,17 +20,18 @@ import AdminNavBar from "./AdminNavBar";
 import Sidebar from "./AdminSidebar";
 import API_BASE_URL from "../../config.js";
 
-
 const CancelOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showDeliverModal, setShowDeliverModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [cancelNote, setCancelNote] = useState("");
   const [error, setError] = useState("");
   const [notifications, setNotifications] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Simulating an API call with dummy data for orders
@@ -44,7 +45,6 @@ const CancelOrders = () => {
       .catch((error) => {
         console.log(error);
       });
-
   }, [refresh]);
 
   const handleAction = (order, action) => {
@@ -52,12 +52,8 @@ const CancelOrders = () => {
       setSelectedOrder(order);
       setShowCancelModal(true);
     } else if (action === "Deliver") {
-      setOrders((prevOrders) =>
-        prevOrders.map((o) =>
-          o.orderID === order.orderID ? { ...o, status: "Delivered" } : o
-        )
-      );
-      toast.success("Order marked as Delivered");
+      setShowDeliverModal(true);
+      setSelectedOrder(order);
     }
   };
 
@@ -73,13 +69,10 @@ const CancelOrders = () => {
       setError("");
 
       axios
-        .patch(
-          `${API_BASE_URL}Order/cancel?orderId=${selectedOrder.orderId}`,
-          {
-            note: cancelNote,
-            canceledBy: "super admin",
-          }
-        )
+        .patch(`${API_BASE_URL}Order/cancel?orderId=${selectedOrder.orderId}`, {
+          note: cancelNote,
+          canceledBy: "super admin",
+        })
         .then((response) => {
           setRefresh(!refresh);
           console.log(response.data);
@@ -91,6 +84,27 @@ const CancelOrders = () => {
           toast.error("Failed to cancel order");
         });
     }
+  };
+
+  const deliverOrder = () => {
+    // Perform API call to mark order as delivered
+    console.log("Delivering order", selectedOrder.orderId);
+    setIsLoading(true);
+
+    axios
+      .patch(`${API_BASE_URL}Order/delivered?orderId=${selectedOrder.orderId}`)
+      .then((response) => {
+        setRefresh(!refresh);
+        console.log(response.data);
+        toast.success("Order delivered successfully");
+        setShowDeliverModal(false);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Failed to deliver order");
+        setIsLoading(false);
+      });
   };
 
   const filteredOrders = orders.filter((order) =>
@@ -209,13 +223,19 @@ const CancelOrders = () => {
                       >
                         <Dropdown.Item
                           onClick={() => handleAction(order, "Cancel")}
-                          disabled={order.status === "Cancelled"}
+                          disabled={
+                            order.status === "CANCELED" ||
+                            order.status === "DELIVERED"
+                          }
                         >
                           Cancel
                         </Dropdown.Item>
                         <Dropdown.Item
                           onClick={() => handleAction(order, "Deliver")}
-                          disabled={order.status === "Delivered"}
+                          disabled={
+                            order.status === "CANCELED" ||
+                            order.status === "DELIVERED"
+                          }
                         >
                           Deliver
                         </Dropdown.Item>
@@ -266,6 +286,41 @@ const CancelOrders = () => {
               </Button>
               <Button variant="danger" onClick={confirmCancel}>
                 Confirm Cancel
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
+          <Modal
+            show={showDeliverModal}
+            onHide={() => {
+              setShowDeliverModal(false);
+              setError("");
+            }}
+            centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Deliver Order</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form.Group controlId="cancelNote">
+                <Form.Label>Please confirm order delivery</Form.Label>
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowDeliverModal(false);
+                }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="success"
+                onClick={deliverOrder}
+                disabled={isLoading}
+              >
+                Confirm Deliver
               </Button>
             </Modal.Footer>
           </Modal>

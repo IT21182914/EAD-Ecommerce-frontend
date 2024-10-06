@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import API_BASE_URL from "../config.js"
+import API_BASE_URL from "../config.js";
 
 // Create AuthContext
 export const AuthContext = createContext();
@@ -38,10 +38,7 @@ export const AuthProvider = ({ children }) => {
 
         // Save user data in localStorage for persistence
         localStorage.setItem("user", JSON.stringify(userData));
-        localStorage.setItem(
-          "accessToken",
-          JSON.stringify(response.data.token)
-        );
+        localStorage.setItem("accessToken", response.data.token);
 
         // Redirect based on role
         toast.success("Login successful!", { position: "top-right" });
