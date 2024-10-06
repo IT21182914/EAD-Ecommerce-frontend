@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import VendorSidebar from "./VendorSidebar";
 import { useParams, useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
+import API_BASE_URL from "../../config";
 
 const ProductList = () => {
   const { vendorId } = useParams();
@@ -27,7 +28,7 @@ const ProductList = () => {
   useEffect(() => {
     // Fetch vendor products from the backend
     axios
-      .get(`https://localhost:44321/api/v1/vendor/products/all`)
+      .get(`${API_BASE_URL}vendor/products/all`)
       .then((response) => {
         setProducts(response.data);
         setLoading(false); // Turn off the spinner after data is fetched
@@ -42,7 +43,7 @@ const ProductList = () => {
     setLoading(true); // Start loading spinner for delete operation
     axios
       .delete(
-        `https://localhost:44321/api/v1/vendor/products/delete/${productId}`
+        `${API_BASE_URL}vendor/products/delete/${productId}`
       )
       .then(() => {
         setProducts((prevProducts) =>

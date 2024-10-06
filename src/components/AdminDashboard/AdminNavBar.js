@@ -4,13 +4,15 @@ import NotificationBell from "./NotificationBell";
 import ProfileActionButton from "../Common/ProfileActionButton";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import API_BASE_URL from "../../config.js"
+
 
 export default function AdminNavBar({ notification }) {
   const { user } = useContext(AuthContext);
   const [notifications, setNotifications] = useState([]);
   useEffect(() => {
     axios
-      .get(`https://localhost:44321/api/v1/Notification/my/notifications?userId=${user.id}`,)
+      .get(`${API_BASE_URL}Notification/my/notifications?userId=${user.id}`,)
       .then((response) => {
         console.log(response.data);
         setNotifications(response.data);

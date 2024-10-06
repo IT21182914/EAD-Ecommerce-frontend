@@ -5,6 +5,8 @@ import { FaChartLine, FaDollarSign, FaHeart } from "react-icons/fa";
 import { Line, Pie } from "react-chartjs-2";
 import NotificationBell from "./NotificationBell"; // Import NotificationBell
 import { AuthContext } from "../../Context/AuthContext";
+import API_BASE_URL from "../../config";
+
 
 import {
   Chart as ChartJS,
@@ -96,7 +98,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     // Simulating an API call with dummy data for orders
     // axios
-    //   .get(`https://localhost:44321/api/v1/Order/all`)
+    //   .get(`${API_BASE_URL}Order/all`)
     //   .then((response) => {
     //     console.log(response.data);
     //     setOrders(response.data);
@@ -108,7 +110,7 @@ const AdminDashboard = () => {
 
     // Simulating an API call to get notifications
     axios
-      .get("https://localhost:44321/api/v1/Notification/my/notifications")
+      .get(`${API_BASE_URL}Notification/my/notifications`)
       .then((response) => {
         console.log(response.data);
         setNotifications(response.data);
