@@ -11,7 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AdminSidebar from "./AdminSidebar"; // Assuming you have AdminSidebar component
+import AdminSidebar from "./AdminSidebar";
 import axios from "axios";
 import AdminNavBar from "./AdminNavBar";
 import Sidebar from "./AdminSidebar";
@@ -30,7 +30,7 @@ const VendorCreation = () => {
     country: "",
     state: "",
     zipCode: "",
-    role: "", // Role state for dropdown
+    role: "",
   });
   const [loading, setLoading] = useState(false);
 
