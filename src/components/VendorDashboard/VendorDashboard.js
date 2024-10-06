@@ -33,6 +33,7 @@ import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotificationDropdown from "./NotificationDropdown";
+import API_BASE_URL from "../../config";
 
 ChartJS.register(
   LineElement,
@@ -87,7 +88,7 @@ const VendorDashboard = () => {
   useEffect(() => {
     // Fetch products and check for low stock items
     axios
-      .get(`https://localhost:44321/api/v1/vendor/products/all`)
+      .get(`${API_BASE_URL}vendor/products/all`)
       .then((response) => {
         const products = response.data;
         const lowStock = products.filter(

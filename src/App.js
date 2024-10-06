@@ -11,6 +11,7 @@ import ManageInventory from "./components/VendorDashboard/ManageInventory";
 import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Orders from "./components/VendorDashboard/Orders";
 import CSRDashboard from "./components/CSRDashboard/CSRDashboard";
+import CSRAccountActivation from "./components/CSRDashboard/CSRAccountActivation";
 import CancelOrders from "./components/AdminDashboard/CancelOrders";
 import VendorCreation from "./components/AdminDashboard/VendorCreation";
 import { AuthProvider } from "./Context/AuthContext";
@@ -108,6 +109,18 @@ function App() {
                 }
               />
 
+              {/* CSR Routes */}
+              <Route
+                path="/csr/activation"
+                element={
+                  <RoleBasedRoute
+                    element={<CSRAccountActivation />}
+                    allowedRoles={[3]}
+                  />
+                }
+              />
+              
+
               {/* Vendor Routes */}
               <Route
                 path="/vendor/dashboard"
@@ -169,6 +182,7 @@ function App() {
                   />
                 }
               />
+              
             </Routes>
           </div>
         </div>

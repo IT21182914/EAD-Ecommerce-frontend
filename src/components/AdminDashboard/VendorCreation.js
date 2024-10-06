@@ -15,6 +15,7 @@ import AdminSidebar from "./AdminSidebar"; // Assuming you have AdminSidebar com
 import axios from "axios";
 import AdminNavBar from "./AdminNavBar";
 import Sidebar from "./AdminSidebar";
+import API_BASE_URL from "../../config.js";
 
 const VendorCreation = () => {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const VendorCreation = () => {
     formData.role = 3;
     try {
       const response = await axios.post(
-        "https://localhost:44321/api/v1/create-by-admin",
+        `${API_BASE_URL}create-by-admin`,
         formData
       );
       console.log(response.data);

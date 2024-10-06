@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import API_BASE_URL from "../../config";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ function Register() {
       };
 
       const response = await axios.post(
-        "https://localhost:44321/api/v1/create-by-admin",
+        `${API_BASE_URL}create-by-admin`,
         formattedData
       );
       console.log("Registration successful: ", response.data);

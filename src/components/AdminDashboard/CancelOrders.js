@@ -18,6 +18,8 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import AdminNavBar from "./AdminNavBar";
 import Sidebar from "./AdminSidebar";
+import API_BASE_URL from "../../config.js";
+
 
 const CancelOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -33,7 +35,7 @@ const CancelOrders = () => {
   useEffect(() => {
     // Simulating an API call with dummy data for orders
     axios
-      .get(`https://localhost:44321/api/v1/Order/all`)
+      .get(`${API_BASE_URL}Order/all`)
       .then((response) => {
         console.log(response.data);
         setOrders(response.data);
@@ -72,7 +74,7 @@ const CancelOrders = () => {
 
       axios
         .patch(
-          `https://localhost:44321/api/v1/Order/cancel?orderId=${selectedOrder.orderId}`,
+          `${API_BASE_URL}Order/cancel?orderId=${selectedOrder.orderId}`,
           {
             note: cancelNote,
             canceledBy: "super admin",

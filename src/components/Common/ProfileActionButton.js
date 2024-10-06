@@ -4,6 +4,7 @@ import "../../App.css";
 import { AuthContext } from "../../Context/AuthContext";
 import profilePic from "../../assets/default_user.png";
 
+
 export default function ProfileActionButton() {
   const { user, logout } = useContext(AuthContext);
   return (

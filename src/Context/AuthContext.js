@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import API_BASE_URL from "../config.js"
 
 // Create AuthContext
 export const AuthContext = createContext();
@@ -25,7 +26,9 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://localhost:44321/api/v1/login",
+        // `${API_BASE_URL}login",
+        `${API_BASE_URL}login`,
+
         loginData
       );
       if (response.status == 200) {
