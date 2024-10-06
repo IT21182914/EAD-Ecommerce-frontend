@@ -26,7 +26,7 @@ const NotificationBell = ({ notifications }) => {
   }, []);
 
   return (
-    <div style={{ position: "relative", cursor: "pointer" }} ref={dropdownRef}>
+    <div style={{ position: "relative", cursor: "pointer" }} onClick={handleToggleNotifications} ref={dropdownRef}>
       {/* Bell Icon with Notification Count */}
       <FaBell
         size={28}

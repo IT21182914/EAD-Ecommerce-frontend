@@ -26,3 +26,7 @@ body {
   background-color: rgba(0, 123, 255, 0.05);
   border-radius: 5px;
 }
+
+.profile-dropdown-toggle::after {
+  display: none !important; /* This hides the default arrow */
+}
