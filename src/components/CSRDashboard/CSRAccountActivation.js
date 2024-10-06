@@ -8,30 +8,7 @@ import { useTable, useSortBy } from "react-table";
 import axios from "axios";
 import API_BASE_URL from "../../config";
 const CSRAccountActivation = () => {
-  const [customers, setCustomers] = useState([
-
-    // {
-    //   customerID: 1,
-    //   name: "John Doe",
-    //   email: "john@example.com",
-    //   telephone: "123-456-7890",
-    //   isActive: false,
-    // },
-    // {
-    //   customerID: 2,
-    //   name: "Jane Smith",
-    //   email: "jane@example.com",
-    //   telephone: "987-654-3210",
-    //   isActive: true,
-    // },
-    // {
-    //   customerID: 3,
-    //   name: "Sam Wilson",
-    //   email: "sam@example.com",
-    //   telephone: "555-123-4567",
-    //   isActive: false,
-    // },
-  ]);
+  const [customers, setCustomers] = useState([]);
 
   useEffect(()=>{
     const fetchData = async () => {
@@ -59,7 +36,6 @@ const CSRAccountActivation = () => {
 
   // Toggle Activation Status
   const handleToggle = async (customerID) => {
-    var userID 
     // Update the state optimistically for a better UX
     const updatedCustomers = customers.map((customer) =>
       customer.id === customerID
@@ -80,21 +56,21 @@ const CSRAccountActivation = () => {
 
     try{
       console.log("this is cus id")
-      console.log(customerID)
-       userID = customerID
-      console.log(userID)
+      console.log(updatedCustomer.isActive)
       const url = updatedCustomer.isActive
-      ? `${API_BASE_URL}deactivate-user/${userID}`
-      : `${API_BASE_URL}activate-customer/${userID}`;
+      ? `${API_BASE_URL}activate-customer/${customerID}`
+      : `${API_BASE_URL}deactivate-user/${customerID}`;
+      
 
       console.log(url)
+
       const response = await axios.patch(
         // `${API_BASE_URL}activate-customer/${customerID}`,
         url,
-        // {},
+        {},
         {
           headers:{
-            Authorization : `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiYXRoaXlhQGdtYWlsLmNvbSIsImp0aSI6ImVkODYwMjVkLTJjYTItNDZiNC04ZjIzLWI1ZTgyMjFjMjNmZiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJCYXRoaXlhIFBhdGh1bSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzI4MjE0OTAxLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDMyMSIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzIxIn0.b_g3cjPAIVfEkCPX6IISDpGtBC1IkRhBVcX5Ueh9na8`,
+            Authorization : `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJuYXZlZW5AZ21haWwuY29tIiwianRpIjoiZDNiZmJmY2UtZDZiOC00MDhlLThhNTgtZWFiYzYwNDM4MjEyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6Im5hdmVlbiBzdHJpbmciLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTcyODIyNzM3MiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMjEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0NDMyMSJ9.X7otK769EVza0fYYZWln3EFInX7tbqvG4zlsJPI86kQ`,
             'Content-Type' : 'application/json'
           },
         }
@@ -115,12 +91,6 @@ const CSRAccountActivation = () => {
       console.error("Error updating activation status:", error);
       toast.error(`Failed to update ${updatedCustomer.name}'s status.`);
     }
-
-    // if (updatedCustomer.isActive) {
-    //   toast.success(`${updatedCustomer.name} activated successfully.`);
-    // } else {
-    //   toast.warning(`${updatedCustomer.name} deactivated successfully.`);
-    // }
   };
 
   // Define table columns
@@ -133,6 +103,22 @@ const CSRAccountActivation = () => {
       {
         Header: "Name",
         accessor: "firstName",
+      },
+      {
+        Header: "User Role",
+        accessor: "role",
+        Cell: ({ value }) => {
+          // Define a mapping between the numeric values and their corresponding role names
+          const roleMapping = {
+            1: "Admin",
+            2: "Customer",
+            3: "CSR",
+            4: "Vendor"
+          };
+      
+          // Return the mapped role name or 'Unknown' if the value doesn't match
+          return roleMapping[value] || "Unknown";
+        }
       },
       {
         Header: "Email",
