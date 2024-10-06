@@ -2,7 +2,8 @@ import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import API_BASE_URL from "../config.js"
+import "react-toastify/dist/ReactToastify.css"; // Ensure this is imported
+import API_BASE_URL from "../config.js";
 
 // Create AuthContext
 export const AuthContext = createContext();
@@ -25,27 +26,19 @@ export const AuthProvider = ({ children }) => {
   const login = async (loginData) => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        // `${API_BASE_URL}login",
-        `${API_BASE_URL}login`,
-
-        loginData
-      );
-      if (response.status == 200) {
+      const response = await axios.post(`${API_BASE_URL}login`, loginData);
+      if (response.status === 200) {
         const userData = response.data.user; // Assuming API returns user data
         setUser(userData);
-        console.log(response.data);
 
         // Save user data in localStorage for persistence
         localStorage.setItem("user", JSON.stringify(userData));
-        localStorage.setItem(
-          "accessToken",
-          response.data.token
-        );
+        localStorage.setItem("accessToken", response.data.token);
 
-        // Redirect based on role
+        // Display a success toast
         toast.success("Login successful!", { position: "top-right" });
 
+        // Redirect based on role
         if (userData.role === 1) {
           navigate("/admin/dashboard");
         } else if (userData.role === 4) {
@@ -54,22 +47,26 @@ export const AuthProvider = ({ children }) => {
           navigate("/csr/dashboard");
         }
       } else {
+        // Display error toast
         toast.error("Login unsuccessful!", { position: "top-right" });
         console.log("Login failed");
       }
     } catch (error) {
+      toast.error("Login failed. Please check your credentials.", {
+        position: "top-right",
+      });
       console.error("Login failed", error);
     } finally {
       setLoading(false);
     }
   };
 
-  console.log(user);
-
   // Logout function
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user"); // Remove user from localStorage
+    localStorage.removeItem("accessToken"); // Remove token
+    toast.info("Logged out successfully!", { position: "top-right" });
     navigate("/"); // Redirect to login page on logout
   };
 
