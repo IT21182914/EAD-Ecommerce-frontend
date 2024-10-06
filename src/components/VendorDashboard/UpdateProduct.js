@@ -85,6 +85,14 @@ const UpdateProduct = () => {
           </h2>
 
           <Form onSubmit={handleSubmit} className="shadow p-4 rounded bg-white">
+            {/* Hidden Fields */}
+            <Form.Control type="hidden" name="productId" value={productId} />
+            <Form.Control
+              type="hidden"
+              name="vendorId"
+              value={formData.vendorId}
+            />
+
             <Row>
               <Col md={6}>
                 <Form.Group controlId="name" className="mb-3">

@@ -27,16 +27,16 @@ const Sidebar = () => {
             Manage Accounts
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/csr-orders">
+        <LinkContainer to="/csr/activation">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaClipboardList className="me-3" />
-            Manage Orders
+            Account Activation
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/csr-support">
+        <LinkContainer to="/csr/changepassword">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaCommentDots className="me-3" />
-            Customer Support
+            Change Password
           </Nav.Link>
         </LinkContainer>
         <LinkContainer to="/csr-cancellations">
