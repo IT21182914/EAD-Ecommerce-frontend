@@ -5,8 +5,8 @@ import {
   Spinner,
   FormControl,
   InputGroup,
-  Dropdown,
   Button,
+  Card,
 } from "react-bootstrap";
 import axios from "axios";
 import { useTable, useSortBy, useGlobalFilter } from "react-table";
@@ -21,7 +21,6 @@ const ManageInventory = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +40,12 @@ const ManageInventory = () => {
   const handleEdit = (productId) => {
     navigate(`/vendor/update/${productId}`);
   };
+
+  // Calculate total stock quantity
+  const totalStockQuantity = products.reduce(
+    (total, product) => total + product.stockQuantity,
+    0
+  );
 
   // Define table columns
   const columns = useMemo(
@@ -98,6 +103,25 @@ const ManageInventory = () => {
           </span>
         ),
       },
+      {
+        Header: "Product Status",
+        accessor: "isActive",
+        Cell: ({ value }) => (
+          <Button
+            size="sm"
+            style={{
+              backgroundColor: value ? "green" : "red",
+              color: "#fff",
+              border: "none",
+              borderRadius: "20px",
+              padding: "5px 15px",
+              cursor: "default",
+            }}
+          >
+            {value ? "Active" : "Inactive"}
+          </Button>
+        ),
+      },
     ],
     []
   );
@@ -144,36 +168,29 @@ const ManageInventory = () => {
         <style jsx>{`
           .heading-container {
             display: flex;
-            justify-content: center; /* Centers the heading horizontally */
+            justify-content: center;
             align-items: center;
-            width: 100%; /* Ensures it takes full width */
+            width: 100%;
             margin: 20px 0;
           }
 
           .heading-style {
-            background: linear-gradient(
-              135deg,
-              #667eea,
-              #764ba2
-            ); /* Modern gradient background */
-            color: white; /* White text */
-            font-weight: 800; /* Bold text */
-            padding: 20px 40px; /* Increased padding for emphasis */
-            border-radius: 12px; /* Smooth rounded corners */
-            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 800;
+            padding: 20px 40px;
+            border-radius: 12px;
             text-align: center;
-            font-size: 2rem; /* Large font size for emphasis */
-            font-family: "Poppins", sans-serif; /* Optional modern font family */
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12); /* Soft shadow for depth */
-            letter-spacing: 1px; /* Slight letter spacing for modern look */
-            text-transform: uppercase; /* Optional: makes text uppercase */
-            transition: transform 0.3s ease; /* Smooth scaling on hover */
+            font-size: 2rem;
+            font-family: "Poppins", sans-serif;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: transform 0.3s ease;
           }
 
           .heading-style:hover {
-            transform: scale(
-              1.05
-            ); /* Slightly enlarge the heading on hover for interaction */
+            transform: scale(1.05);
           }
         `}</style>
 
@@ -267,6 +284,24 @@ const ManageInventory = () => {
               })}
             </tbody>
           </Table>
+        </div>
+
+        {/* Total Stock Quantity Box */}
+        <div className="d-flex justify-content-center mt-5">
+          <Card
+            style={{
+              width: "250px",
+              padding: "20px",
+              textAlign: "center",
+              background: "linear-gradient(135deg, #9f44d3, #6a11cb)", // Purple gradient
+              color: "#fff",
+              borderRadius: "15px",
+              boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <h4>Total Stock Quantity</h4>
+            <h3>{totalStockQuantity}</h3>
+          </Card>
         </div>
 
         <ToastContainer
