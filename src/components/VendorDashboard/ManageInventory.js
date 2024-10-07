@@ -111,7 +111,7 @@ const ManageInventory = () => {
           <Button
             size="sm"
             style={{
-              backgroundColor: value ? "green" : "red",
+              backgroundColor: value ? "#4CAF50" : "#FF5252",
               color: "#fff",
               border: "none",
               borderRadius: "20px",
