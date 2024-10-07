@@ -7,8 +7,6 @@ import {
   FormControl,
   Spinner,
   Dropdown,
-  Modal,
-  Button,
 } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import axios from "axios";
@@ -17,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import VendorSidebar from "./VendorSidebar";
 import { useParams, useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
+import DeleteConfirmationModal from "./DeleteConfirmationModal"; // Import the separate component
 import API_BASE_URL from "../../config";
 
 const ProductList = () => {
@@ -66,8 +65,8 @@ const ProductList = () => {
   };
 
   // Function to show confirmation modal
-  const handleShowConfirmModal = (productId) => {
-    setProductToDelete(productId);
+  const handleShowConfirmModal = (product) => {
+    setProductToDelete(product);
     setShowConfirmModal(true); // Show confirmation modal
   };
 
@@ -220,9 +219,7 @@ const ProductList = () => {
                   product={product}
                   handleEdit={handleEdit}
                   // Pass the delete handler with confirmation
-                  deleteProduct={() =>
-                    handleShowConfirmModal(product.productId)
-                  }
+                  deleteProduct={() => handleShowConfirmModal(product)}
                 />
               </Col>
             ))}
@@ -230,23 +227,12 @@ const ProductList = () => {
         )}
 
         {/* Delete Confirmation Modal */}
-        <Modal show={showConfirmModal} onHide={handleCancelDelete} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Confirm Deletion</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Are you sure you want to delete this product?</Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCancelDelete}>
-              Cancel
-            </Button>
-            <Button
-              variant="danger"
-              onClick={() => deleteProduct(productToDelete)}
-            >
-              Delete
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <DeleteConfirmationModal
+          show={showConfirmModal}
+          handleClose={handleCancelDelete}
+          handleConfirm={() => deleteProduct(productToDelete.productId)}
+          productName={productToDelete?.name}
+        />
 
         <ToastContainer
           autoClose={3000}
