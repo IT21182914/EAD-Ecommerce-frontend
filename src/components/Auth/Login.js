@@ -1,16 +1,17 @@
 import React, { useState, useContext } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../Context/AuthContext";
+
 function Login() {
   const { login, loading } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -18,12 +19,11 @@ function Login() {
       [name]: value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await login(formData).th
-      //Machan man meka kare assuming the login is successful, navigate to the vendor dashboard.change this to the correct path machan according to the user roles
-      // setTimeout(() => navigate("/vendor/dashboard"), 1500);
+      const response = await login(formData);
       console.log(response);
     } catch (error) {
       toast.error("Login failed. Please check your credentials.", {
@@ -32,23 +32,22 @@ function Login() {
       console.error("Login failed: ", error);
     }
   };
+
   return (
     <Container
       fluid
-      className="vh-100 d-flex align-items-center justify-content-center"
-      style={{ backgroundColor: "#1A1A1D" }}
+      className="login-container d-flex align-items-center justify-content-center"
     >
-      <Row className="w-100">
-        <Col md={6} className="text-center text-white my-auto">
+      <Row className="w-100 justify-content-center">
+        <Col md={6} className="text-center my-auto">
           <h1 className="display-4 fw-bold">Welcome Back!</h1>
-          <h3 className="text-light">Login to Your Account</h3>
+          <h3>Login to Your Account</h3>
           <p className="lead">
-            Please log in to continue using our services and manage your
-            experience.
+            Access your account to continue shopping or manage your orders.
           </p>
         </Col>
         <Col md={6}>
-          <Card className="shadow-lg bg-dark text-white">
+          <Card className="shadow-lg login-card">
             <Card.Body>
               <h3 className="card-title text-center mb-4">Login</h3>
               <Form onSubmit={handleSubmit}>
@@ -59,9 +58,9 @@ function Login() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="Enter email"
-                    className="bg-dark text-white"
+                    placeholder="Enter your email"
                     required
+                    className="login-input"
                   />
                 </Form.Group>
                 <Form.Group className="mb-4">
@@ -71,31 +70,96 @@ function Login() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Password"
-                    className="bg-dark text-white"
+                    placeholder="Enter your password"
                     required
+                    className="login-input"
                   />
                 </Form.Group>
                 <Button
                   type="submit"
-                  className="w-100 mb-3"
-                  style={{ backgroundColor: "#6A11CB", border: "none" }}
+                  className="w-100 mb-3 login-btn"
+                  disabled={loading}
                 >
-                  Log in
+                  {loading ? "Logging in..." : "Log in"}
                 </Button>
-                <p className="text-center">
-                  Don’t have an account?{" "}
-                  <Link to="/register" className="text-white">
-                    Sign Up
-                  </Link>
-                </p>
               </Form>
             </Card.Body>
           </Card>
         </Col>
       </Row>
       <ToastContainer />
+
+      <style jsx>{`
+        /* Background */
+        .login-container {
+          min-height: 100vh;
+          background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+          padding: 0 2rem;
+        }
+
+        /* Login Card */
+        .login-card {
+          background: #ffffff;
+          border-radius: 15px;
+          padding: 2rem;
+          animation: fadeIn 1s ease-out;
+        }
+
+        /* Input Fields */
+        .login-input {
+          border-radius: 30px;
+          padding: 10px 20px;
+          background-color: #f8f9fa;
+          border: 1px solid #e0e0e0;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-input:focus {
+          border-color: #6c63ff;
+          box-shadow: 0 0 8px rgba(108, 99, 255, 0.3);
+        }
+
+        /* Button */
+        .login-btn {
+          background: linear-gradient(135deg, #6a11cb, #2575fc);
+          border: none;
+          padding: 10px 0;
+          font-size: 1.2rem;
+          font-weight: 600;
+          border-radius: 30px;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Link */
+        .login-link {
+          color: #6a11cb;
+          font-weight: 600;
+          text-decoration: none;
+        }
+
+        .login-link:hover {
+          text-decoration: underline;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </Container>
   );
 }
+
 export default Login;
