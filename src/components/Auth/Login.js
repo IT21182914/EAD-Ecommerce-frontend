@@ -1,9 +1,18 @@
 import React, { useState, useContext } from "react";
-import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Image,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../Context/AuthContext";
+import shoppingImage from "../../assets/shopping.png"; // Import the image
 
 function Login() {
   const { login, loading } = useContext(AuthContext);
@@ -36,17 +45,20 @@ function Login() {
   return (
     <Container
       fluid
-      className="login-container d-flex align-items-center justify-content-center"
+      className="login-container d-flex align-items-center justify-content-start"
     >
       <Row className="w-100 justify-content-center">
         <Col md={6} className="text-center my-auto">
-          <h1 className="display-4 fw-bold">Welcome Back!</h1>
+          <h1 className="display-4 fw-bold">Welcome Back!</h1>{" "}
+          {/* Moved text above image */}
           <h3>Login to Your Account</h3>
-          <p className="lead">
+          <p className="lead mb-4">
             Access your account to continue shopping or manage your orders.
           </p>
+          <Image src={shoppingImage} className="login-image mb-4" />{" "}
+          {/* Image after text */}
         </Col>
-        <Col md={6}>
+        <Col md={5}>
           <Card className="shadow-lg login-card">
             <Card.Body>
               <h3 className="card-title text-center mb-4">Login</h3>
@@ -82,6 +94,12 @@ function Login() {
                 >
                   {loading ? "Logging in..." : "Log in"}
                 </Button>
+                <p className="text-center">
+                  Don’t have an account?{" "}
+                  <Link to="/register" className="login-link">
+                    Sign Up
+                  </Link>
+                </p>
               </Form>
             </Card.Body>
           </Card>
@@ -93,16 +111,22 @@ function Login() {
         /* Background */
         .login-container {
           min-height: 100vh;
-          background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+          background-color: #f7f7f7;
           padding: 0 2rem;
         }
 
         /* Login Card */
         .login-card {
-          background: #ffffff;
+          background: rgba(255, 255, 255, 0.9);
           border-radius: 15px;
           padding: 2rem;
           animation: fadeIn 1s ease-out;
+        }
+
+        /* Image Styling */
+        .login-image {
+          width: 500px; /* Adjust the width of the image */
+          height: auto;
         }
 
         /* Input Fields */
