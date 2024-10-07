@@ -7,6 +7,8 @@ import {
   FormControl,
   Spinner,
   Dropdown,
+  Modal,
+  Button,
 } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import axios from "axios";
@@ -23,6 +25,8 @@ const ProductList = () => {
   const [loading, setLoading] = useState(true); // State for loading spinner
   const [searchTerm, setSearchTerm] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false); // State for the delete confirmation modal
+  const [productToDelete, setProductToDelete] = useState(null); // State to track the product selected for deletion
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,9 +46,7 @@ const ProductList = () => {
   const deleteProduct = (productId) => {
     setLoading(true); // Start loading spinner for delete operation
     axios
-      .delete(
-        `${API_BASE_URL}vendor/products/delete/${productId}`
-      )
+      .delete(`${API_BASE_URL}vendor/products/delete/${productId}`)
       .then(() => {
         setProducts((prevProducts) =>
           prevProducts.filter((product) => product.productId !== productId)
@@ -56,10 +58,23 @@ const ProductList = () => {
         toast.error("Failed to delete product");
         setLoading(false); // Stop loading spinner if error
       });
+    setShowConfirmModal(false); // Hide confirmation modal after delete
   };
 
   const handleEdit = (productId) => {
     navigate(`/vendor/update/${productId}`);
+  };
+
+  // Function to show confirmation modal
+  const handleShowConfirmModal = (productId) => {
+    setProductToDelete(productId);
+    setShowConfirmModal(true); // Show confirmation modal
+  };
+
+  // Function to cancel deletion
+  const handleCancelDelete = () => {
+    setProductToDelete(null);
+    setShowConfirmModal(false); // Hide confirmation modal
   };
 
   // Filter products based on search term with null/undefined checks
@@ -204,12 +219,34 @@ const ProductList = () => {
                 <ProductCard
                   product={product}
                   handleEdit={handleEdit}
-                  deleteProduct={deleteProduct}
+                  // Pass the delete handler with confirmation
+                  deleteProduct={() =>
+                    handleShowConfirmModal(product.productId)
+                  }
                 />
               </Col>
             ))}
           </Row>
         )}
+
+        {/* Delete Confirmation Modal */}
+        <Modal show={showConfirmModal} onHide={handleCancelDelete} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Deletion</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Are you sure you want to delete this product?</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCancelDelete}>
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              onClick={() => deleteProduct(productToDelete)}
+            >
+              Delete
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
         <ToastContainer
           autoClose={3000}
