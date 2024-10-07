@@ -23,6 +23,7 @@ import ManageProducts from "./components/AdminDashboard/ManageProducts";
 import OrderCancellationRequest from "./components/AdminDashboard/OrderCancellationRequest";
 import CreateUser from "./components/CSRDashboard/CreateUser";
 import AccountActivation from "./components/AdminDashboard/AccountActivation";
+import ActivateProducts from "./components/CSRDashboard/ActivateProducts";
 
 function App() {
   return (
@@ -101,6 +102,16 @@ function App() {
                 }
               />
 
+              <Route
+                path="/admin/product/activation"
+                element={
+                  <RoleBasedRoute
+                    element={<ActivateProducts />}
+                    allowedRoles={[1]}
+                  />
+                }
+              />
+
               {/* CSR Routes */}
               <Route
                 path="/csr/dashboard"
@@ -123,15 +134,21 @@ function App() {
                 }
               />
               <Route
-                path="/csr/create/users"
+                path="/csr/productactivation"
                 element={
                   <RoleBasedRoute
-                    element={<CreateUser />}
+                    element={<ActivateProducts />}
                     allowedRoles={[3]}
                   />
                 }
               />
-              
+              <Route
+                path="/csr/create/users"
+                element={
+                  <RoleBasedRoute element={<CreateUser />} allowedRoles={[3]} />
+                }
+              />
+
               {/* Vendor Routes */}
               <Route
                 path="/vendor/dashboard"
@@ -193,7 +210,6 @@ function App() {
                   />
                 }
               />
-              
             </Routes>
           </div>
         </div>
