@@ -20,6 +20,7 @@ import AdminNavBar from "./AdminNavBar";
 import Sidebar from "./AdminSidebar";
 import { AuthContext } from "../../Context/AuthContext";
 import API_BASE_URL from "../../config";
+import { useSearchParams } from "react-router-dom";
 
 export default function OrderCancellationRequest() {
   const [orders, setOrders] = useState([]);
@@ -32,8 +33,10 @@ export default function OrderCancellationRequest() {
   const [error, setError] = useState("");
   const [notifications, setNotifications] = useState([]);
   const [refresh, setRefresh] = useState(false);
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useContext(AuthContext);
+
+  console.log(searchParams.get("orderId"));
 
   useEffect(() => {
     // Simulating an API call with dummy data for orders
@@ -90,7 +93,9 @@ export default function OrderCancellationRequest() {
         );
 
         if (cancelResponse) {
-          toast.success(`Order ${showApproveModal ? "approved" : "declined"} successfully`);
+          toast.success(
+            `Order ${showApproveModal ? "approved" : "declined"} successfully`
+          );
           setShowApproveModal(false);
           setShowCancelModal(false);
           return;
@@ -201,8 +206,8 @@ export default function OrderCancellationRequest() {
                 </thead>
                 <tbody>
                   {filteredOrders.map((order) => (
-                    <tr key={order.orderId}>
-                      <td>{order.orderId}</td>
+                    <tr key={order.orderId} className={`${order.orderId == searchParams.get("orderId") && "border-3 border-primary"}`}>
+                      <td className>{order.orderId}</td>
                       <td>{order.customerId}</td>
                       <td>{order.requestNote ?? "N / A"}</td>
                       <td>{order.responsNote ?? "N / A"}</td>
