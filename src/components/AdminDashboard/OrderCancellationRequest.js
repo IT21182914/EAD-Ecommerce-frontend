@@ -1,3 +1,46 @@
+/**
+ * OrderCancellationRequest.js
+ *
+ * This component is responsible for displaying and managing order cancellation requests.
+ * It includes features for:
+ * - Fetching and displaying a list of cancellation requests in a table format.
+ * - Searching for requests by customer ID.
+ * - Approving or declining requests through modals.
+ * - Providing feedback through toast notifications on success or failure of actions.
+ *
+ * State Management:
+ * - orders: List of cancellation requests fetched from the API.
+ * - loading: Boolean indicating whether the data is still being loaded.
+ * - searchTerm: Current search input for filtering orders by customer ID.
+ * - showCancelModal: Boolean for controlling the visibility of the decline confirmation modal.
+ * - showApproveModal: Boolean for controlling the visibility of the approval confirmation modal.
+ * - selectedOrder: Holds the currently selected order for which action is being taken.
+ * - cancelNote: User input for notes when approving or declining a request.
+ * - error: Holds error messages to display in modals.
+ * - notifications: (Unused in this code) Intended for user notifications.
+ * - refresh: Boolean used to trigger re-fetching of data.
+ *
+ * Context:
+ * - AuthContext: Provides user authentication information (e.g., email).
+ *
+ * API Integration:
+ * - Uses Axios for making API calls to fetch and manage cancellation requests.
+ *
+ * Rendering:
+ * - The component displays a search bar, a loading spinner, and a table of orders.
+ * - Includes modals for confirming approval or decline of requests.
+ * - Integrates react-toastify for displaying notifications.
+ *
+ * Dependencies:
+ * - react-bootstrap for UI components.
+ * - react-icons for icons.
+ * - react-router-dom for handling URL search parameters.
+ *
+ * Author: Herath R P N M
+ * Registration Number: IT21177828
+ * Date: 2024-10-08
+ */
+
 import React, { useState, useEffect, useContext } from "react";
 import {
   Container,
@@ -38,8 +81,8 @@ export default function OrderCancellationRequest() {
 
   console.log(searchParams.get("orderId"));
 
+  // Simulating an API call with dummy data for orders
   useEffect(() => {
-    // Simulating an API call with dummy data for orders
     axios
       .get(`${API_BASE_URL}Order/cancel/request/all`)
       .then((response) => {
@@ -52,6 +95,7 @@ export default function OrderCancellationRequest() {
       });
   }, [refresh]);
 
+  // Handle actions for approving or declining orders
   const handleAction = (order, action) => {
     if (action === "CANCELED") {
       setSelectedOrder(order);
@@ -125,6 +169,7 @@ export default function OrderCancellationRequest() {
     }
   };
 
+  // Filter orders based on search term
   const filteredOrders = orders.filter((order) =>
     order.customerId
       ? order.customerId.toLowerCase().includes(searchTerm.toLowerCase())
@@ -139,13 +184,25 @@ export default function OrderCancellationRequest() {
         style={{ marginLeft: "240px" }}
       >
         <AdminNavBar notification={[]} />
-        <Container
-          fluid
-          className="p-4 overflow-scroll"
-          style={{ height: "100%" }}
-        >
-          <div className="container">
-            <h1>Order Cancelation</h1>
+        <Container fluid className="overflow-scroll" style={{ height: "100%" }}>
+          <div className="">
+            <div className="d-flex justify-content-between align-items-center">
+              <div className="w-100 d-flex justify-content-center">
+                <h2
+                  className="mb-4"
+                  style={{
+                    fontSize: "2.5rem",
+                    fontWeight: "700",
+                    background:
+                      "linear-gradient(90deg, rgba(29, 78, 216, 1) 0%, rgba(91, 33, 182, 1) 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  Order Cancelation
+                </h2>
+              </div>
+            </div>
 
             {/* Search Bar */}
             <div className="text-center mb-4">
@@ -191,7 +248,7 @@ export default function OrderCancellationRequest() {
                 bordered
                 hover
                 className="shadow-sm"
-                style={{ fontSize: "0.9rem" }}
+                style={{ fontSize: "0.9rem", width: "100%" }}
               >
                 <thead>
                   <tr>
@@ -201,12 +258,19 @@ export default function OrderCancellationRequest() {
                     <th>Response Note</th>
                     <th>Status</th>
                     <th>Created At</th>
+                    <th>Responsed At</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredOrders.map((order) => (
-                    <tr key={order.orderId} className={`${order.orderId == searchParams.get("orderId") && "border-3 border-primary"}`}>
+                    <tr
+                      key={order.orderId}
+                      className={`${
+                        order.orderId == searchParams.get("orderId") &&
+                        "border-3 border-primary"
+                      }`}
+                    >
                       <td className>{order.orderId}</td>
                       <td>{order.customerId}</td>
                       <td>{order.requestNote ?? "N / A"}</td>
@@ -228,6 +292,7 @@ export default function OrderCancellationRequest() {
                         </Badge>
                       </td>
                       <td>{order.createdAt}</td>
+                      <td>{order.resolvedAt ?? "N / A"}</td>
                       <td>
                         <DropdownButton
                           id="dropdown-basic-button"

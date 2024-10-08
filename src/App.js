@@ -17,7 +17,6 @@ import VendorCreation from "./components/AdminDashboard/VendorCreation";
 import { AuthProvider } from "./Context/AuthContext";
 import RoleBasedRoute from "./Routes/RoleBasedRoute";
 import UnauthorizedPage from "./components/Unauthorized/Unauthorized";
-import ActivateAccounts from "./components/AdminDashboard/ActivateAccounts";
 import Notifications from "./components/AdminDashboard/Notifications";
 import ManageProducts from "./components/AdminDashboard/ManageProducts";
 import OrderCancellationRequest from "./components/AdminDashboard/OrderCancellationRequest";

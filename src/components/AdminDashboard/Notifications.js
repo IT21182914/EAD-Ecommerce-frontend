@@ -44,8 +44,22 @@ export default function Notifications() {
           className="p-4 overflow-y-hidden"
           style={{ height: "100%" }}
         >
-          <div className="container">
-            <h1>Notifications</h1>
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="w-100 d-flex justify-content-center">
+              <h2
+                className="mb-4"
+                style={{
+                  fontSize: "2.5rem",
+                  fontWeight: "700",
+                  background:
+                    "linear-gradient(90deg, rgba(29, 78, 216, 1) 0%, rgba(91, 33, 182, 1) 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Notifications
+              </h2>
+            </div>
           </div>
 
           {loading ? (
@@ -117,7 +131,7 @@ export default function Notifications() {
                           {notification &&
                           notification.reason ==
                             "Customer request cancelation" ? (
-                            <a href={`/admin/cancelations?orderId=${"string"}`}>
+                            <a href={`/admin/cancelations?orderId=${"3d10587a-d2d0-4a0b-ab8b-6a254884c607"}`}>
                               Customer request cancelation
                             </a>
                           ) : (

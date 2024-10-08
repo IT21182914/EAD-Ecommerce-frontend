@@ -1,3 +1,23 @@
+/**
+ * CancelOrders.js
+ *
+ * This component allows the admin to manage and view orderdetails that can cancel and delivered.
+ * It provides functionalities for searching, canceling, and delivering orders.
+ *
+ * Features:
+ * - Displays a list of orders in a table format, with options to cancel or deliver each order.
+ * - Includes a search bar for filtering orders by Customer ID.
+ * - Uses modals to confirm cancellation and delivery actions.
+ * - Provides real-time feedback through toast notifications for successful or failed actions.
+ *
+ * State Management:
+ * - Manages state for loading, orders, search term, modal visibility, selected order, cancellation note, and notifications.
+ *
+ * Author: Herath R P N M
+ * Registration Number: IT21177828
+ * Date: 2024-10-08
+ */
+
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -33,8 +53,8 @@ const CancelOrders = () => {
   const [refresh, setRefresh] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Simulating an API call with dummy data for orders
   useEffect(() => {
-    // Simulating an API call with dummy data for orders
     axios
       .get(`${API_BASE_URL}Order/all`)
       .then((response) => {
@@ -47,6 +67,7 @@ const CancelOrders = () => {
       });
   }, [refresh]);
 
+  //handle action for cancel and deliver
   const handleAction = (order, action) => {
     if (action === "Cancel") {
       setSelectedOrder(order);
@@ -57,9 +78,8 @@ const CancelOrders = () => {
     }
   };
 
+  // Perform API call to cancel order
   const confirmCancel = () => {
-    // Perform API call to cancel order
-
     console.log("Cancelling order", selectedOrder.orderID);
     if (cancelNote === "") {
       setError("Please provide a reason for cancellation");
@@ -86,8 +106,8 @@ const CancelOrders = () => {
     }
   };
 
+  // Perform API call to mark order as delivered
   const deliverOrder = () => {
-    // Perform API call to mark order as delivered
     console.log("Delivering order", selectedOrder.orderId);
     setIsLoading(true);
 
@@ -107,6 +127,7 @@ const CancelOrders = () => {
       });
   };
 
+  // Filter orders based on search term
   const filteredOrders = orders.filter((order) =>
     order.customerId
       ? order.customerId.toLowerCase().includes(searchTerm.toLowerCase())
@@ -127,7 +148,21 @@ const CancelOrders = () => {
           style={{ height: "100%" }}
         >
           <div className="d-flex justify-content-between align-items-center">
-            <h2 className="text-center">Manage Orders</h2>
+            <div className="w-100 d-flex justify-content-center">
+              <h2
+                className="mb-4"
+                style={{
+                  fontSize: "2.5rem",
+                  fontWeight: "700",
+                  background:
+                    "linear-gradient(90deg, rgba(29, 78, 216, 1) 0%, rgba(91, 33, 182, 1) 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Manage Orders
+              </h2>
+            </div>
           </div>
 
           {/* Search Bar */}
@@ -195,7 +230,7 @@ const CancelOrders = () => {
                     <td>{order.customerId}</td>
                     <td>
                       <Badge
-                      className="p-2"
+                        className="p-2"
                         pill
                         bg={
                           order.status === "CANCELED"

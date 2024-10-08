@@ -1,3 +1,19 @@
+/**
+ * AdminDashboard.js
+ *
+ * This component renders the Admin Dashboard for the e-commerce application.
+ * It displays statistics about orders, available products, and users (Admins, CSRs, Customers, and Vendors).
+ * The dashboard includes the following features:
+ *
+ * - A line chart showing the behavior of orders over the week (Placed Orders, Issues Arised, Solved Issues).
+ * - A pie chart representing order statistics (Pending, Delivered, Partially Delivered, Canceled).
+ * - Stat cards showing the available product count, total revenue (20% of total revenue), and the number of users.
+ *
+ * Author: Herath R P N M
+ * Registration Number: IT21177828
+ * Date: 2024-10-08
+ */
+
 import React, { useState, useContext, useEffect } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import Sidebar from "./AdminSidebar";
@@ -11,7 +27,7 @@ import {
   FaUserSecret,
 } from "react-icons/fa";
 import { Line, Pie } from "react-chartjs-2";
-import NotificationBell from "./NotificationBell"; // Import NotificationBell
+import NotificationBell from "./NotificationBell";
 import { AuthContext } from "../../Context/AuthContext";
 import API_BASE_URL from "../../config";
 
@@ -58,6 +74,7 @@ const AdminDashboard = () => {
   console.log(user);
   console.log(loading);
   console.log(stats);
+
   // Data for Line Chart (Users Behavior)
   const lineData = {
     labels: behaviour.days,
@@ -111,6 +128,7 @@ const AdminDashboard = () => {
     ],
   };
 
+  //Function for fetch all needed data from the API
   async function fetchData() {
     try {
       axios
@@ -172,10 +190,12 @@ const AdminDashboard = () => {
     }
   }
 
+  //Fetch data when the page is loaded
   useEffect(() => {
     fetchData();
   }, [refresh]);
 
+  //Function to calculate the profit
   function getProfit() {
     let amount = parseFloat(revenue);
     amount = (amount * 20) / 100;
