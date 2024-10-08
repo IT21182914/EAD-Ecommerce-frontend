@@ -42,6 +42,7 @@ const ActivateProducts = () => {
       .catch((error) => {
         toast.error("Failed to load products");
         setLoading(false);
+        console.log(error);
       });
   }, []);
 

@@ -60,12 +60,6 @@ const Sidebar = () => {
             Activate Accounts
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/admin/product/activation">
-          <Nav.Link className="text-white mb-3 d-flex align-items-center">
-            <FaClipboardList className="me-3" />
-            Activate Products
-          </Nav.Link>
-        </LinkContainer>
         <LinkContainer to="/admin/cancelations">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaFistRaised className="me-3" />

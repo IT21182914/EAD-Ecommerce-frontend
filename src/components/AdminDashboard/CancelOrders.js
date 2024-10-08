@@ -195,6 +195,7 @@ const CancelOrders = () => {
                     <td>{order.customerId}</td>
                     <td>
                       <Badge
+                      className="p-2"
                         pill
                         bg={
                           order.status === "CANCELED"

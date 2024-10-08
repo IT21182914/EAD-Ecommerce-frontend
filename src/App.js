@@ -102,7 +102,7 @@ function App() {
                 }
               />
 
-              <Route
+              {/* <Route
                 path="/admin/product/activation"
                 element={
                   <RoleBasedRoute
@@ -110,7 +110,7 @@ function App() {
                     allowedRoles={[1]}
                   />
                 }
-              />
+              /> */}
 
               {/* CSR Routes */}
               <Route
