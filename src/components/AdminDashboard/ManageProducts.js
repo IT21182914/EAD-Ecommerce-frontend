@@ -23,12 +23,12 @@ import API_BASE_URL from "../../config";
 export default function ManageProducts() {
   const [details, setDetails] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showActivateModal, setShowActivateModal] = useState(false);
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [cancelNote, setCancelNote] = useState("");
   const [error, setError] = useState("");
-  const [notifications, setNotifications] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
@@ -36,64 +36,62 @@ export default function ManageProducts() {
     axios
       .get(`${API_BASE_URL}vendor/products/all`)
       .then((response) => {
-        console.log(response.data);
         setDetails(response.data);
+        console.log(response.data);
         setLoading(false);
       })
       .catch((error) => {
+        toast.error("Failed to load products");
+        setLoading(false);
         console.log(error);
       });
   }, [refresh]);
 
   const handleAction = (order, action) => {
-    if (action === "Cancel") {
+    if (action === "Activate") {
       setSelectedOrder(order);
-      setShowCancelModal(true);
-    } else if (action === "Deliver") {
-      setDetails((prevOrders) =>
-        prevOrders.map((o) =>
-          o.orderID === order.orderID ? { ...o, status: "Delivered" } : o
-        )
-      );
-      toast.success("Order marked as Delivered");
+      setShowActivateModal(true);
+    } else if (action === "Deactivate") {
+      setSelectedOrder(order);
+      setShowDeactivateModal(true);
     }
   };
-  const confirmCancel = () => {
-    // Perform API call to cancel order
 
-    console.log("Cancelling order", selectedOrder.orderID);
-    if (cancelNote === "") {
-      setError("Please provide a reason for cancellation");
-      toast.error("Please provide a reason for cancellation");
-      return;
+  const activateProduct = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    let message = "";
+    if (selectedOrder.isActive === false) {
+      message = "Activated";
     } else {
-      setError("");
-
-      axios
-        .patch(
-          `https://localhost:44321/api/v1/Order/cancel?orderId=${selectedOrder.orderId}`,
-          {
-            note: cancelNote,
-            canceledBy: "super admin",
-          }
-        )
-        .then((response) => {
-          setRefresh(!refresh);
-          console.log(response.data);
-          toast.success("Order cancelled successfully");
-          setShowCancelModal(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          toast.error("Failed to cancel order");
-        });
+      message = "Deactivated";
     }
+    // Perform API call to cancel order
+    console.log("activateProduct", selectedOrder.productId);
+    setError("");
+    axios
+      .put(
+        `${API_BASE_URL}vendor/products/activate/${selectedOrder?.productId}`
+      )
+      .then((response) => {
+        console.log(response.data);
+        toast.success(`Product ${message} successfully`);
+        setShowActivateModal(false);
+        setShowDeactivateModal(false);
+        setIsLoading(false);
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Failed to Activate Product");
+        setIsLoading(false);
+      });
   };
 
   const filteredOrders = details.filter((order) =>
     order.vendorId
       ? order.vendorId.toLowerCase().includes(searchTerm.toLowerCase())
-      : false
+      : ""
   );
 
   return (
@@ -122,7 +120,10 @@ export default function ManageProducts() {
                 type="search"
                 placeholder="Search by Customer ID"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setSearchTerm(e.target.value);
+                }}
                 style={{
                   borderRadius: "30px 0 0 30px",
                   padding: "10px 20px",
@@ -163,6 +164,7 @@ export default function ManageProducts() {
                   <th>Price</th>
                   <th>Status</th>
                   <th>Stock QTY</th>
+                  <th>Stock Status</th>
                   <th>UpdatedAt</th>
                   <th>CreatedAt</th>
                   <th>Action</th>
@@ -177,6 +179,17 @@ export default function ManageProducts() {
                     <td>{product.price}</td>
                     <td>
                       <Badge
+                        className="p-2"
+                        pill
+                        bg={product.isActive == true ? "success" : "danger"}
+                      >
+                        {product.isActive == true ? "Active" : "Inactive"}
+                      </Badge>
+                    </td>
+                    <td>{product.stockQuantity}</td>
+                    <td>
+                      <Badge
+                        className="p-2"
                         pill
                         bg={
                           product.stockStatus === "OutOfStock"
@@ -193,7 +206,6 @@ export default function ManageProducts() {
                         {product.stockStatus}
                       </Badge>
                     </td>
-                    <td>{product.stockQuantity}</td>
                     <td>{product.createdAt}</td>
                     <td>{product.updatedAt}</td>
                     <td>
@@ -204,16 +216,16 @@ export default function ManageProducts() {
                         size="sm"
                       >
                         <Dropdown.Item
-                          onClick={() => handleAction(product, "Cancel")}
-                          disabled={product.status === "Cancelled"}
+                          onClick={() => handleAction(product, "Activate")}
+                          disabled={product.isActive === true ? true : false}
                         >
-                          Cancel
+                          Activate
                         </Dropdown.Item>
                         <Dropdown.Item
-                          onClick={() => handleAction(product, "Deliver")}
-                          disabled={product.status === "Delivered"}
+                          onClick={() => handleAction(product, "Deactivate")}
+                          disabled={product.isActive === true ? false : true}
                         >
-                          Deliver
+                          Deactivate
                         </Dropdown.Item>
                       </DropdownButton>
                     </td>
@@ -225,43 +237,93 @@ export default function ManageProducts() {
 
           {/* Cancel Confirmation Modal */}
           <Modal
-            show={showCancelModal}
+            show={showActivateModal}
             onHide={() => {
-              setShowCancelModal(false);
+              setShowActivateModal(false);
               setError("");
             }}
             centered
           >
             <Modal.Header closeButton>
-              <Modal.Title>Confirm Cancellation</Modal.Title>
+              <Modal.Title>Confirm Activation</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form.Group controlId="cancelNote">
                 {error ? (
                   <Form.Label style={{ color: "red" }}>{error}</Form.Label>
                 ) : (
-                  <Form.Label>Add a note for cancellation </Form.Label>
+                  <Form.Label>
+                    Please confirm{" "}
+                    <span className="text-success fw-bold">Activation</span> of
+                    product : <br />
+                    <b>Product Name: </b>
+                    {selectedOrder?.name} <br />
+                    <b>Product ID : </b> {selectedOrder?.productId}
+                  </Form.Label>
                 )}
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={cancelNote}
-                  onChange={(e) => setCancelNote(e.target.value)}
-                  placeholder="Add any relevant notes about the cancellation..."
-                />
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
               <Button
                 variant="secondary"
                 onClick={() => {
-                  setShowCancelModal(false);
+                  setShowActivateModal(false);
                 }}
               >
                 Close
               </Button>
-              <Button variant="danger" onClick={confirmCancel}>
-                Confirm Cancel
+              <Button
+                variant="success"
+                onClick={activateProduct}
+                disabled={isLoading}
+              >
+                Confirm Activation
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
+          <Modal
+            show={showDeactivateModal}
+            onHide={() => {
+              setShowDeactivateModal(false);
+              setError("");
+            }}
+            centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Deliver Order</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form.Group controlId="cancelNote">
+                {error ? (
+                  <Form.Label style={{ color: "red" }}>{error}</Form.Label>
+                ) : (
+                  <Form.Label>
+                    Please confirm{" "}
+                    <span className="text-danger fw-bold">Deactivation</span> of
+                    product : <br />
+                    <b>Product Name: </b>
+                    {selectedOrder?.name} <br />
+                    <b>Product ID : </b> {selectedOrder?.productId}
+                  </Form.Label>
+                )}
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowDeactivateModal(false);
+                }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="danger"
+                onClick={activateProduct}
+                disabled={isLoading}
+              >
+                Confirm Deactivation
               </Button>
             </Modal.Footer>
           </Modal>
