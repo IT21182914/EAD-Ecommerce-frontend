@@ -1,13 +1,15 @@
 import React, { useEffect,useState } from "react";
 import { Container, Table, Button } from "react-bootstrap";
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
-import CSRSidebar from "./CSRSidebar";
+import CSRSidebar from "./AdminSidebar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTable, useSortBy } from "react-table";
 import axios from "axios";
 import API_BASE_URL from "../../config";
-const CSRAccountActivation = () => {
+
+
+const AccountActivation = () => {
   const [customers, setCustomers] = useState([]);
 
   useEffect(()=>{
@@ -63,10 +65,9 @@ const CSRAccountActivation = () => {
       
 
       console.log(url)
-
       const token = localStorage.getItem("accessToken")
-      console.log(token)
-
+      console.log("This is tokn access")
+        console.log(token)
       const response = await axios.patch(
         // `${API_BASE_URL}activate-customer/${customerID}`,
         url,
@@ -173,7 +174,7 @@ const CSRAccountActivation = () => {
       <CSRSidebar />
       <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
         <div className="heading-container">
-          <h2 className="heading-style">Customer Account Activation</h2>
+          <h2 className="heading-style">Account Activation</h2>
         </div>
 
         <style jsx>{`
@@ -280,4 +281,4 @@ const CSRAccountActivation = () => {
   );
 };
 
-export default CSRAccountActivation;
+export default AccountActivation;

@@ -15,7 +15,7 @@ export default function AdminNavBar({ notification }) {
     axios
       .get(`${API_BASE_URL}Notification/my/notifications?userId=${user.id}`)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setNotifications(response.data);
       });
   }, [notification]);

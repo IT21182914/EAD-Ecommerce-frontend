@@ -11,6 +11,7 @@ import ManageInventory from "./components/VendorDashboard/ManageInventory";
 import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Orders from "./components/VendorDashboard/Orders";
 import CSRDashboard from "./components/CSRDashboard/CSRDashboard";
+import CSRAccountActivation from "./components/CSRDashboard/CSRAccountActivation";
 import CancelOrders from "./components/AdminDashboard/CancelOrders";
 import VendorCreation from "./components/AdminDashboard/VendorCreation";
 import { AuthProvider } from "./Context/AuthContext";
@@ -20,6 +21,9 @@ import ActivateAccounts from "./components/AdminDashboard/ActivateAccounts";
 import Notifications from "./components/AdminDashboard/Notifications";
 import ManageProducts from "./components/AdminDashboard/ManageProducts";
 import OrderCancellationRequest from "./components/AdminDashboard/OrderCancellationRequest";
+import CreateUser from "./components/CSRDashboard/CreateUser";
+import AccountActivation from "./components/AdminDashboard/AccountActivation";
+import ActivateProducts from "./components/CSRDashboard/ActivateProducts";
 
 function App() {
   return (
@@ -70,15 +74,6 @@ function App() {
                 }
               />
               <Route
-                path="/admin/account/activation"
-                element={
-                  <RoleBasedRoute
-                    element={<ActivateAccounts />}
-                    allowedRoles={[1]}
-                  />
-                }
-              />
-              <Route
                 path="/admin/notifications"
                 element={
                   <RoleBasedRoute
@@ -97,6 +92,26 @@ function App() {
                 }
               />
 
+              <Route
+                path="/admin/account/activation"
+                element={
+                  <RoleBasedRoute
+                    element={<AccountActivation />}
+                    allowedRoles={[1]}
+                  />
+                }
+              />
+
+              <Route
+                path="/admin/product/activation"
+                element={
+                  <RoleBasedRoute
+                    element={<ActivateProducts />}
+                    allowedRoles={[1]}
+                  />
+                }
+              />
+
               {/* CSR Routes */}
               <Route
                 path="/csr/dashboard"
@@ -105,6 +120,32 @@ function App() {
                     element={<CSRDashboard />}
                     allowedRoles={[3]}
                   />
+                }
+              />
+
+              {/* CSR Routes */}
+              <Route
+                path="/csr/activation"
+                element={
+                  <RoleBasedRoute
+                    element={<CSRAccountActivation />}
+                    allowedRoles={[3]}
+                  />
+                }
+              />
+              <Route
+                path="/csr/productactivation"
+                element={
+                  <RoleBasedRoute
+                    element={<ActivateProducts />}
+                    allowedRoles={[3]}
+                  />
+                }
+              />
+              <Route
+                path="/csr/create/users"
+                element={
+                  <RoleBasedRoute element={<CreateUser />} allowedRoles={[3]} />
                 }
               />
 

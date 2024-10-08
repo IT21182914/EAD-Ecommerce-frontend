@@ -33,10 +33,22 @@ const Sidebar = () => {
             Account Activation
           </Nav.Link>
         </LinkContainer>
+        <LinkContainer to="/csr/productactivation">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaClipboardList className="me-3" />
+            Product Activation
+          </Nav.Link>
+        </LinkContainer>
         <LinkContainer to="/csr/changepassword">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaCommentDots className="me-3" />
             Change Password
+          </Nav.Link>
+        </LinkContainer>
+        <LinkContainer to="/csr/create/users">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaUser className="me-3" />
+            Create User
           </Nav.Link>
         </LinkContainer>
         <LinkContainer to="/csr-cancellations">

@@ -14,6 +14,7 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+import AdminNavBar from "../AdminDashboard/AdminNavBar";
 
 ChartJS.register(
   LineElement,
@@ -62,9 +63,18 @@ const CSRDashboard = () => {
   };
 
   return (
-    <div className="d-flex">
+    <div className="d-flex flex-row" style={{ width: "100%", height: "100vh" }}>
       <Sidebar />
-      <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
+      <div
+        className="bg-body-secondary d-flex flex-column flex-grow-1"
+        style={{ marginLeft: "240px" }}
+      >
+        <AdminNavBar notification={[]} />
+        <Container
+          fluid
+          className="p-4 overflow-scroll"
+          style={{ height: "100%" }}
+        >
         <h2
           className="mb-4 text-center"
           style={{
@@ -173,6 +183,7 @@ const CSRDashboard = () => {
           </Col>
         </Row>
       </Container>
+      </div>
     </div>
   );
 };
