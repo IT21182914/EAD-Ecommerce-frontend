@@ -4,20 +4,22 @@ import NotificationBell from "./NotificationBell";
 import ProfileActionButton from "../Common/ProfileActionButton";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
-import API_BASE_URL from "../../config.js"
-
+import API_BASE_URL from "../../config.js";
 
 export default function AdminNavBar({ notification }) {
   const { user } = useContext(AuthContext);
+
   const [notifications, setNotifications] = useState([]);
+
   useEffect(() => {
     axios
-      .get(`${API_BASE_URL}Notification/my/notifications?userId=${user.id}`,)
+      .get(`${API_BASE_URL}Notification/my/notifications?userId=${user.id}`)
       .then((response) => {
         console.log(response.data);
         setNotifications(response.data);
       });
   }, [notification]);
+
   return (
     <div
       className="d-flex flex-row p-3 text-white"

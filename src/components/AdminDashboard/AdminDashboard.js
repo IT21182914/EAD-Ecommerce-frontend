@@ -49,42 +49,34 @@ ChartJS.register(
 const AdminDashboard = () => {
   const { user, loading, logout } = useContext(AuthContext);
   const [refresh, setRefresh] = useState(false);
-  const [notifications, setNotifications] = useState([]);
   const [details, setDetails] = useState([]);
   const [revenue, setRevenue] = useState([]);
   const [stats, setStats] = useState([]);
+  const [product, setProduct] = useState([]);
+  const [behaviour, setBehaviour] = useState([]);
 
   console.log(user);
   console.log(loading);
   console.log(stats);
   // Data for Line Chart (Users Behavior)
   const lineData = {
-    labels: [
-      "9:00AM",
-      "12:00PM",
-      "3:00PM",
-      "6:00PM",
-      "9:00PM",
-      "12:00AM",
-      "3:00AM",
-      "6:00AM",
-    ],
+    labels: behaviour.days,
     datasets: [
       {
-        label: "Open",
-        data: [120, 200, 250, 300, 350, 400, 420, 450],
+        label: "Placed Order",
+        data: behaviour.orders,
         borderColor: "rgba(75,192,192,1)",
         fill: false,
       },
       {
-        label: "Click",
-        data: [80, 150, 200, 240, 290, 350, 370, 390],
+        label: "Issues arised",
+        data: behaviour.issues,
         borderColor: "rgba(255,99,132,1)",
         fill: false,
       },
       {
-        label: "Click Second Time",
-        data: [60, 100, 140, 190, 250, 300, 320, 330],
+        label: "Solved Issues",
+        data: behaviour.resolved,
         borderColor: "rgba(255,206,86,1)",
         fill: false,
       },
@@ -93,69 +85,95 @@ const AdminDashboard = () => {
 
   // Data for Pie Chart (Email Statistics)
   const pieData = {
-    labels: ["Canceled", "Delivered", "Pending", "Partially Delivered"],
+    labels: ["Pending", "Delivered", "Partially Delivered", "Canceled"],
     datasets: [
       {
         label: "Order Statistics",
         data: [
-          stats.CANCELED,
-          stats.DELIVERED,
           stats.PENDING,
+          stats.DELIVERED,
           stats.PARTIALY_DELIVERED,
+          stats.CANCELED,
         ],
         backgroundColor: [
-          "rgba(75,192,192,1)",
-          "rgba(255,99,132,1)",
-          "rgba(255,206,86,1)",
-          "rgba(255,106,86,1)",
+          "rgba(54, 162, 235, 0.8)",
+          "rgba(75, 192, 192, 0.8)",
+          "rgba(255, 206, 86, 0.8)",
+          "rgba(255, 99, 132, 0.8)",
         ],
         hoverBackgroundColor: [
-          "rgba(75,192,192,0.8)",
-          "rgba(255,99,132,0.8)",
-          "rgba(255,206,86,0.8)",
-          "rgba(255,106,86,0.8)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(255, 99, 132, 1)",
         ],
       },
     ],
   };
 
+  async function fetchData() {
+    try {
+      axios
+        .get(`${API_BASE_URL}Dashboard/available/user/count`)
+        .then((response) => {
+          console.log(response.data);
+          setDetails(response.data);
+          // setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      axios
+        .get(`${API_BASE_URL}Dashboard/total/revanue`)
+        .then((response) => {
+          console.log(response.data);
+          setRevenue(response.data);
+          // setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      axios
+        .get(`${API_BASE_URL}Dashboard/order/stats`)
+        .then((response) => {
+          console.log(response.data);
+          setStats(response.data);
+          // setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      axios
+        .get(`${API_BASE_URL}Dashboard/available/product/count`)
+        .then((response) => {
+          console.log(response.data);
+          setProduct(response.data);
+          // setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      axios
+        .get(`${API_BASE_URL}Dashboard/order/behaviour`)
+        .then((response) => {
+          console.log(response.data);
+          setBehaviour(response.data);
+          // setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  }
+
   useEffect(() => {
-    // Simulating an API call with dummy data for orders
-    axios.get(`${API_BASE_URL}available/user/count`).then((response) => {
-      console.log(response.data);
-      setDetails(response.data);
-      // setLoading(false);
-    });
-
-    axios.get(`${API_BASE_URL}Order/total/revanue`).then((response) => {
-      console.log(response.data);
-      setRevenue(response.data);
-      // setLoading(false);
-    });
-
-    axios.get(`${API_BASE_URL}Order/order/stats`).then((response) => {
-      console.log(response.data);
-      setStats(response.data);
-      // setLoading(false);
-    });
-    // axios
-    //   .get(`${API_BASE_URL}Order/all`)
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     setOrders(response.data);
-    //     setLoading(false);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-
-    // Simulating an API call to get notifications
-    axios
-      .get(`${API_BASE_URL}Notification/my/notifications`)
-      .then((response) => {
-        console.log(response.data);
-        setNotifications(response.data);
-      });
+    fetchData();
   }, [refresh]);
 
   function getProfit() {
@@ -203,11 +221,11 @@ const AdminDashboard = () => {
               <Card className="shadow-sm h-100">
                 <Card.Body className="text-center">
                   <FaChartLine size={30} className="text-warning" />
-                  <h3 className="my-2">150GB</h3>
-                  <p>Number</p>
+                  <h3 className="my-2">{product ?? "N / A"}</h3>
+                  <p>Products</p>
                 </Card.Body>
                 <Card.Footer className="text-center">
-                  <small>Update Now</small>
+                  <small>Available Product count</small>
                 </Card.Footer>
               </Card>
             </Col>
@@ -219,7 +237,7 @@ const AdminDashboard = () => {
                   <p>Total Revenue</p>
                 </Card.Body>
                 <Card.Footer className="text-center">
-                  <small>Last Day</small>
+                  <small>20% of Total Revenue</small>
                 </Card.Footer>
               </Card>
             </Col>
@@ -268,8 +286,8 @@ const AdminDashboard = () => {
             <Col lg={8}>
               <Card className="shadow-sm">
                 <Card.Body>
-                  <Card.Title>Users Behavior</Card.Title>
-                  <p>24 Hours Performance</p>
+                  <Card.Title>Behavior of orders</Card.Title>
+                  <p>This week Behaviour</p>
                   <Line
                     data={lineData}
                     options={{
@@ -283,8 +301,8 @@ const AdminDashboard = () => {
             <Col lg={4}>
               <Card className="shadow-sm">
                 <Card.Body>
-                  <Card.Title>Email Statistics</Card.Title>
-                  <p>Last Campaign Performance</p>
+                  <Card.Title>Order Statistics</Card.Title>
+                  <p>Full spcification</p>
                   <Pie
                     data={pieData}
                     options={{

@@ -8,7 +8,8 @@ import API_BASE_URL from "../config.js";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Initialize user state
+  const [user, setUser] = useState(null);
+  // const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -16,9 +17,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser)); // Restore user from localStorage
+      setUser(JSON.parse(storedUser));
     }
-    setLoading(false); // Set loading to false after checking localStorage
+    setLoading(false);
   }, []);
 
   // Login function
@@ -42,7 +43,6 @@ export const AuthProvider = ({ children }) => {
 
         // Redirect based on role
         toast.success("Login successful!", { position: "top-right" });
-
         if (userData.role === 1) {
           navigate("/admin/dashboard");
         } else if (userData.role === 4) {
@@ -60,6 +60,24 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  // const getNotifications = async (user_id) => {
+
+  //   const userId = user?.id || user_id ;
+
+  //   console.log("Notificationnnnnn");
+  //   console.log(userId);
+
+  //   axios
+  //     .get(`${API_BASE_URL}Notification/my/notifications?userId=${userId}`)
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       setNotifications(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
 
   console.log(user);
 
