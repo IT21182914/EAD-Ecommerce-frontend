@@ -17,6 +17,7 @@ import VendorSidebar from "./VendorSidebar";
 import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../../config.js";
 import AdminNavBar from "../AdminDashboard/AdminNavBar";
+import VendorNavbar from "./VendorNavbar.js";
 
 const ManageInventory = () => {
   const [products, setProducts] = useState([]);
@@ -148,7 +149,8 @@ const ManageInventory = () => {
     <div className="d-flex" style={{ height: "100vh" }}>
       <VendorSidebar role="vendor" />
       <div className="flex-grow-1" style={{ marginLeft: "240px" }}>
-        <AdminNavBar notification={[]} /> {/* Add AdminNavBar */}
+        <VendorNavbar />
+
         <Container
           fluid
           className="p-4 overflow-scroll"

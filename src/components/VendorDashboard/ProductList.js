@@ -18,6 +18,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import DeleteConfirmationModal from "./DeleteConfirmationModal"; // Import the separate component
 import API_BASE_URL from "../../config";
+import VendorNavbar from "./VendorNavbar";
 
 const ProductList = () => {
   const { vendorId } = useParams();
@@ -88,7 +89,8 @@ const ProductList = () => {
     <div className="d-flex">
       <VendorSidebar role="vendor" />
       <div className="flex-grow-1" style={{ marginLeft: "240px" }}>
-        <AdminNavBar notification={[]} /> {/* Add AdminNavBar */}
+        <VendorNavbar />
+
         <Container fluid className="p-4">
           <h2
             className="text-center my-4"
