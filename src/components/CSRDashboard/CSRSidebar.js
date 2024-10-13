@@ -1,7 +1,7 @@
 import React from "react";
 import { Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { FaUser, FaClipboardList, FaCommentDots, FaBan } from "react-icons/fa";
+import { FaUser, FaClipboardList, FaCommentDots, FaBan,FaFistRaised,FaBoxOpen } from "react-icons/fa";
 
 const Sidebar = () => {
   return (
@@ -33,30 +33,50 @@ const Sidebar = () => {
             Account Activation
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/csr/productactivation">
+
+        
+
+        <LinkContainer to="/csr/manage/orders">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaBoxOpen className="me-3" />
+            Manage Orders
+          </Nav.Link>
+        </LinkContainer>
+
+        <LinkContainer to="/csr/cancelations">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaFistRaised className="me-3" />
+            Cancel Requests
+          </Nav.Link>
+        </LinkContainer>
+
+
+{/*<LinkContainer to="/csr/productactivation">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaClipboardList className="me-3" />
             Product Activation
           </Nav.Link>
-        </LinkContainer>
-        <LinkContainer to="/csr/changepassword">
+        </LinkContainer>*/}
+
+
+        {/* <LinkContainer to="/csr/changepassword">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaCommentDots className="me-3" />
             Change Password
           </Nav.Link>
-        </LinkContainer>
+        </LinkContainer> */}
         <LinkContainer to="/csr/create/users">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaUser className="me-3" />
             Create User
           </Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/csr-cancellations">
+        {/* <LinkContainer to="/csr-cancellations">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaBan className="me-3" />
             Cancellations
           </Nav.Link>
-        </LinkContainer>
+        </LinkContainer> */}
       </Nav>
     </div>
   );

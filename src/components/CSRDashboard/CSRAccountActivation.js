@@ -173,7 +173,7 @@ const CSRAccountActivation = () => {
       <CSRSidebar />
       <Container fluid className="p-4" style={{ marginLeft: "240px" }}>
         <div className="heading-container">
-          <h2 className="heading-style">Customer Account Activation</h2>
+          <h2 className="heading-style">Account Activation</h2>
         </div>
 
         <style jsx>{`

@@ -22,6 +22,8 @@ import ManageProducts from "./components/AdminDashboard/ManageProducts";
 import OrderCancellationRequest from "./components/AdminDashboard/OrderCancellationRequest";
 import CreateUser from "./components/CSRDashboard/CreateUser";
 import AccountActivation from "./components/AdminDashboard/AccountActivation";
+import OrderCancellationRequestbyCSR from "./components/CSRDashboard/OrderCancellationRequest"
+import ManageOrder from "./components/CSRDashboard/CancelOrders"
 import ActivateProducts from "./components/CSRDashboard/ActivateProducts";
 import ManageOrders from "./components/AdminDashboard/ManageOrders";
 
@@ -144,9 +146,30 @@ function App() {
                 }
               />
               <Route
+                path="/csr/cancelations"
+                element={
+                  <RoleBasedRoute
+                    element={<OrderCancellationRequestbyCSR />}
+                    allowedRoles={[3]}
+                  />
+                }
+              />
+              <Route
                 path="/csr/create/users"
                 element={
-                  <RoleBasedRoute element={<CreateUser />} allowedRoles={[3]} />
+                  <RoleBasedRoute
+                    element={<CreateUser />}
+                    allowedRoles={[3]}
+                  />
+                }
+              />
+              <Route
+                path="/csr/manage/orders"
+                element={
+                  <RoleBasedRoute
+                    element={<ManageOrder />}
+                    allowedRoles={[3]}
+                  />
                 }
               />
 
