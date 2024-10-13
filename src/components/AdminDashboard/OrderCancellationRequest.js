@@ -83,8 +83,13 @@ export default function OrderCancellationRequest() {
 
   // Simulating an API call with dummy data for orders
   useEffect(() => {
+    const token = localStorage.getItem("accessToken");
     axios
-      .get(`${API_BASE_URL}Order/cancel/request/all`)
+      .get(`${API_BASE_URL}Order/cancel/request/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         setOrders(response.data);
@@ -109,6 +114,7 @@ export default function OrderCancellationRequest() {
   // Perform API call to cancel order
   const confirmCancel = async () => {
     console.log("Cancelling order", selectedOrder.orderId);
+    const token = localStorage.getItem("accessToken");
 
     try {
       if (cancelNote === "") {
@@ -133,6 +139,11 @@ export default function OrderCancellationRequest() {
             responseNote: cancelNote,
             status: showApproveModal ? "APPROVED" : "CANCELED",
             responsedBy: user.email,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
 

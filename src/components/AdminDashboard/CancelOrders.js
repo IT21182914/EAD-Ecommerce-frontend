@@ -55,8 +55,13 @@ const CancelOrders = () => {
 
   // Simulating an API call with dummy data for orders
   useEffect(() => {
+    const token = localStorage.getItem("accessToken");
     axios
-      .get(`${API_BASE_URL}Order/all`)
+      .get(`${API_BASE_URL}Order/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         setOrders(response.data);
@@ -81,6 +86,8 @@ const CancelOrders = () => {
   // Perform API call to cancel order
   const confirmCancel = () => {
     console.log("Cancelling order", selectedOrder.orderID);
+    const token = localStorage.getItem("accessToken");
+    console.log(token);
     if (cancelNote === "") {
       setError("Please provide a reason for cancellation");
       toast.error("Please provide a reason for cancellation");
@@ -89,10 +96,18 @@ const CancelOrders = () => {
       setError("");
 
       axios
-        .patch(`${API_BASE_URL}Order/cancel?orderId=${selectedOrder.orderId}`, {
-          note: cancelNote,
-          canceledBy: "super admin",
-        })
+        .patch(
+          `${API_BASE_URL}Order/cancel?orderId=${selectedOrder.orderId}`,
+          {
+            note: cancelNote,
+            canceledBy: "super admin",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then((response) => {
           setRefresh(!refresh);
           console.log(response.data);
@@ -110,9 +125,18 @@ const CancelOrders = () => {
   const deliverOrder = () => {
     console.log("Delivering order", selectedOrder.orderId);
     setIsLoading(true);
+    const token = localStorage.getItem("accessToken");
 
     axios
-      .patch(`${API_BASE_URL}Order/delivered?orderId=${selectedOrder.orderId}`)
+      .patch(
+        `${API_BASE_URL}Order/delivered?orderId=${selectedOrder.orderId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         setRefresh(!refresh);
         console.log(response.data);
