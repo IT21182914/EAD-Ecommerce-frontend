@@ -7,9 +7,11 @@ import "react-toastify/dist/ReactToastify.css";
 import VendorSidebar from "./VendorSidebar";
 import AdminNavBar from "../AdminDashboard/AdminNavBar"; // Import AdminNavBar
 import API_BASE_URL from "../../config.js";
+import { AuthContext } from "../../Context/AuthContext";
 
 const CreateProduct = () => {
   const navigate = useNavigate();
+  const { user } = React.useContext(AuthContext);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -19,6 +21,7 @@ const CreateProduct = () => {
     imageUrl: "",
     type: "Anyone", // Default value
     size: "Default", // Default value
+    vendorId: user.id,
   });
   const [loading, setLoading] = useState(false);
 
