@@ -24,7 +24,7 @@ import OrderCancellationRequest from "./components/AdminDashboard/OrderCancellat
 import CreateUser from "./components/CSRDashboard/CreateUser";
 import AccountActivation from "./components/AdminDashboard/AccountActivation";
 import OrderCancellationRequestbyCSR from "./components/CSRDashboard/OrderCancellationRequest"
-import ManageOrders from "./components/CSRDashboard/CancelOrders"
+import ManageOrder from "./components/CSRDashboard/CancelOrders"
 function App() {
   return (
     <Router>
@@ -145,7 +145,7 @@ function App() {
                 path="/csr/manage/orders"
                 element={
                   <RoleBasedRoute
-                    element={<ManageOrders />}
+                    element={<ManageOrder />}
                     allowedRoles={[3]}
                   />
                 }
