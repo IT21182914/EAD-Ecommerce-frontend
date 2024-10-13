@@ -211,7 +211,7 @@ const AdminDashboard = () => {
         className="bg-body-secondary d-flex flex-column flex-grow-1"
         style={{ marginLeft: "240px" }}
       >
-        <AdminNavBar notification={[]} />
+        <AdminNavBar />
         <Container
           fluid
           className="p-4 overflow-scroll"

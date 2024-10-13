@@ -187,6 +187,13 @@ export default function OrderCancellationRequest() {
       : false
   );
 
+    // Sort filtered orders by createdAt date in descending order (latest first)
+    const sortedOrders = filteredOrders.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateB - dateA; // For descending order
+    });
+
   return (
     <div className="d-flex flex-row" style={{ width: "100%", height: "100vh" }}>
       <Sidebar />
@@ -274,7 +281,7 @@ export default function OrderCancellationRequest() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredOrders.map((order) => (
+                  {sortedOrders.map((order) => (
                     <tr
                       key={order.orderId}
                       className={`${

@@ -1,13 +1,18 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Sidebar from "./AdminSidebar";
-import { Container, Spinner } from "react-bootstrap";
+import {
+  Col,
+  Container,
+  Row,
+  Spinner,
+  Badge,
+  Card,
+  ListGroup,
+} from "react-bootstrap";
 import AdminNavBar from "./AdminNavBar";
-
-import { FaBell } from "react-icons/fa";
-import { Badge, Card, ListGroup } from "react-bootstrap";
+import { FaEnvelopeOpenText } from "react-icons/fa";
 import API_BASE_URL from "../../config";
 import axios from "axios";
-
 import { AuthContext } from "../../Context/AuthContext";
 
 export default function Notifications() {
@@ -19,9 +24,8 @@ export default function Notifications() {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`${API_BASE_URL}Notification/my/notifications?userId=${user.id}`)
+      .get(`${API_BASE_URL}Notification/all?userRole=${user.role}`)
       .then((response) => {
-        console.log(response.data);
         setNotifications(response.data);
         setLoading(false);
       })
@@ -31,6 +35,26 @@ export default function Notifications() {
       });
   }, [refresh]);
 
+  const handleMarkAsRead = async (id) => {
+    // Mark notification as read in the database
+    try {
+      console.log("Mark as read:", id);
+      const result = await axios
+        .patch(
+          `${API_BASE_URL}Notification/mark/read?notificationId=${id}&readBy=${user.email}`
+        )
+        .then((res) => {
+          console.log(res);
+          setRefresh(!refresh);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleRefresh = () => {
+    setRefresh(!refresh);
+  }
+
   return (
     <div className="d-flex flex-row" style={{ width: "100%", height: "100vh" }}>
       <Sidebar />
@@ -38,10 +62,10 @@ export default function Notifications() {
         className="bg-body-secondary d-flex flex-column flex-grow-1"
         style={{ marginLeft: "240px" }}
       >
-        <AdminNavBar notification={[]} />
+        <AdminNavBar globalRefresh={refresh} globalRefreshHandle={handleRefresh} />
         <Container
           fluid
-          className="p-4 overflow-y-hidden"
+          className="p-4 overflow-scroll"
           style={{ height: "100%" }}
         >
           <div className="d-flex justify-content-between align-items-center">
@@ -68,23 +92,25 @@ export default function Notifications() {
                 animation="border"
                 role="status"
                 style={{ width: "3rem", height: "3rem" }}
-              ></Spinner>
+              />
             </div>
           ) : (
             <div
               style={{
                 width: "100%",
-                height: "92%",
+                height: "82%",
                 overflow: "scroll",
                 borderRadius: "10px",
                 overflowX: "hidden",
-                zIndex: 10,
-                transition: "all 0.3s ease",
+                scrollbarColor: "#5b21b6 #f0f0f0",
+                scrollbarWidth: "thin",
+                scrollBehavior: "smooth",
               }}
             >
               <Card.Header
                 style={{
                   color: "white",
+                  backgroundColor: "#5b21b6",
                   borderRadius: "10px 10px 0 0",
                   padding: "12px 15px",
                   position: "sticky",
@@ -92,11 +118,10 @@ export default function Notifications() {
                   zIndex: 10,
                   fontWeight: "bold",
                   fontSize: "1.1rem",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
                 }}
-              ></Card.Header>
+              >
+                All Notifications
+              </Card.Header>
 
               <ListGroup variant="flush">
                 {notifications.length === 0 ? (
@@ -114,54 +139,96 @@ export default function Notifications() {
                         alignItems: "center",
                         padding: "15px",
                         fontSize: "0.9rem",
-                        paddingBottom: "10px",
-                        //   color: "#333",
                         borderBottom: "1px solid #f0f0f0",
+                        backgroundColor: notification.isRead
+                          ? "#fff"
+                          : "#e0f7fa",
                         transition: "background-color 0.3s ease",
                       }}
                       onMouseOver={(e) => {
-                        e.currentTarget.style.backgroundColor = "#c8cdff";
+                        e.currentTarget.style.backgroundColor = "#e3f2fd";
                       }}
                       onMouseOut={(e) => {
-                        e.currentTarget.style.backgroundColor = "white";
+                        e.currentTarget.style.backgroundColor =
+                          notification.isRead ? "#fff" : "#e0f7fa";
                       }}
                     >
-                      <div style={{ flex: 1 }}>
-                        <strong style={{ fontWeight: 600 }}>
-                          {notification &&
-                          notification.reason ==
-                            "Customer request cancelation" ? (
-                            <a href={`/admin/cancelations?orderId=${"3d10587a-d2d0-4a0b-ab8b-6a254884c607"}`}>
-                              Customer request cancelation
-                            </a>
-                          ) : (
-                            notification.reason
+                      <div className="d-flex justify-content-between w-100">
+                        <div>
+                          <strong style={{ fontWeight: 600 }}>
+                            {notification && notification.scenario === 3 ? (
+                              <a
+                                href={`/admin/cancelations?orderId=${notification.scenarioId}`}
+                                style={{
+                                  color: "#1d4ed8",
+                                  textDecoration: "none",
+                                }}
+                              >
+                                Customer request cancellation
+                              </a>
+                            ) : (
+                              notification.scenario
+                            )}
+                          </strong>
+                          {notification.isRead != true && (
+                            <Badge
+                              pill
+                              bg="success"
+                              style={{
+                                fontSize: "0.75rem",
+                                padding: "5px 10px",
+                                marginLeft: "10px",
+                              }}
+                            >
+                              NEW
+                            </Badge>
                           )}
-                        </strong>{" "}
-                        {notification.message}
-                        <div
-                          style={{
-                            fontSize: "0.8rem",
-                            color: "#888",
-                            marginTop: "5px",
-                          }}
-                        >
-                          {notification.sentDate}
+                          <p style={{ margin: 0 }}>{notification.message}</p>
+                          {notification.readBy && (
+                            <div
+                              style={{
+                                fontSize: "0.8rem",
+                                color: "#888",
+                                marginTop: "5px",
+                              }}
+                            >
+                              <strong>Read by :</strong>
+                              &nbsp;
+                              {notification.readBy}
+                            </div>
+                          )}
+                          <div
+                            style={{
+                              fontSize: "0.8rem",
+                              color: "#888",
+                              marginTop: "5px",
+                            }}
+                          >
+                            {new Date(
+                              notification.createdDate
+                            ).toLocaleString()}
+                          </div>
                         </div>
-                      </div>
-                      {notification.isNew && (
-                        <Badge
-                          pill
-                          bg="success"
-                          style={{
-                            fontSize: "0.75rem",
-                            padding: "5px 10px",
-                            marginLeft: "10px",
+
+                        <button
+                          className="d-flex justify-content-center align-content-center h-100 rounded-4 bg-light border-1"
+                          style={{ padding: "8px" }}
+                          disabled={notification.isRead}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleMarkAsRead(notification.notifyId);
                           }}
                         >
-                          NEW
-                        </Badge>
-                      )}
+                          <FaEnvelopeOpenText
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              color: "#5b21b6",
+                              cursor: "pointer",
+                            }}
+                          />
+                        </button>
+                      </div>
                     </ListGroup.Item>
                   ))
                 )}
