@@ -197,7 +197,7 @@ function App() {
                 }
               />
               <Route
-                path="orders"
+                path="/vendor/orders"
                 element={
                   <RoleBasedRoute element={<Orders />} allowedRoles={[4]} />
                 }
