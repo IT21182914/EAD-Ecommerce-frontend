@@ -33,6 +33,7 @@ const Sidebar = () => {
             Account Activation
           </Nav.Link>
         </LinkContainer>
+
         
 
         <LinkContainer to="/csr/manage/orders">
@@ -48,6 +49,15 @@ const Sidebar = () => {
             Cancel Requests
           </Nav.Link>
         </LinkContainer>
+
+
+{/*<LinkContainer to="/csr/productactivation">
+          <Nav.Link className="text-white mb-3 d-flex align-items-center">
+            <FaClipboardList className="me-3" />
+            Product Activation
+          </Nav.Link>
+        </LinkContainer>*/}
+
 
         <LinkContainer to="/csr/changepassword">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">

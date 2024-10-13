@@ -1,6 +1,11 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrashAlt,
+  FaCheckCircle,
+  FaTimesCircle,
+} from "react-icons/fa";
 
 const ProductCard = ({ product, handleEdit, deleteProduct }) => {
   return (
@@ -69,6 +74,46 @@ const ProductCard = ({ product, handleEdit, deleteProduct }) => {
         </div>
         <div style={{ fontSize: "0.9rem", color: "#666" }}>
           <strong>Stock Status:</strong> {product.stockStatus}
+        </div>
+
+        {/* Stylish Product Activation Status */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginTop: "10px",
+            fontWeight: "bold",
+          }}
+        >
+          {product.isActive ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "#d4edda",
+                padding: "5px 10px",
+                borderRadius: "20px",
+                color: "#28a745",
+              }}
+            >
+              <FaCheckCircle style={{ marginRight: "5px" }} />
+              Active Product
+            </div>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "#f8d7da",
+                padding: "5px 10px",
+                borderRadius: "20px",
+                color: "#dc3545",
+              }}
+            >
+              <FaTimesCircle style={{ marginRight: "5px" }} />
+              Inactive Product
+            </div>
+          )}
         </div>
       </Card.Body>
       <div className="d-flex justify-content-between p-3">

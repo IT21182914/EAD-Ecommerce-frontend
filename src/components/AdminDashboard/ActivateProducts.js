@@ -1,3 +1,32 @@
+/**
+ * ActivateProducts.js
+ *
+ * This component manages the activation status of vendor products.
+ * It displays a table of products fetched from the API, allowing the
+ * user to activate or deactivate products as needed. The component
+ * features a responsive design with a search bar for filtering
+ * products, and includes toast notifications for user feedback
+ * on product status changes.
+ *
+ * Dependencies:
+ * - React and React Bootstrap for UI components.
+ * - Axios for making API calls.
+ * - React Table for displaying and managing the product table.
+ * - React Toastify for displaying notifications.
+ *
+ * Key Functionalities:
+ * - Fetching product data from the API on component mount.
+ * - Toggling product activation status with a button click.
+ * - Searching products by name.
+ * - Sorting product data in the table.
+ * - Responsive layout for various screen sizes.
+ *
+ * Author: Herath R P N M
+ * Registration Number: IT21177828
+ * Date: 2024-10-08
+ *
+ */
+
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Container,
@@ -12,21 +41,27 @@ import axios from "axios";
 import { useTable, useSortBy, useGlobalFilter } from "react-table";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaSort, FaSortUp, FaSortDown, FaSearch } from "react-icons/fa";
-import VendorSidebar from "./VendorSidebar";
+import {
+  FaSort,
+  FaSortUp,
+  FaSortDown,
+  FaSearch,
+  FaToggleOff,
+  FaToggleOn,
+} from "react-icons/fa";
+import Sidebar from "./AdminSidebar.js";
 import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../../config.js";
 import AdminNavBar from "../AdminDashboard/AdminNavBar";
-import VendorNavbar from "./VendorNavbar.js";
 
-const ManageInventory = () => {
+const ActivateProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
+  // Fetch product data from the API
   useEffect(() => {
-    // Fetch product data from the API
     axios
       .get(`${API_BASE_URL}vendor/products/all`)
       .then((response) => {
@@ -43,11 +78,27 @@ const ManageInventory = () => {
     navigate(`/vendor/update/${productId}`);
   };
 
-  // Calculate total stock quantity
-  const totalStockQuantity = products.reduce(
-    (total, product) => total + product.stockQuantity,
-    0
-  );
+  // Function to toggle the activation status of a product
+  const toggleActivation = (productId, isActive) => {
+    const endpoint = `${API_BASE_URL}vendor/products/activate/${productId}`;
+    const newStatus = isActive ? "deactivate" : "activate"; // Simulate toggle
+
+    axios
+      .put(endpoint)
+      .then((response) => {
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product.productId === productId
+              ? { ...product, isActive: !product.isActive }
+              : product
+          )
+        );
+        toast.success(`Product ${newStatus}d successfully`);
+      })
+      .catch((error) => {
+        toast.error(`Failed to ${newStatus} product`);
+      });
+  };
 
   // Define table columns
   const columns = useMemo(
@@ -92,35 +143,36 @@ const ManageInventory = () => {
         accessor: "stockQuantity",
       },
       {
-        Header: "Stock Status",
-        accessor: "stockStatus",
-        Cell: ({ value }) => (
-          <span
-            style={{
-              color: value === "LowStock" ? "red" : "inherit",
-              fontWeight: value === "LowStock" ? "bold" : "normal",
-            }}
-          >
-            {value}
-          </span>
-        ),
+        Header: "Vendor ID",
+        accessor: "vendorId",
       },
       {
-        Header: "Product Status",
+        Header: "Action",
         accessor: "isActive",
-        Cell: ({ value }) => (
+        Cell: ({ row }) => (
           <Button
             size="sm"
+            onClick={() =>
+              toggleActivation(row.original.productId, row.original.isActive)
+            }
             style={{
-              backgroundColor: value ? "#4CAF50" : "#FF5252",
+              backgroundColor: row.original.isActive ? "#FF5252" : "#4CAF50",
               color: "#fff",
               border: "none",
               borderRadius: "20px",
               padding: "5px 15px",
-              cursor: "default",
+              cursor: "pointer",
             }}
           >
-            {value ? "Active" : "Inactive"}
+            {row.original.isActive ? (
+              <>
+                <FaToggleOff className="me-2" /> Deactivate
+              </>
+            ) : (
+              <>
+                <FaToggleOn className="me-2" /> Activate
+              </>
+            )}
           </Button>
         ),
       },
@@ -147,17 +199,16 @@ const ManageInventory = () => {
 
   return (
     <div className="d-flex" style={{ height: "100vh" }}>
-      <VendorSidebar role="vendor" />
+      <Sidebar role="vendor" />
       <div className="flex-grow-1" style={{ marginLeft: "240px" }}>
-        <VendorNavbar />
-
+        <AdminNavBar notification={[]} /> {/* Add AdminNavBar */}
         <Container
           fluid
           className="p-4 overflow-scroll"
           style={{ height: "100%" }}
         >
           <div className="heading-container">
-            <h2 className="heading-style">Manage Inventory</h2>
+            <h2 className="heading-style">Manage Products</h2>
           </div>
 
           <style jsx>{`
@@ -189,7 +240,6 @@ const ManageInventory = () => {
             }
           `}</style>
 
-          {/* Search Bar */}
           <div className="text-center mb-4" style={{ position: "relative" }}>
             <InputGroup
               className="search-bar-wrapper"
@@ -274,16 +324,7 @@ const ManageInventory = () => {
                   {rows.map((row) => {
                     prepareRow(row);
                     return (
-                      <tr
-                        {...row.getRowProps()}
-                        style={{
-                          backgroundColor:
-                            row.original.stockStatus === "LowStock"
-                              ? "#ffefef"
-                              : "inherit",
-                          transition: "background-color 0.3s ease",
-                        }}
-                      >
+                      <tr {...row.getRowProps()}>
                         {row.cells.map((cell) => (
                           <td {...cell.getCellProps()}>
                             {cell.render("Cell")}
@@ -294,26 +335,6 @@ const ManageInventory = () => {
                   })}
                 </tbody>
               </Table>
-            </div>
-          )}
-
-          {/* Total Stock Quantity Box */}
-          {!loading && (
-            <div className="d-flex justify-content-center mt-5">
-              <Card
-                style={{
-                  width: "250px",
-                  padding: "20px",
-                  textAlign: "center",
-                  background: "linear-gradient(135deg, #9f44d3, #6a11cb)",
-                  color: "#fff",
-                  borderRadius: "15px",
-                  boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <h4>Total Stock Quantity</h4>
-                <h3>{totalStockQuantity}</h3>
-              </Card>
             </div>
           )}
 
@@ -347,4 +368,4 @@ const ManageInventory = () => {
   );
 };
 
-export default ManageInventory;
+export default ActivateProducts;

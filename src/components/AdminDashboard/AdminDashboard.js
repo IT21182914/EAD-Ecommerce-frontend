@@ -1,12 +1,35 @@
+/**
+ * AdminDashboard.js
+ *
+ * This component renders the Admin Dashboard for the e-commerce application.
+ * It displays statistics about orders, available products, and users (Admins, CSRs, Customers, and Vendors).
+ * The dashboard includes the following features:
+ *
+ * - A line chart showing the behavior of orders over the week (Placed Orders, Issues Arised, Solved Issues).
+ * - A pie chart representing order statistics (Pending, Delivered, Partially Delivered, Canceled).
+ * - Stat cards showing the available product count, total revenue (20% of total revenue), and the number of users.
+ *
+ * Author: Herath R P N M
+ * Registration Number: IT21177828
+ * Date: 2024-10-08
+ */
+
 import React, { useState, useContext, useEffect } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import Sidebar from "./AdminSidebar";
-import { FaChartLine, FaDollarSign, FaHeart } from "react-icons/fa";
+import {
+  FaChartLine,
+  FaDollarSign,
+  FaHeart,
+  FaUser,
+  FaUserAltSlash,
+  FaUserFriends,
+  FaUserSecret,
+} from "react-icons/fa";
 import { Line, Pie } from "react-chartjs-2";
-import NotificationBell from "./NotificationBell"; // Import NotificationBell
+import NotificationBell from "./NotificationBell";
 import { AuthContext } from "../../Context/AuthContext";
 import API_BASE_URL from "../../config";
-
 
 import {
   Chart as ChartJS,
@@ -21,6 +44,12 @@ import {
 } from "chart.js";
 import axios from "axios";
 import AdminNavBar from "./AdminNavBar";
+import {
+  FaRegUser,
+  FaShop,
+  FaUserAstronaut,
+  FaUserShield,
+} from "react-icons/fa6";
 
 ChartJS.register(
   LineElement,
@@ -36,38 +65,35 @@ ChartJS.register(
 const AdminDashboard = () => {
   const { user, loading, logout } = useContext(AuthContext);
   const [refresh, setRefresh] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  const [details, setDetails] = useState([]);
+  const [revenue, setRevenue] = useState([]);
+  const [stats, setStats] = useState([]);
+  const [product, setProduct] = useState([]);
+  const [behaviour, setBehaviour] = useState([]);
 
   console.log(user);
   console.log(loading);
+  console.log(stats);
+
   // Data for Line Chart (Users Behavior)
   const lineData = {
-    labels: [
-      "9:00AM",
-      "12:00PM",
-      "3:00PM",
-      "6:00PM",
-      "9:00PM",
-      "12:00AM",
-      "3:00AM",
-      "6:00AM",
-    ],
+    labels: behaviour.days,
     datasets: [
       {
-        label: "Open",
-        data: [120, 200, 250, 300, 350, 400, 420, 450],
+        label: "Placed Order",
+        data: behaviour.orders,
         borderColor: "rgba(75,192,192,1)",
         fill: false,
       },
       {
-        label: "Click",
-        data: [80, 150, 200, 240, 290, 350, 370, 390],
+        label: "Issues arised",
+        data: behaviour.issues,
         borderColor: "rgba(255,99,132,1)",
         fill: false,
       },
       {
-        label: "Click Second Time",
-        data: [60, 100, 140, 190, 250, 300, 320, 330],
+        label: "Solved Issues",
+        data: behaviour.resolved,
         borderColor: "rgba(255,206,86,1)",
         fill: false,
       },
@@ -76,46 +102,107 @@ const AdminDashboard = () => {
 
   // Data for Pie Chart (Email Statistics)
   const pieData = {
-    labels: ["Open", "Bounce", "Unsubscribe"],
+    labels: ["Pending", "Delivered", "Partially Delivered", "Canceled"],
     datasets: [
       {
-        label: "Email Statistics",
-        data: [40, 20, 40],
+        label: "Order Statistics",
+        data: [
+          stats.PENDING,
+          stats.DELIVERED,
+          stats.PARTIALY_DELIVERED,
+          stats.CANCELED,
+        ],
         backgroundColor: [
-          "rgba(75,192,192,1)",
-          "rgba(255,99,132,1)",
-          "rgba(255,206,86,1)",
+          "rgba(54, 162, 235, 0.8)",
+          "rgba(75, 192, 192, 0.8)",
+          "rgba(255, 206, 86, 0.8)",
+          "rgba(255, 99, 132, 0.8)",
         ],
         hoverBackgroundColor: [
-          "rgba(75,192,192,0.8)",
-          "rgba(255,99,132,0.8)",
-          "rgba(255,206,86,0.8)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(255, 99, 132, 1)",
         ],
       },
     ],
   };
 
-  useEffect(() => {
-    // Simulating an API call with dummy data for orders
-    // axios
-    //   .get(`${API_BASE_URL}Order/all`)
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     setOrders(response.data);
-    //     setLoading(false);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+  //Function for fetch all needed data from the API
+  async function fetchData() {
+    try {
+      axios
+        .get(`${API_BASE_URL}Dashboard/available/user/count`)
+        .then((response) => {
+          console.log(response.data);
+          setDetails(response.data);
+          // setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
-    // Simulating an API call to get notifications
-    axios
-      .get(`${API_BASE_URL}Notification/my/notifications`)
-      .then((response) => {
-        console.log(response.data);
-        setNotifications(response.data);
-      });
+      axios
+        .get(`${API_BASE_URL}Dashboard/total/revanue`)
+        .then((response) => {
+          console.log(response.data);
+          setRevenue(response.data);
+          // setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      axios
+        .get(`${API_BASE_URL}Dashboard/order/stats`)
+        .then((response) => {
+          console.log(response.data);
+          setStats(response.data);
+          // setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      axios
+        .get(`${API_BASE_URL}Dashboard/available/product/count`)
+        .then((response) => {
+          console.log(response.data);
+          setProduct(response.data);
+          // setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      axios
+        .get(`${API_BASE_URL}Dashboard/order/behaviour`)
+        .then((response) => {
+          console.log(response.data);
+          setBehaviour(response.data);
+          // setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  }
+
+  //Fetch data when the page is loaded
+  useEffect(() => {
+    fetchData();
   }, [refresh]);
+
+  //Function to calculate the profit
+  function getProfit() {
+    let amount = parseFloat(revenue);
+    amount = (amount * 20) / 100;
+    amount = amount.toFixed(2);
+    return amount;
+  }
+  console.log(details);
 
   return (
     <div className="d-flex flex-row" style={{ width: "100%", height: "100vh" }}>
@@ -124,7 +211,7 @@ const AdminDashboard = () => {
         className="bg-body-secondary d-flex flex-column flex-grow-1"
         style={{ marginLeft: "240px" }}
       >
-        <AdminNavBar notification={[]} />
+        <AdminNavBar />
         <Container
           fluid
           className="p-4 overflow-scroll"
@@ -154,11 +241,11 @@ const AdminDashboard = () => {
               <Card className="shadow-sm h-100">
                 <Card.Body className="text-center">
                   <FaChartLine size={30} className="text-warning" />
-                  <h3 className="my-2">150GB</h3>
-                  <p>Number</p>
+                  <h3 className="my-2">{product ?? "N / A"}</h3>
+                  <p>Products</p>
                 </Card.Body>
                 <Card.Footer className="text-center">
-                  <small>Update Now</small>
+                  <small>Available Product count</small>
                 </Card.Footer>
               </Card>
             </Col>
@@ -166,23 +253,49 @@ const AdminDashboard = () => {
               <Card className="shadow-sm h-100">
                 <Card.Body className="text-center">
                   <FaDollarSign size={30} className="text-success" />
-                  <h3 className="my-2">$1,345</h3>
-                  <p>Revenue</p>
+                  <h3 className="my-2">$ {getProfit()}</h3>
+                  <p>Total Revenue</p>
                 </Card.Body>
                 <Card.Footer className="text-center">
-                  <small>Last Day</small>
+                  <small>20% of Total Revenue</small>
                 </Card.Footer>
               </Card>
             </Col>
             <Col md={3} sm={6} className="mb-4">
               <Card className="shadow-sm h-100">
-                <Card.Body className="text-center">
-                  <FaHeart size={30} className="text-primary" />
-                  <h3 className="my-2">+45K</h3>
-                  <p>Followers</p>
+                <Card.Body className="text-center d-flex flex-row justify-content-center gap-4">
+                  <div>
+                    <FaUserSecret size={30} className="text-primary" />
+                    <h3 className="my-2">{details?.Admin}</h3>
+                    Admin
+                  </div>
+                  <div>
+                    <FaUserShield size={30} className="text-primary" />
+                    <h3 className="my-2">{details?.CSR}</h3>
+                    CSR
+                  </div>
                 </Card.Body>
                 <Card.Footer className="text-center">
-                  <small>Update Now</small>
+                  <small>Staff</small>
+                </Card.Footer>
+              </Card>
+            </Col>
+            <Col md={3} sm={6} className="mb-4">
+              <Card className="shadow-sm h-100">
+                <Card.Body className="text-center d-flex flex-row justify-content-center gap-4">
+                  <div>
+                    <FaUserFriends size={30} className="text-primary" />
+                    <h3 className="my-2">{details?.Customer}</h3>
+                    Customers
+                  </div>
+                  <div>
+                    <FaShop size={30} className="text-primary" />
+                    <h3 className="my-2">{details?.Vendor}</h3>
+                    Vendors
+                  </div>
+                </Card.Body>
+                <Card.Footer className="text-center">
+                  <small>Users</small>
                 </Card.Footer>
               </Card>
             </Col>
@@ -193,8 +306,8 @@ const AdminDashboard = () => {
             <Col lg={8}>
               <Card className="shadow-sm">
                 <Card.Body>
-                  <Card.Title>Users Behavior</Card.Title>
-                  <p>24 Hours Performance</p>
+                  <Card.Title>Behavior of orders</Card.Title>
+                  <p>This week Behaviour</p>
                   <Line
                     data={lineData}
                     options={{
@@ -208,8 +321,8 @@ const AdminDashboard = () => {
             <Col lg={4}>
               <Card className="shadow-sm">
                 <Card.Body>
-                  <Card.Title>Email Statistics</Card.Title>
-                  <p>Last Campaign Performance</p>
+                  <Card.Title>Order Statistics</Card.Title>
+                  <p>Full spcification</p>
                   <Pie
                     data={pieData}
                     options={{

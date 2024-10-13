@@ -7,7 +7,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotificationDropdown from "./NotificationDropdown";
 import API_BASE_URL from "../../config";
-import AdminNavBar from "../AdminDashboard/AdminNavBar";
 import ProductModal from "./ProductModal";
 import StatisticsCard from "./StatisticsCard";
 import LineChartComponent from "./LineChartComponent";
@@ -15,6 +14,7 @@ import PieChartComponent from "./PieChartComponent";
 import AddProductButton from "./AddProductButton";
 import NotificationBell from "./NotificationBell";
 import HeaderComponent from "./HeaderComponent";
+import VendorNavbar from "./VendorNavbar";
 
 const VendorDashboard = () => {
   const navigate = useNavigate();
@@ -133,7 +133,7 @@ const VendorDashboard = () => {
         className="bg-body-secondary d-flex flex-column flex-grow-1"
         style={{ marginLeft: "240px" }}
       >
-        <AdminNavBar notification={[]} />
+        <VendorNavbar/>
         <Container
           fluid
           className="p-4 overflow-scroll"

@@ -35,7 +35,7 @@ function Login() {
       const response = await login(formData);
       console.log(response);
     } catch (error) {
-      toast.error("Login failed. Please check your credentials.", {
+      toast.error("Login failed: " + error.message, {
         position: "top-right",
       });
       console.error("Login failed: ", error);
