@@ -1,5 +1,5 @@
 /**
- * AdminNavBar.js
+ * VendorNavbar.js
  *
  * This component represents the navigation bar for the admin dashboard.
  * It displays notifications for the logged-in admin and includes a profile action button.
@@ -14,22 +14,31 @@
  * Date: 2024-10-08
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
-import NotificationBell from "./NotificationBell";
+import VendorNotificationBell from "./VendorNotificationBell.js";
 import ProfileActionButton from "../Common/ProfileActionButton";
 import axios from "axios";
+import { AuthContext } from "../../Context/AuthContext";
 import API_BASE_URL from "../../config.js";
 
-export default function AdminNavBar({ globalRefresh, globalRefreshHandle }) {
+export default function VendorNavbar() {
+  const { user } = useContext(AuthContext);
   const [notifications, setNotifications] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
   // Fetch notifications for the logged-in user
   useEffect(() => {
-    axios.get(`${API_BASE_URL}Notification/all?userRole=1`).then((response) => {
-      setNotifications(response.data);
-    });
-  }, [globalRefresh]);
+    axios
+      .get(`${API_BASE_URL}Notification/my/notifications?userId=${user.id}`)
+      .then((response) => {
+        setNotifications(response.data);
+      });
+  }, [refresh]);
+
+  const handleRefresh = () => {
+    setRefresh(!refresh);
+  };
 
   return (
     <div
@@ -46,9 +55,9 @@ export default function AdminNavBar({ globalRefresh, globalRefreshHandle }) {
         className="d-flex flex-row align-items-center gap-3"
         style={{ width: "100%", placeContent: "flex-end" }}
       >
-        <NotificationBell
+        <VendorNotificationBell
           notifications={notifications}
-          handleRefresh={globalRefreshHandle}
+          handleRefresh={handleRefresh}
         />
         <ProfileActionButton />
       </Nav>

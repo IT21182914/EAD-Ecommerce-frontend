@@ -56,6 +56,10 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Login failed", error);
+      if (error.message === "Network Error") {
+        throw new Error("Network connection error");
+      }
+      throw new Error("Invalid email or password");
     } finally {
       setLoading(false);
     }

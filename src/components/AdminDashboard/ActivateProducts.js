@@ -1,3 +1,32 @@
+/**
+ * ActivateProducts.js
+ *
+ * This component manages the activation status of vendor products.
+ * It displays a table of products fetched from the API, allowing the
+ * user to activate or deactivate products as needed. The component
+ * features a responsive design with a search bar for filtering
+ * products, and includes toast notifications for user feedback
+ * on product status changes.
+ *
+ * Dependencies:
+ * - React and React Bootstrap for UI components.
+ * - Axios for making API calls.
+ * - React Table for displaying and managing the product table.
+ * - React Toastify for displaying notifications.
+ *
+ * Key Functionalities:
+ * - Fetching product data from the API on component mount.
+ * - Toggling product activation status with a button click.
+ * - Searching products by name.
+ * - Sorting product data in the table.
+ * - Responsive layout for various screen sizes.
+ *
+ * Author: Herath R P N M
+ * Registration Number: IT21177828
+ * Date: 2024-10-08
+ *
+ */
+
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Container,
@@ -31,8 +60,8 @@ const ActivateProducts = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
+  // Fetch product data from the API
   useEffect(() => {
-    // Fetch product data from the API
     axios
       .get(`${API_BASE_URL}vendor/products/all`)
       .then((response) => {
@@ -211,7 +240,6 @@ const ActivateProducts = () => {
             }
           `}</style>
 
-          {/* Search Bar */}
           <div className="text-center mb-4" style={{ position: "relative" }}>
             <InputGroup
               className="search-bar-wrapper"

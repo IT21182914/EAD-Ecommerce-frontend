@@ -5,7 +5,7 @@ import axios from "axios";
 import API_BASE_URL from "../../config";
 import { AuthContext } from "../../Context/AuthContext";
 
-const NotificationBell = ({ notifications, handleRefresh }) => {
+const VendorNotificationBell = ({ notifications, handleRefresh }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const { user } = useContext(AuthContext);
 
@@ -178,7 +178,7 @@ const NotificationBell = ({ notifications, handleRefresh }) => {
                         marginTop: "5px",
                       }}
                     >
-                      {new Date(notification.createdDate).toLocaleString()}
+                      {notification.createdDate}
                     </div>
                   </div>
                   {notification.isRead != true && (
@@ -216,9 +216,6 @@ const NotificationBell = ({ notifications, handleRefresh }) => {
             onMouseOut={(e) => {
               e.currentTarget.style.backgroundColor = "#f8f9fa";
             }}
-            onClick={() => {
-              window.location.href = "/admin/notifications";
-            }}
           >
             View All Notifications
           </Card.Footer>
@@ -228,4 +225,4 @@ const NotificationBell = ({ notifications, handleRefresh }) => {
   );
 };
 
-export default NotificationBell;
+export default VendorNotificationBell;

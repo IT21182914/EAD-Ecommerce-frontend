@@ -1,3 +1,45 @@
+/**
+ * ManageProducts.js
+ *
+ * This component allows the admin to manage vendor products in the e-commerce system.
+ * It includes functionalities for searching products by vendor ID,
+ * displaying a list of products in a table format, and providing options to activate
+ * or deactivate products. The component integrates with a backend API to fetch
+ * product details and perform updates.
+ *
+ * Key Features:
+ * - Fetches all products for the vendor from the API on component mount and when refreshed.
+ * - Displays products in a responsive table with filtering options.
+ * - Provides modals for confirming activation and deactivation of products.
+ * - Uses react-bootstrap for UI components and react-toastify for notifications.
+ *
+ * State Management:
+ * - details: Array to hold product details fetched from the API.
+ * - loading: Boolean to indicate loading state while fetching products.
+ * - isLoading: Boolean to indicate loading state during activation/deactivation actions.
+ * - searchTerm: String for filtering products based on vendor ID.
+ * - showActivateModal / showDeactivateModal: Booleans to control visibility of modals.
+ * - selectedOrder: Object to hold the currently selected product for activation/deactivation.
+ * - error: String to hold any error messages.
+ * - refresh: Boolean to trigger re-fetching of product details.
+ *
+ * API Integration:
+ * - Axios is used to make HTTP requests to the API endpoints for retrieving product
+ * details and updating their activation status.
+ *
+ *
+ * Dependencies:
+ * - React
+ * - React-Bootstrap
+ * - React-Icons
+ * - React-Toastify
+ * - Axios
+ *
+ * Author: Herath R P N M
+ * Registration Number: IT21177828
+ * Date: 2024-10-08
+ */
+
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -31,8 +73,8 @@ export default function ManageProducts() {
   const [error, setError] = useState("");
   const [refresh, setRefresh] = useState(false);
 
+  // Simulating an API call with dummy data for details
   useEffect(() => {
-    // Simulating an API call with dummy data for details
     axios
       .get(`${API_BASE_URL}vendor/products/all`)
       .then((response) => {
@@ -47,6 +89,7 @@ export default function ManageProducts() {
       });
   }, [refresh]);
 
+  // Handle activation and deactivation actions
   const handleAction = (order, action) => {
     if (action === "Activate") {
       setSelectedOrder(order);
@@ -57,6 +100,7 @@ export default function ManageProducts() {
     }
   };
 
+  // Activate or Deactivate product
   const activateProduct = (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -88,6 +132,7 @@ export default function ManageProducts() {
       });
   };
 
+  // Filter products based on search term
   const filteredOrders = details.filter((order) =>
     order.vendorId
       ? order.vendorId.toLowerCase().includes(searchTerm.toLowerCase())
@@ -107,8 +152,22 @@ export default function ManageProducts() {
           className="p-4 overflow-scroll"
           style={{ height: "100%" }}
         >
-          <div className="container">
-            <h1>Manage Products</h1>
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="w-100 d-flex justify-content-center">
+              <h2
+                className="mb-4"
+                style={{
+                  fontSize: "2.5rem",
+                  fontWeight: "700",
+                  background:
+                    "linear-gradient(90deg, rgba(29, 78, 216, 1) 0%, rgba(91, 33, 182, 1) 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Manage Products
+              </h2>
+            </div>
           </div>
           {/* Search Bar */}
           <div className="text-center mb-4">
