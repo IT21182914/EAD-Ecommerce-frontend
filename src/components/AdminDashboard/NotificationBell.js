@@ -4,6 +4,7 @@ import { Badge, Card, ListGroup } from "react-bootstrap";
 
 const NotificationBell = ({ notifications }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+
   const dropdownRef = useRef(null);
 
   const handleToggleNotifications = () => {
@@ -26,7 +27,11 @@ const NotificationBell = ({ notifications }) => {
   }, []);
 
   return (
-    <div style={{ position: "relative", cursor: "pointer" }} onClick={handleToggleNotifications} ref={dropdownRef}>
+    <div
+      style={{ position: "relative", cursor: "pointer" }}
+      onClick={handleToggleNotifications}
+      ref={dropdownRef}
+    >
       {/* Bell Icon with Notification Count */}
       <FaBell
         size={28}
@@ -116,7 +121,14 @@ const NotificationBell = ({ notifications }) => {
                 >
                   <div style={{ flex: 1 }}>
                     <strong style={{ fontWeight: 600 }}>
-                      {notification.reason}
+                      {notification &&
+                      notification.reason == "Customer request cancelation." ? (
+                        <a href="/admin/cancelations">
+                          Customer request cancelation
+                        </a>
+                      ) : (
+                        notification.reason
+                      )}
                     </strong>{" "}
                     {notification.message}
                     <div
