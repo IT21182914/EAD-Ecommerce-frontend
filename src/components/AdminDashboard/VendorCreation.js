@@ -124,12 +124,14 @@ const VendorCreation = () => {
     }
     // try {
 
+      const token = localStorage.getItem("accessToken")
+
       const response = await axios.post(
         `${API_BASE_URL}create-by-admin`,
         requestBody,
         {
           headers:{
-            Authorization : `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJuYXZlZW5AZ21haWwuY29tIiwianRpIjoiNjM5Nzk1ODQtMTI2NC00NDFmLWFiZTgtMmFlMjE4N2Y3MmQ0IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6Im5hdmVlbiBzdHJpbmciLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTcyODIzNjE3OSwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMjEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0NDMyMSJ9.3_MInJ65JbA9ycrjkyezsAZf1e-o_aT-3zUkXj-mEqM`,
+            Authorization : `bearer ${token}`,
             'Content-Type' : 'application/json'
           },
         }

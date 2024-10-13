@@ -123,13 +123,13 @@ const CreateUser = () => {
       profilePicture: uploadedImageUrl,
     }
     // try {
-
+      const token = localStorage.getItem("accessToken")
       const response = await axios.post(
         `${API_BASE_URL}create-by-admin`,
         requestBody,
         {
           headers:{
-            Authorization : `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJuYXZlZW5AZ21haWwuY29tIiwianRpIjoiNzYyMDc2ZjktZjRjZC00ZTdlLThjZDktNDlhYTRiOWRkY2UxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6Im5hdmVlbiBzdHJpbmciLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTcyODI0MDc0NywiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMjEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0NDMyMSJ9.rcSOwpjMTnvbsUgHzBTpvmj1wrlpOKjrmQn4e5OcF84`,
+            Authorization : `bearer ${token}`,
             'Content-Type' : 'application/json'
           },
         }
