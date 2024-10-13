@@ -17,11 +17,14 @@ import AdminNavBar from "../AdminDashboard/AdminNavBar"; // Import AdminNavBar
 import { useParams, useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import DeleteConfirmationModal from "./DeleteConfirmationModal"; // Import the separate component
+
 import API_BASE_URL from "../../config";
+import { AuthContext } from "../../Context/AuthContext";
 
 const ProductList = () => {
   const { vendorId } = useParams();
   const [products, setProducts] = useState([]);
+  const { user } = React.useContext(AuthContext);
   const [loading, setLoading] = useState(true); // State for loading spinner
   const [searchTerm, setSearchTerm] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -32,7 +35,7 @@ const ProductList = () => {
   useEffect(() => {
     // Fetch vendor products from the backend
     axios
-      .get(`${API_BASE_URL}vendor/products/all`)
+      .get(`${API_BASE_URL}vendor/products/${user.id}`)
       .then((response) => {
         setProducts(response.data);
         setLoading(false); // Turn off the spinner after data is fetched
