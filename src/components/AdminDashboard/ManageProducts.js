@@ -1,9 +1,99 @@
-import React from "react";
-import Sidebar from "./AdminSidebar";
-import { Container } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Table,
+  Button,
+  Modal,
+  FormControl,
+  InputGroup,
+  Spinner,
+  Badge,
+  Dropdown,
+  DropdownButton,
+  Form,
+} from "react-bootstrap";
+import { FaSearch } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 import AdminNavBar from "./AdminNavBar";
+import Sidebar from "./AdminSidebar";
+import API_BASE_URL from "../../config";
 
 export default function ManageProducts() {
+  const [details, setDetails] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showActivateModal, setShowActivateModal] = useState(false);
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [error, setError] = useState("");
+  const [refresh, setRefresh] = useState(false);
+
+  useEffect(() => {
+    // Simulating an API call with dummy data for details
+    axios
+      .get(`${API_BASE_URL}vendor/products/all`)
+      .then((response) => {
+        setDetails(response.data);
+        console.log(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        toast.error("Failed to load products");
+        setLoading(false);
+        console.log(error);
+      });
+  }, [refresh]);
+
+  const handleAction = (order, action) => {
+    if (action === "Activate") {
+      setSelectedOrder(order);
+      setShowActivateModal(true);
+    } else if (action === "Deactivate") {
+      setSelectedOrder(order);
+      setShowDeactivateModal(true);
+    }
+  };
+
+  const activateProduct = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    let message = "";
+    if (selectedOrder.isActive === false) {
+      message = "Activated";
+    } else {
+      message = "Deactivated";
+    }
+    // Perform API call to cancel order
+    console.log("activateProduct", selectedOrder.productId);
+    setError("");
+    axios
+      .put(
+        `${API_BASE_URL}vendor/products/activate/${selectedOrder?.productId}`
+      )
+      .then((response) => {
+        console.log(response.data);
+        toast.success(`Product ${message} successfully`);
+        setShowActivateModal(false);
+        setShowDeactivateModal(false);
+        setIsLoading(false);
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Failed to Activate Product");
+        setIsLoading(false);
+      });
+  };
+
+  const filteredOrders = details.filter((order) =>
+    order.vendorId
+      ? order.vendorId.toLowerCase().includes(searchTerm.toLowerCase())
+      : ""
+  );
+
   return (
     <div className="d-flex flex-row" style={{ width: "100%", height: "100vh" }}>
       <Sidebar />
@@ -20,6 +110,225 @@ export default function ManageProducts() {
           <div className="container">
             <h1>Manage Products</h1>
           </div>
+          {/* Search Bar */}
+          <div className="text-center mb-4">
+            <InputGroup
+              className="search-bar-wrapper"
+              style={{ maxWidth: "400px", margin: "0 auto" }}
+            >
+              <FormControl
+                type="search"
+                placeholder="Search by Customer ID"
+                value={searchTerm}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setSearchTerm(e.target.value);
+                }}
+                style={{
+                  borderRadius: "30px 0 0 30px",
+                  padding: "10px 20px",
+                  border: "2px solid #ddd",
+                }}
+              />
+              <Button
+                variant="dark"
+                style={{ borderRadius: "0 30px 30px 0", padding: "10px 15px" }}
+              >
+                <FaSearch />
+              </Button>
+            </InputGroup>
+          </div>
+
+          {/* Orders Table */}
+          {loading ? (
+            <div className="text-center my-5">
+              <Spinner
+                animation="border"
+                role="status"
+                style={{ width: "3rem", height: "3rem" }}
+              ></Spinner>
+            </div>
+          ) : (
+            <Table
+              striped
+              bordered
+              hover
+              className="shadow-sm"
+              style={{ fontSize: "0.9rem" }}
+            >
+              <thead>
+                <tr>
+                  <th>Product ID</th>
+                  <th>Vendor ID</th>
+                  <th>Item</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Stock QTY</th>
+                  <th>Stock Status</th>
+                  <th>UpdatedAt</th>
+                  <th>CreatedAt</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredOrders.map((product) => (
+                  <tr key={product.productId}>
+                    <td>{product.productId}</td>
+                    <td>{product.vendorId}</td>
+                    <td>{product.name}</td>
+                    <td>{product.price}</td>
+                    <td>
+                      <Badge
+                        className="p-2"
+                        pill
+                        bg={product.isActive == true ? "success" : "danger"}
+                      >
+                        {product.isActive == true ? "Active" : "Inactive"}
+                      </Badge>
+                    </td>
+                    <td>{product.stockQuantity}</td>
+                    <td>
+                      <Badge
+                        className="p-2"
+                        pill
+                        bg={
+                          product.stockStatus === "OutOfStock"
+                            ? "danger"
+                            : product.stockStatus === "Available"
+                            ? "success"
+                            : product.stockStatus === "PENDING"
+                            ? "primary"
+                            : product.stockStatus === "PARTIALY-DELIVERED"
+                            ? "secondary"
+                            : "warning"
+                        }
+                      >
+                        {product.stockStatus}
+                      </Badge>
+                    </td>
+                    <td>{product.createdAt}</td>
+                    <td>{product.updatedAt}</td>
+                    <td>
+                      <DropdownButton
+                        id="dropdown-basic-button"
+                        title="Action"
+                        variant="outline-secondary"
+                        size="sm"
+                      >
+                        <Dropdown.Item
+                          onClick={() => handleAction(product, "Activate")}
+                          disabled={product.isActive === true ? true : false}
+                        >
+                          Activate
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => handleAction(product, "Deactivate")}
+                          disabled={product.isActive === true ? false : true}
+                        >
+                          Deactivate
+                        </Dropdown.Item>
+                      </DropdownButton>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+
+          {/* Cancel Confirmation Modal */}
+          <Modal
+            show={showActivateModal}
+            onHide={() => {
+              setShowActivateModal(false);
+              setError("");
+            }}
+            centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Confirm Activation</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form.Group controlId="cancelNote">
+                {error ? (
+                  <Form.Label style={{ color: "red" }}>{error}</Form.Label>
+                ) : (
+                  <Form.Label>
+                    Please confirm{" "}
+                    <span className="text-success fw-bold">Activation</span> of
+                    product : <br />
+                    <b>Product Name: </b>
+                    {selectedOrder?.name} <br />
+                    <b>Product ID : </b> {selectedOrder?.productId}
+                  </Form.Label>
+                )}
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowActivateModal(false);
+                }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="success"
+                onClick={activateProduct}
+                disabled={isLoading}
+              >
+                Confirm Activation
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
+          <Modal
+            show={showDeactivateModal}
+            onHide={() => {
+              setShowDeactivateModal(false);
+              setError("");
+            }}
+            centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Deliver Order</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form.Group controlId="cancelNote">
+                {error ? (
+                  <Form.Label style={{ color: "red" }}>{error}</Form.Label>
+                ) : (
+                  <Form.Label>
+                    Please confirm{" "}
+                    <span className="text-danger fw-bold">Deactivation</span> of
+                    product : <br />
+                    <b>Product Name: </b>
+                    {selectedOrder?.name} <br />
+                    <b>Product ID : </b> {selectedOrder?.productId}
+                  </Form.Label>
+                )}
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowDeactivateModal(false);
+                }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="danger"
+                onClick={activateProduct}
+                disabled={isLoading}
+              >
+                Confirm Deactivation
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
+          <ToastContainer autoClose={3000} hideProgressBar={false} />
         </Container>
       </div>
     </div>
