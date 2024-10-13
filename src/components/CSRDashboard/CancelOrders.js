@@ -26,15 +26,36 @@ const CancelOrders = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showDeliverModal, setShowDeliverModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [cancelNote, setCancelNote] = useState("");
   const [error, setError] = useState("");
   const [notifications, setNotifications] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+
+  // useEffect(() => {
+  //   axios
+  //     .get(`${API_BASE_URL}Order/all`)
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       setOrders(response.data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+
+  // }, [refresh]);
   useEffect(() => {
+    const token = localStorage.getItem("accessToken");
     axios
-      .get(`${API_BASE_URL}Order/all`)
+      .get(`${API_BASE_URL}Order/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         setOrders(response.data);
@@ -43,7 +64,6 @@ const CancelOrders = () => {
       .catch((error) => {
         console.log(error);
       });
-
   }, [refresh]);
 
   const handleAction = (order, action) => {
@@ -51,19 +71,16 @@ const CancelOrders = () => {
       setSelectedOrder(order);
       setShowCancelModal(true);
     } else if (action === "Deliver") {
-      setOrders((prevOrders) =>
-        prevOrders.map((o) =>
-          o.orderID === order.orderID ? { ...o, status: "Delivered" } : o
-        )
-      );
-      toast.success("Order marked as Delivered");
+      setShowDeliverModal(true);
+      setSelectedOrder(order);
     }
   };
 
-  const confirmCancel = () => {
-    // Perform API call to cancel order
 
+  const confirmCancel = () => {
     console.log("Cancelling order", selectedOrder.orderID);
+    const token = localStorage.getItem("accessToken");
+    console.log(token);
     if (cancelNote === "") {
       setError("Please provide a reason for cancellation");
       toast.error("Please provide a reason for cancellation");
@@ -77,6 +94,11 @@ const CancelOrders = () => {
           {
             note: cancelNote,
             canceledBy: "super admin",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         )
         .then((response) => {
@@ -90,6 +112,35 @@ const CancelOrders = () => {
           toast.error("Failed to cancel order");
         });
     }
+  };
+
+  const deliverOrder = () => {
+    console.log("Delivering order", selectedOrder.orderId);
+    setIsLoading(true);
+    const token = localStorage.getItem("accessToken");
+
+    axios
+      .patch(
+        `${API_BASE_URL}Order/delivered?orderId=${selectedOrder.orderId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        setRefresh(!refresh);
+        console.log(response.data);
+        toast.success("Order delivered successfully");
+        setShowDeliverModal(false);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Failed to deliver order");
+        setIsLoading(false);
+      });
   };
 
   const filteredOrders = orders.filter((order) =>

@@ -136,8 +136,6 @@ const VendorCreation = () => {
 
       const token = localStorage.getItem("accessToken");
 
-      const token = localStorage.getItem("accessToken")
-
       const response = await axios.post(
         `${API_BASE_URL}create-by-admin`,
         requestBody,
