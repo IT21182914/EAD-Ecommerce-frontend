@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Container, Form, Button, Row, Col, Spinner } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CSRSidebar from "./CSRSidebar";
+import API_BASE_URL from "../../config.js";
 
 const ChangePassword = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +16,10 @@ const ChangePassword = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+
 
   const handleChange = (e) => {
     setFormData({
@@ -25,24 +31,37 @@ const ChangePassword = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-
-    // Password change logic goes here
+  
+    // Construct the request body
+    const reqBody = {
+      userId: localStorage.getItem("userID"), // Assuming userID is stored in localStorage
+      oldPassword: formData.oldPassword,      // Get oldPassword from formData
+      newPassword: formData.newPassword,      // Get newPassword from formData
+    };
+  
+    console.log(reqBody); // For debugging, to check the request body structure
+  
+    // Send the password change request
     axios
-      .post(`${API_BASE_URL}change-password`, formData)
-      .then(() => {
+      .post(`${API_BASE_URL}activate-crv-vendor`, reqBody)
+      .then((response) => {
+        // Handle successful response
         toast.success("Password changed successfully!");
+        navigate("/");
         setLoading(false);
       })
       .catch((error) => {
+        // Handle errors
         toast.error("Error changing password.");
         console.error("Error changing password:", error);
         setLoading(false);
       });
   };
+  
 
   return (
     <div className="d-flex">
-      <CSRSidebar />
+      {/* <CSRSidebar /> */}
       <Container
         fluid
         className="p-4 d-flex justify-content-center align-items-start"

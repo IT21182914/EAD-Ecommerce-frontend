@@ -1,6 +1,6 @@
 // config.js
 
-const API_BASE_URL = "http://[2402:d000:a400:c488:6018:d743:f129:7413]/api/v1/";
+const API_BASE_URL = "http://[2402:d000:a400:6269:60e2:7c63:21f6:815c]/api/v1/";
 
 // const API_BASE_URL = "http://[2402:d000:a400:54e4:ac44:5672:7655:fe53]/api/v1/";
 // const API_BASE_URL = "http://bathiyapathum.lol/api/v1/";

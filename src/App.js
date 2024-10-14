@@ -26,7 +26,9 @@ import OrderCancellationRequestbyCSR from "./components/CSRDashboard/OrderCancel
 import ManageOrder from "./components/CSRDashboard/CancelOrders";
 import ActivateProducts from "./components/CSRDashboard/ActivateProducts";
 import ManageOrders from "./components/AdminDashboard/ManageOrders";
+import ChangePassword from "./components/CSRDashboard/ChangePassword";
 import Feedback from "./components/VendorDashboard/Feedback";
+
 
 function App() {
   return (
@@ -38,6 +40,7 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
+              <Route path="/change-password" element={<ChangePassword/>} />
 
               {/* Admin Routes */}
               <Route
