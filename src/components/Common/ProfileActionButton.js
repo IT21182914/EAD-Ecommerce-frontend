@@ -4,9 +4,14 @@ import "../../App.css";
 import { AuthContext } from "../../Context/AuthContext";
 import profilePic from "../../assets/default_user.png";
 
-
 export default function ProfileActionButton() {
   const { user, logout } = useContext(AuthContext);
+
+  const profileImage =
+    user?.profilePicture == "" || user?.profilePicture == null
+      ? profilePic
+      : user?.profilePicture;
+
   return (
     <Dropdown>
       <Dropdown.Toggle
@@ -15,7 +20,7 @@ export default function ProfileActionButton() {
           width: 40,
           height: 40,
           padding: 0,
-          backgroundImage: `url(${user.profilePicture ?? profilePic})`,
+          backgroundImage: `url(${profileImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

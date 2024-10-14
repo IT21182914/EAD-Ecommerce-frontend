@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VendorSidebar from "./VendorSidebar";
-import AdminNavBar from "../AdminDashboard/AdminNavBar"; // Import AdminNavBar
+import AdminNavBar from "../AdminDashboard/AdminNavBar";
 import API_BASE_URL from "../../config.js";
 import { AuthContext } from "../../Context/AuthContext";
 
@@ -19,8 +19,8 @@ const CreateProduct = () => {
     stockQuantity: 0,
     category: "",
     imageUrl: "",
-    type: "Anyone", // Default value
-    size: "Default", // Default value
+    type: "Anyone",
+    size: "Default",
     vendorId: user.id,
   });
   const [loading, setLoading] = useState(false);
@@ -53,34 +53,32 @@ const CreateProduct = () => {
     <div className="d-flex">
       <VendorSidebar role="vendor" />
       <div className="flex-grow-1" style={{ marginLeft: "240px" }}>
-        {/* Add AdminNavBar */}
         <AdminNavBar notification={[]} />
         <Container
           fluid
-          className="p-4 d-flex justify-content-center align-items-start"
+          className="p-4 d-flex justify-content-center align-items-start animated-container"
           style={{ minHeight: "100vh" }}
         >
           <div style={{ flex: 1, maxWidth: "800px", width: "100%" }}>
-            <h2 className="text-center my-4 text-primary display-4">
+            <h2 className="text-center my-4 text-primary display-4 animated-header">
               Create Product
             </h2>
 
-            {loading && (
-              <div className="text-center my-5">
+            {loading ? (
+              <div className="text-center my-5 animated-spinner-container">
                 <Spinner
                   animation="border"
                   role="status"
+                  className="animated-spinner"
                   style={{ width: "3rem", height: "3rem" }}
                 >
                   <span className="sr-only"></span>
                 </Spinner>
               </div>
-            )}
-
-            {!loading && (
+            ) : (
               <Form
                 onSubmit={handleSubmit}
-                className="shadow p-4 rounded"
+                className="shadow p-4 rounded animated-form"
                 style={{ backgroundColor: "#f8f9fa" }}
               >
                 <Row>
@@ -170,7 +168,7 @@ const CreateProduct = () => {
                     <img
                       src={formData.imageUrl}
                       alt="Product"
-                      className="img-thumbnail mt-3"
+                      className="img-thumbnail mt-3 animated-image"
                       style={{
                         width: "150px",
                         height: "150px",
@@ -218,7 +216,7 @@ const CreateProduct = () => {
                   variant="primary"
                   type="submit"
                   disabled={loading}
-                  className="w-100 py-2"
+                  className="w-100 py-2 animated-button"
                   style={{
                     fontSize: "1.1rem",
                     fontWeight: "600",
@@ -247,19 +245,93 @@ const CreateProduct = () => {
       </div>
 
       <style>{`
+        .animated-container {
+          animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .animated-header {
+          animation: fadeInDown 1s ease;
+          text-shadow: 1px 1px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        .animated-form {
+          animation: fadeInUp 1s ease;
+        }
+
+        .animated-button {
+          transition: all 0.3s ease-in-out;
+        }
+
+        .animated-button:hover {
+          transform: scale(1.05);
+          background-color: #0056b3;
+        }
+
         .form-control {
           padding: 12px;
           border-radius: 10px;
           box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
           transition: all 0.3s ease-in-out;
         }
+        
         .form-control:focus {
           border-color: #007bff;
           box-shadow: 0px 4px 15px rgba(0, 123, 255, 0.5);
         }
-        .btn-primary:hover {
-          background-color: #0056b3;
-          transform: scale(1.05);
+
+        .animated-spinner-container {
+          animation: pulseSpinner 1.5s infinite ease-in-out;
+        }
+
+        @keyframes fadeInDown {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes pulseSpinner {
+          0% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.1);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+
+        .animated-image {
+          transition: transform 0.3s ease-in-out;
+        }
+
+        .animated-image:hover {
+          transform: scale(1.1);
         }
       `}</style>
     </div>

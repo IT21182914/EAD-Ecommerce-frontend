@@ -32,7 +32,7 @@ const NotificationDropdown = ({
       {showNotifications && (
         <div
           ref={dropdownRef}
-          className="notification-dropdown"
+          className="notification-dropdown animated-slide-in"
           style={{
             position: "absolute",
             backgroundColor: "white",
@@ -59,6 +59,7 @@ const NotificationDropdown = ({
                   key={product.productId}
                   onClick={() => handleProductClick(product)}
                   style={{ cursor: "pointer" }}
+                  className="animated-list-item"
                 >
                   <div className="d-flex justify-content-between align-items-center">
                     <div>
@@ -67,7 +68,7 @@ const NotificationDropdown = ({
                         Low stock: {product.stockQuantity} left
                       </p>
                     </div>
-                    <Badge pill bg="warning" className="ml-2">
+                    <Badge pill bg="warning" className="animated-badge ml-2">
                       Low Stock
                     </Badge>
                   </div>
@@ -77,6 +78,51 @@ const NotificationDropdown = ({
           </ListGroup>
         </div>
       )}
+
+      <style jsx>{`
+        .animated-slide-in {
+          animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animated-list-item {
+          transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .animated-list-item:hover {
+          background-color: #f8f9fa;
+          transform: translateX(5px);
+        }
+
+        .animated-badge {
+          animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+          0% {
+            transform: scale(1);
+            box-shadow: 0 0 5px rgba(255, 206, 86, 0.7);
+          }
+          50% {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 206, 86, 0.7);
+          }
+          100% {
+            transform: scale(1);
+            box-shadow: 0 0 5px rgba(255, 206, 86, 0.7);
+          }
+        }
+      `}</style>
     </>
   );
 };

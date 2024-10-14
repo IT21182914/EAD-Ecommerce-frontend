@@ -6,7 +6,12 @@ import {
   FaWarehouse,
   FaClipboardList,
   FaStar,
+  FaNetworkWired,
+  FaFirstOrder,
+  FaCreativeCommonsPdAlt,
 } from "react-icons/fa";
+import { FaBasketShopping, FaUpwork } from "react-icons/fa6";
+import { SiFramework } from "react-icons/si";
 
 const Sidebar = ({ role }) => {
   return (
@@ -30,7 +35,7 @@ const Sidebar = ({ role }) => {
           <>
             <LinkContainer to="/vendor/dashboard">
               <Nav.Link className="text-white mb-3 d-flex align-items-center">
-                <FaBoxOpen className="me-3" /> Manage Products
+                <FaBoxOpen className="me-3" /> Vendor Dashboard
               </Nav.Link>
             </LinkContainer>
             <LinkContainer to="/vendor/inventory">
@@ -40,14 +45,19 @@ const Sidebar = ({ role }) => {
             </LinkContainer>
             <LinkContainer to="/vendor/products">
               <Nav.Link className="text-white mb-3 d-flex align-items-center">
-                <FaClipboardList className="me-3" /> Track Orders
+                <FaClipboardList className="me-3" /> Manage Products
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/vendor/feedback">
+            <LinkContainer to="/vendor/orders">
+              <Nav.Link className="text-white mb-3 d-flex align-items-center">
+                <FaBasketShopping className="me-3" /> Manage Orders
+              </Nav.Link>
+            </LinkContainer>
+            {/* <LinkContainer to="/vendor/feedbacks">
               <Nav.Link className="text-white mb-3 d-flex align-items-center">
                 <FaStar className="me-3" /> View Feedback
               </Nav.Link>
-            </LinkContainer>
+            </LinkContainer> */}
           </>
         )}
       </Nav>
