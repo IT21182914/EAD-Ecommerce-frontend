@@ -1,19 +1,3 @@
-/**
- * VendorNavbar.js
- *
- * This component represents the navigation bar for the admin dashboard.
- * It displays notifications for the logged-in admin and includes a profile action button.
- *
- * Features:
- * - Fetches and displays notifications specific to the logged-in user using an API call.
- * - Provides a notification bell icon that shows the count of notifications.
- * - Includes a profile action button for user profile management.
- *
- * Author: Herath R P N M
- * Registration Number: IT21177828
- * Date: 2024-10-08
- */
-
 import React, { useContext, useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
 import VendorNotificationBell from "./VendorNotificationBell.js";

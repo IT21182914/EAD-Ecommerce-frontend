@@ -53,7 +53,7 @@ const Sidebar = ({ role }) => {
                 <FaBasketShopping className="me-3" /> Manage Orders
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/vendor/feedback">
+            <LinkContainer to="/vendor/feedbacks">
               <Nav.Link className="text-white mb-3 d-flex align-items-center">
                 <FaStar className="me-3" /> View Feedback
               </Nav.Link>
