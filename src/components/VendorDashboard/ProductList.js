@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Container,
   Row,
@@ -30,6 +30,7 @@ const ProductList = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  const dropdownRef = useRef(null); // Ref for dropdown
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -83,6 +84,19 @@ const ProductList = () => {
       : false
   );
 
+  // Logic to handle click outside of dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="d-flex animated-page">
       <VendorSidebar role="vendor" />
@@ -103,7 +117,11 @@ const ProductList = () => {
           </h2>
 
           {/* Search bar */}
-          <div className="text-center mb-4" style={{ position: "relative" }}>
+          <div
+            className="text-center mb-4"
+            style={{ position: "relative" }}
+            ref={dropdownRef}
+          >
             <InputGroup
               className="search-bar-wrapper"
               style={{
@@ -117,7 +135,6 @@ const ProductList = () => {
                 placeholder="Search"
                 value={searchTerm}
                 onFocus={() => setShowDropdown(true)}
-                onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
                   borderRadius: "30px 0 0 30px",
