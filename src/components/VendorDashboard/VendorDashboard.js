@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./VendorSidebar";
@@ -15,35 +15,35 @@ import AddProductButton from "./AddProductButton";
 import NotificationBell from "./NotificationBell";
 import HeaderComponent from "./HeaderComponent";
 import VendorNavbar from "./VendorNavbar";
+import { AuthContext } from "../../Context/AuthContext";
 
 const VendorDashboard = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [lowStockProducts, setLowStockProducts] = useState([]);
   const [inStock, setInStock] = useState(0);
   const [outOfStock, setOutOfStock] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [totalStock, setTotalStock] = useState(0); // For total stock calculation
+  const [totalStock, setTotalStock] = useState(0);
   const [ordersProcessed, setOrdersProcessed] = useState([]);
-  const [averageRating, setAverageRating] = useState(4.5); // Placeholder for now
+  const [averageRating, setAverageRating] = useState(4.5);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
-    // Fetch product data from the API
+    if (!user?.id) return;
+
     axios
-      .get(`${API_BASE_URL}vendor/products/all`)
+      .get(`${API_BASE_URL}vendor/products/${user.id}`)
       .then((response) => {
         const products = response.data;
-
         const lowStock = products.filter(
           (product) => product.stockQuantity < 5 && product.stockQuantity > 0
         );
         const outOfStockProducts = products.filter(
           (product) => product.stockQuantity === 0
         );
-
-        // Calculate total stock
         const totalStockQuantity = products.reduce(
           (acc, product) => acc + product.stockQuantity,
           0
@@ -51,31 +51,29 @@ const VendorDashboard = () => {
 
         setLowStockProducts(lowStock);
         setOutOfStock(outOfStockProducts.length);
-        setInStock(products.length - outOfStockProducts.length); // In stock is now calculated based on product count
+        setInStock(products.length - outOfStockProducts.length);
         setTotalProducts(products.length);
-        setTotalStock(totalStockQuantity); // Use total stock as the in-stock value
+        setTotalStock(totalStockQuantity);
 
-        // Calculate average rating (Placeholder logic)
         const totalRatings = products.reduce(
           (acc, product) => acc + (product.rating || 0),
           0
         );
-        setAverageRating(totalRatings / products.length || 4.5); // Placeholder calculation
+        setAverageRating(totalRatings / products.length || 4.5);
       })
       .catch((error) => {
         console.error("Failed to fetch products", error);
       });
 
-    // Fetch orders data from the API
     axios
-      .get(`${API_BASE_URL}vendor/orders/processed`)
+      .get(`${API_BASE_URL}vendor/products/my/order/all?vendorId=${user.id}`)
       .then((response) => {
         setOrdersProcessed(response.data);
       })
       .catch((error) => {
         console.error("Failed to fetch orders", error);
       });
-  }, []);
+  }, [user]);
 
   const handleAddProductClick = () => {
     navigate("/vendor/create");
@@ -111,7 +109,7 @@ const VendorDashboard = () => {
     datasets: [
       {
         label: "Inventory Status",
-        data: [inStock, outOfStock, lowStockProducts.length], // Now showing product count instead of stock quantities
+        data: [inStock, outOfStock, lowStockProducts.length],
         backgroundColor: [
           "rgba(75,192,192,1)",
           "rgba(255,99,132,1)",
@@ -133,7 +131,7 @@ const VendorDashboard = () => {
         className="bg-body-secondary d-flex flex-column flex-grow-1"
         style={{ marginLeft: "240px" }}
       >
-        <VendorNavbar/>
+        <VendorNavbar />
         <Container
           fluid
           className="p-4 overflow-scroll"
@@ -174,7 +172,7 @@ const VendorDashboard = () => {
             <StatisticsCard
               icon="FaWarehouse"
               color="text-warning"
-              count={totalStock} // Display total stock amount dynamically
+              count={totalStock}
               label="Total Stock"
               footer="Update Now"
             />
@@ -206,6 +204,25 @@ const VendorDashboard = () => {
           <ToastContainer autoClose={3000} />
         </Container>
       </div>
+
+      <style jsx>{`
+        .custom-modal-size {
+          max-width: 900px;
+        }
+
+        .custom-modal-position {
+          transform: translate(0, 10%);
+        }
+
+        .stat-card {
+          transition: transform 0.3s ease-in-out;
+        }
+
+        .stat-card:hover {
+          transform: scale(1.05);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+      `}</style>
     </div>
   );
 };

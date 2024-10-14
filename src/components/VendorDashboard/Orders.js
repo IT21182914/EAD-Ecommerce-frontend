@@ -9,7 +9,7 @@ import {
   Col,
   Badge,
 } from "react-bootstrap";
-import VendorSidebar from "./VendorSidebar"; // Assuming the sidebar component is in the same directory
+import VendorSidebar from "./VendorSidebar";
 import {
   FaMapMarkerAlt,
   FaPhone,
@@ -41,7 +41,7 @@ const Orders = () => {
       if (res.data) setOrders(res.data);
     } catch (error) {
       console.error(error);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -70,10 +70,13 @@ const Orders = () => {
   };
 
   return (
-    <div className="d-flex flex-row" style={{ width: "100%", height: "100vh" }}>
+    <div
+      className="d-flex flex-row animated-page"
+      style={{ width: "100%", height: "100vh" }}
+    >
       <Sidebar role="vendor" />
       <div
-        className="bg-body-secondary d-flex flex-column flex-grow-1"
+        className="bg-body-secondary d-flex flex-column flex-grow-1 animated-section"
         style={{ marginLeft: "240px" }}
       >
         <VendorNavbar />
@@ -83,13 +86,12 @@ const Orders = () => {
           style={{ height: "100%" }}
         >
           <h2
-            className="text-center my-4"
+            className="text-center my-4 animated-header"
             style={{
               fontWeight: "bold",
               fontSize: "2.5rem",
               color: "#333",
               textShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
-              animation: "fadeInDown 1s ease",
             }}
           >
             Manage Orders
@@ -100,7 +102,7 @@ const Orders = () => {
               <Spinner
                 animation="border"
                 role="status"
-                style={{ width: "3rem", height: "3rem" }}
+                className="animated-spinner"
               ></Spinner>
             </div>
           ) : (
@@ -136,7 +138,7 @@ const Orders = () => {
                       <td>
                         {
                           <Badge
-                            className="p-2"
+                            className="p-2 animated-badge"
                             pill
                             bg={
                               order.status === "CANCELED"
@@ -276,7 +278,6 @@ const Orders = () => {
             </Modal.Body>
             <Modal.Footer className="border-0 justify-content-center">
               <Button
-                // variant={selectedOrder?.delivered ? "success" : "primary"}
                 onClick={() => {
                   handleDeliver(selectedOrder.itemId);
                   closeModal();
@@ -285,13 +286,6 @@ const Orders = () => {
                   selectedOrder?.status === "DELIVERED" ||
                   selectedOrder?.status === "CANCELED"
                 }
-                style={{
-                  padding: "10px 30px",
-                  fontSize: "1rem",
-                  borderRadius: "30px",
-                  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.15)",
-                  transition: "background-color 0.3s ease, transform 0.2s",
-                }}
                 className="deliver-btn"
               >
                 {selectedOrder?.delivered ? "Delivered" : "Deliver"}
@@ -301,36 +295,82 @@ const Orders = () => {
         </Container>
 
         <style jsx>{`
-          .modal-content {
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            transition: transform 0.3s ease;
+          .animated-header {
+            animation: fadeInDown 1s ease;
           }
 
-          .modal-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-bottom: none;
-            padding: 1.5rem;
+          .animated-spinner {
+            animation: rotateSpinner 1.5s linear infinite;
           }
 
-          .modal-body {
-            padding: 30px;
+          .animated-page {
+            animation: fadeInPage 1s ease-in-out;
           }
 
-          .order-details h5,
-          .order-details h6 {
-            margin-bottom: 10px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
+          .animated-row {
+            animation: fadeInUp 0.6s ease;
           }
 
-          .order-details h5 svg,
-          .order-details h6 svg {
-            margin-right: 10px;
-            color: #667eea;
+          .animated-badge {
+            transition: all 0.3s ease;
+          }
+
+          .animated-badge:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          }
+
+          .animated-section {
+            animation: slideIn 0.8s ease;
+          }
+
+          @keyframes fadeInDown {
+            from {
+              opacity: 0;
+              transform: translateY(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes rotateSpinner {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
+            }
+          }
+
+          @keyframes fadeInPage {
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
+          }
+
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes slideIn {
+            from {
+              transform: translateX(-100%);
+            }
+            to {
+              transform: translateX(0);
+            }
           }
 
           .deliver-btn:hover {

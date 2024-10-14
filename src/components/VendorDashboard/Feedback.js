@@ -23,7 +23,7 @@ const Feedback = () => {
         }
 
         const response = await axios.get(
-          `${API_BASE_URL}Feedback/vender-ranking/${user.id}`
+          `${API_BASE_URL}Feedback/product/feedback/{productId}`
         );
         setFeedbackData(response.data.user.result);
       } catch (error) {
