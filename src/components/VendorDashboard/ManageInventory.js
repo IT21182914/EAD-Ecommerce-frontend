@@ -18,8 +18,10 @@ import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../../config.js";
 import AdminNavBar from "../AdminDashboard/AdminNavBar";
 import VendorNavbar from "./VendorNavbar.js";
+import { AuthContext } from "../../Context/AuthContext";
 
 const ManageInventory = () => {
+  const { user } = React.useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,7 +30,7 @@ const ManageInventory = () => {
   useEffect(() => {
     // Fetch product data from the API
     axios
-      .get(`${API_BASE_URL}vendor/products/all`)
+      .get(`${API_BASE_URL}vendor/products/${user.id}`)
       .then((response) => {
         setProducts(response.data);
         setLoading(false);

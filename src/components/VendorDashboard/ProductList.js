@@ -21,7 +21,6 @@ import API_BASE_URL from "../../config";
 import VendorNavbar from "./VendorNavbar";
 import { AuthContext } from "../../Context/AuthContext";
 
-
 const ProductList = () => {
   const { vendorId } = useParams();
   const [products, setProducts] = useState([]);

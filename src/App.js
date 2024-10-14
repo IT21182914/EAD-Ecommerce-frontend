@@ -22,11 +22,13 @@ import ManageProducts from "./components/AdminDashboard/ManageProducts";
 import OrderCancellationRequest from "./components/AdminDashboard/OrderCancellationRequest";
 import CreateUser from "./components/CSRDashboard/CreateUser";
 import AccountActivation from "./components/AdminDashboard/AccountActivation";
-import OrderCancellationRequestbyCSR from "./components/CSRDashboard/OrderCancellationRequest"
-import ManageOrder from "./components/CSRDashboard/CancelOrders"
+import OrderCancellationRequestbyCSR from "./components/CSRDashboard/OrderCancellationRequest";
+import ManageOrder from "./components/CSRDashboard/CancelOrders";
 import ActivateProducts from "./components/CSRDashboard/ActivateProducts";
 import ManageOrders from "./components/AdminDashboard/ManageOrders";
 import ChangePassword from "./components/CSRDashboard/ChangePassword";
+import Feedback from "./components/VendorDashboard/Feedback";
+
 
 function App() {
   return (
@@ -159,10 +161,7 @@ function App() {
               <Route
                 path="/csr/create/users"
                 element={
-                  <RoleBasedRoute
-                    element={<CreateUser />}
-                    allowedRoles={[3]}
-                  />
+                  <RoleBasedRoute element={<CreateUser />} allowedRoles={[3]} />
                 }
               />
               <Route
@@ -222,7 +221,7 @@ function App() {
                 }
               />
               <Route
-                path="orders"
+                path="/vendor/orders"
                 element={
                   <RoleBasedRoute element={<Orders />} allowedRoles={[4]} />
                 }
@@ -234,6 +233,13 @@ function App() {
                     element={<CancelOrders />}
                     allowedRoles={[4]}
                   />
+                }
+              />
+
+              <Route
+                path="/vendor/feedbacks"
+                element={
+                  <RoleBasedRoute element={<Feedback />} allowedRoles={[4]} />
                 }
               />
             </Routes>
