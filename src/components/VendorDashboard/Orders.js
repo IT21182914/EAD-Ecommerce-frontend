@@ -37,7 +37,6 @@ const Orders = () => {
       const res = await axios.get(
         `${API_BASE_URL}vendor/products/my/order/all?vendorId=${user.id}`
       );
-      console.log(res.data);
       if (res.data) setOrders(res.data);
     } catch (error) {
       console.error(error);
@@ -58,8 +57,7 @@ const Orders = () => {
   const handleDeliver = (productId) => {
     axios
       .patch(`${API_BASE_URL}Order/item/delivered?itemId=${productId}`)
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
         setRefresh(!refresh);
       })
       .catch((error) => console.error(error));
@@ -140,17 +138,7 @@ const Orders = () => {
                           <Badge
                             className="p-2 animated-badge"
                             pill
-                            bg={
-                              order.status === "CANCELED"
-                                ? "danger"
-                                : order.status === "DELIVERED"
-                                ? "success"
-                                : order.status === "PENDING"
-                                ? "primary"
-                                : order.status === "PARTIALY-DELIVERED"
-                                ? "secondary"
-                                : "warning"
-                            }
+                            bg={getStatusBadgeColor(order.status)}
                           >
                             {order.status}
                           </Badge>
@@ -384,6 +372,22 @@ const Orders = () => {
       </div>
     </div>
   );
+};
+
+// Helper function to return color for status badges
+const getStatusBadgeColor = (status) => {
+  switch (status) {
+    case "CANCELED":
+      return "danger";
+    case "DELIVERED":
+      return "success";
+    case "PENDING":
+      return "primary";
+    case "PARTIALLY-DELIVERED":
+      return "secondary";
+    default:
+      return "warning";
+  }
 };
 
 export default Orders;
