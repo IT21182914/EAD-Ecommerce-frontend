@@ -39,7 +39,7 @@ const Sidebar = () => {
         <LinkContainer to="/admin/create/vendor">
           <Nav.Link className="text-white mb-3 d-flex align-items-center">
             <FaUser className="me-3" />
-            Create Vendor
+            Create Accounts
           </Nav.Link>
         </LinkContainer>
         <LinkContainer to="/admin/manage/orders">

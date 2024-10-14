@@ -19,8 +19,8 @@ const UpdateProduct = () => {
     category: "",
     imageUrl: "",
     vendorId: "",
-    type: "Anyone", // Default value
-    size: "Default", // Default value
+    type: "Anyone",
+    size: "Default",
   });
 
   useEffect(() => {
@@ -36,9 +36,9 @@ const UpdateProduct = () => {
           stockQuantity: product.stockQuantity,
           category: product.category,
           imageUrl: product.imageUrl,
-          vendorId: product.vendorId, // Ensure vendorId is set
-          type: product.type || "Anyone", // Set the type, or default to "Anyone"
-          size: product.size || "Default", // Set the size, or default to "Default"
+          vendorId: product.vendorId,
+          type: product.type || "Anyone",
+          size: product.size || "Default",
         });
       })
       .catch((error) => toast.error("Error fetching product"));
@@ -55,17 +55,14 @@ const UpdateProduct = () => {
     e.preventDefault();
 
     try {
-      // Prepare the product data to be updated
       const updatedProductData = { ...formData };
-
-      // Update the product on the backend
       await axios.put(
         `${API_BASE_URL}vendor/products/update/${productId}`,
         updatedProductData
       );
 
       toast.success("Product updated successfully!");
-      setTimeout(() => navigate("/vendor/products"), 1500); // Navigate back to the products list after a short delay
+      setTimeout(() => navigate("/vendor/products"), 1500);
     } catch (error) {
       toast.error("Error updating product");
     }
@@ -75,23 +72,21 @@ const UpdateProduct = () => {
     <div className="d-flex">
       <VendorSidebar role="vendor" />
       <div className="flex-grow-1" style={{ marginLeft: "240px" }}>
-        {/* Add AdminNavBar */}
         <AdminNavBar notification={[]} />
         <Container
           fluid
           className="p-4 d-flex justify-content-center align-items-start"
-          style={{ minHeight: "100vh" }}
+          style={{ minHeight: "100vh", fontFamily: "'Poppins', sans-serif" }}
         >
           <div style={{ flex: 1, maxWidth: "800px", width: "100%" }}>
-            <h2 className="text-center my-4 text-primary display-4">
+            <h2 className="text-center my-4 text-primary display-4 animated-header">
               Update Product
             </h2>
 
             <Form
               onSubmit={handleSubmit}
-              className="shadow p-4 rounded bg-white"
+              className="shadow p-4 rounded bg-white animated-form"
             >
-              {/* Hidden Fields */}
               <Form.Control type="hidden" name="productId" value={productId} />
               <Form.Control
                 type="hidden"
@@ -180,7 +175,7 @@ const UpdateProduct = () => {
                   <img
                     src={formData.imageUrl}
                     alt="Product"
-                    className="img-thumbnail mt-3"
+                    className="img-thumbnail mt-3 animated-image"
                     style={{
                       width: "150px",
                       height: "150px",
@@ -190,7 +185,6 @@ const UpdateProduct = () => {
                 )}
               </Form.Group>
 
-              {/* Dropdown for Type */}
               <Form.Group controlId="type" className="mb-3">
                 <Form.Label>Type</Form.Label>
                 <Form.Control
@@ -206,7 +200,6 @@ const UpdateProduct = () => {
                 </Form.Control>
               </Form.Group>
 
-              {/* Dropdown for Size */}
               <Form.Group controlId="size" className="mb-3">
                 <Form.Label>Size</Form.Label>
                 <Form.Control
@@ -227,7 +220,7 @@ const UpdateProduct = () => {
               <Button
                 variant="primary"
                 type="submit"
-                className="w-100 py-2"
+                className="w-100 py-2 animated-button"
                 style={{
                   fontSize: "1.1rem",
                   fontWeight: "600",
@@ -256,19 +249,69 @@ const UpdateProduct = () => {
       </div>
 
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        .animated-header {
+          animation: fadeInDown 1s ease;
+          text-shadow: 1px 1px 10px rgba(0, 123, 255, 0.3);
+          font-family: 'Poppins', sans-serif;
+        }
+
+        .animated-form {
+          animation: fadeInUp 1s ease;
+        }
+
+        .animated-button {
+          transition: all 0.3s ease-in-out;
+          font-family: 'Poppins', sans-serif;
+        }
+
+        .animated-button:hover {
+          transform: scale(1.05);
+          background-color: #0056b3;
+        }
+
         .form-control {
           padding: 12px;
           border-radius: 10px;
           box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
           transition: all 0.3s ease-in-out;
+          font-family: 'Poppins', sans-serif;
         }
+
         .form-control:focus {
           border-color: #007bff;
           box-shadow: 0px 4px 15px rgba(0, 123, 255, 0.5);
         }
-        .btn-primary:hover {
-          background-color: #0056b3;
-          transform: scale(1.05);
+
+        .animated-image {
+          transition: transform 0.3s ease-in-out;
+        }
+
+        .animated-image:hover {
+          transform: scale(1.1);
+        }
+
+        @keyframes fadeInDown {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
       `}</style>
     </div>

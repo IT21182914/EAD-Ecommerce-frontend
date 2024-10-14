@@ -50,12 +50,29 @@ export const AuthProvider = ({ children }) => {
         } else if (userData.role === 3) {
           navigate("/csr/dashboard");
         }
-      } else {
+      }
+      else if(response.status == 403){
+        console.log(response)
+        localStorage.setItem("userID", response.data.token);
+        navigate("/change-password");
+      } 
+      else {
+      console.log(response)
+
         toast.error("Login unsuccessful!", { position: "top-right" });
         console.log("Login failed");
       }
     } catch (error) {
       console.error("Login failed", error);
+      if(error.response.status == 403){
+         console.log(error.response)
+        localStorage.setItem("userID", error.response.data.userId);
+        navigate("/change-password");
+      }
+      if (error.message === "Network Error") {
+        throw new Error("Network connection error");
+      }
+      throw new Error("Invalid email or password");
     } finally {
       setLoading(false);
     }

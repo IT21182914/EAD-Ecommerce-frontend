@@ -16,18 +16,19 @@ import { FaSort, FaSortUp, FaSortDown, FaSearch } from "react-icons/fa";
 import VendorSidebar from "./VendorSidebar";
 import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../../config.js";
-import AdminNavBar from "../AdminDashboard/AdminNavBar";
+import VendorNavbar from "./VendorNavbar.js";
+import { AuthContext } from "../../Context/AuthContext";
 
 const ManageInventory = () => {
+  const { user } = React.useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch product data from the API
     axios
-      .get(`${API_BASE_URL}vendor/products/all`)
+      .get(`${API_BASE_URL}vendor/products/${user.id}`)
       .then((response) => {
         setProducts(response.data);
         setLoading(false);
@@ -42,13 +43,11 @@ const ManageInventory = () => {
     navigate(`/vendor/update/${productId}`);
   };
 
-  // Calculate total stock quantity
   const totalStockQuantity = products.reduce(
     (total, product) => total + product.stockQuantity,
     0
   );
 
-  // Define table columns
   const columns = useMemo(
     () => [
       {
@@ -127,7 +126,6 @@ const ManageInventory = () => {
     []
   );
 
-  // Table Instance
   const {
     getTableProps,
     getTableBodyProps,
@@ -141,14 +139,15 @@ const ManageInventory = () => {
   const { globalFilter } = state;
 
   useEffect(() => {
-    setGlobalFilter(searchTerm); // Apply search term to the table filtering
+    setGlobalFilter(searchTerm);
   }, [searchTerm, setGlobalFilter]);
 
   return (
     <div className="d-flex" style={{ height: "100vh" }}>
       <VendorSidebar role="vendor" />
       <div className="flex-grow-1" style={{ marginLeft: "240px" }}>
-        <AdminNavBar notification={[]} /> {/* Add AdminNavBar */}
+        <VendorNavbar />
+
         <Container
           fluid
           className="p-4 overflow-scroll"

@@ -13,41 +13,40 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VendorSidebar from "./VendorSidebar";
-import AdminNavBar from "../AdminDashboard/AdminNavBar"; // Import AdminNavBar
+import AdminNavBar from "../AdminDashboard/AdminNavBar";
 import { useParams, useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
-import DeleteConfirmationModal from "./DeleteConfirmationModal"; // Import the separate component
-
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import API_BASE_URL from "../../config";
+import VendorNavbar from "./VendorNavbar";
 import { AuthContext } from "../../Context/AuthContext";
 
 const ProductList = () => {
   const { vendorId } = useParams();
   const [products, setProducts] = useState([]);
   const { user } = React.useContext(AuthContext);
-  const [loading, setLoading] = useState(true); // State for loading spinner
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false); // State for the delete confirmation modal
-  const [productToDelete, setProductToDelete] = useState(null); // State to track the product selected for deletion
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch vendor products from the backend
     axios
       .get(`${API_BASE_URL}vendor/products/${user.id}`)
       .then((response) => {
         setProducts(response.data);
-        setLoading(false); // Turn off the spinner after data is fetched
+        setLoading(false);
       })
       .catch((error) => {
         toast.error("Failed to load products");
-        setLoading(false); // Turn off the spinner even if there's an error
+        setLoading(false);
       });
   }, [vendorId]);
 
   const deleteProduct = (productId) => {
-    setLoading(true); // Start loading spinner for delete operation
+    setLoading(true);
     axios
       .delete(`${API_BASE_URL}vendor/products/delete/${productId}`)
       .then(() => {
@@ -55,32 +54,29 @@ const ProductList = () => {
           prevProducts.filter((product) => product.productId !== productId)
         );
         toast.warning("Product deleted successfully");
-        setLoading(false); // Stop loading spinner after deletion
+        setLoading(false);
       })
       .catch((error) => {
         toast.error("Failed to delete product");
-        setLoading(false); // Stop loading spinner if error
+        setLoading(false);
       });
-    setShowConfirmModal(false); // Hide confirmation modal after delete
+    setShowConfirmModal(false);
   };
 
   const handleEdit = (productId) => {
     navigate(`/vendor/update/${productId}`);
   };
 
-  // Function to show confirmation modal
   const handleShowConfirmModal = (product) => {
     setProductToDelete(product);
-    setShowConfirmModal(true); // Show confirmation modal
+    setShowConfirmModal(true);
   };
 
-  // Function to cancel deletion
   const handleCancelDelete = () => {
     setProductToDelete(null);
-    setShowConfirmModal(false); // Hide confirmation modal
+    setShowConfirmModal(false);
   };
 
-  // Filter products based on search term with null/undefined checks
   const filteredProducts = products.filter((product) =>
     product.name
       ? product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -88,13 +84,14 @@ const ProductList = () => {
   );
 
   return (
-    <div className="d-flex">
+    <div className="d-flex animated-page">
       <VendorSidebar role="vendor" />
       <div className="flex-grow-1" style={{ marginLeft: "240px" }}>
-        <AdminNavBar notification={[]} /> {/* Add AdminNavBar */}
+        <VendorNavbar />
+
         <Container fluid className="p-4">
           <h2
-            className="text-center my-4"
+            className="text-center my-4 animated-header"
             style={{
               fontWeight: "bold",
               fontSize: "2.5rem",
@@ -105,7 +102,7 @@ const ProductList = () => {
             Products
           </h2>
 
-          {/* Enhanced search bar with dropdown */}
+          {/* Search bar */}
           <div className="text-center mb-4" style={{ position: "relative" }}>
             <InputGroup
               className="search-bar-wrapper"
@@ -206,6 +203,7 @@ const ProductList = () => {
               <Spinner
                 animation="border"
                 role="status"
+                className="animated-spinner"
                 style={{ width: "3rem", height: "3rem" }}
               >
                 <span className="sr-only"></span>
@@ -219,12 +217,11 @@ const ProductList = () => {
                   md={3}
                   sm={6}
                   xs={12}
-                  className="mb-4"
+                  className="mb-4 animated-product"
                 >
                   <ProductCard
                     product={product}
                     handleEdit={handleEdit}
-                    // Pass the delete handler with confirmation
                     deleteProduct={() => handleShowConfirmModal(product)}
                   />
                 </Col>
@@ -252,6 +249,58 @@ const ProductList = () => {
           />
         </Container>
       </div>
+
+      <style jsx>{`
+        .animated-page {
+          animation: fadeInPage 1s ease-in-out;
+        }
+
+        .animated-header {
+          animation: fadeInDown 1s ease;
+        }
+
+        .animated-spinner {
+          animation: rotateSpinner 1.5s linear infinite;
+        }
+
+        .animated-product {
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .animated-product:hover {
+          transform: scale(1.05);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes fadeInDown {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes rotateSpinner {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes fadeInPage {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 };
